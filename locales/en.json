@@ -1,0 +1,1014 @@
+{
+  "common": {
+    "error": "Error",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "change": "Change",
+    "update": "Update",
+    "save": "Save",
+    "remove": "Remove",
+    "retry": "Retry",
+    "pickupFallback": "Pickup",
+    "dropFallback": "Drop",
+    "pickupLocationFallback": "Pickup location",
+    "dropLocationFallback": "Drop location",
+    "riderFallback": "Rider",
+    "bookingFallback": "Booking",
+    "fareAmount": "Rs.{{amount}}",
+    "distanceKm": "{{km}} km",
+    "distanceM": "{{m}} m",
+    "tabs": {
+      "home": "Home",
+      "orders": "Orders",
+      "earnings": "Earnings",
+      "docs": "Docs",
+      "profile": "Profile"
+    }
+  },
+  "auth": {
+    "login": {
+      "driverBadge": "DRIVER",
+      "welcomeTitle": "Welcome back",
+      "welcomeSub": "Sign in to your driver account",
+      "emailLabel": "EMAIL",
+      "emailPlaceholder": "driver@example.com",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "Min 8 characters",
+      "consentTermsPrefix": "I have read and agreed to",
+      "consentTermsLink": "Terms and Conditions",
+      "consentAnd": "and",
+      "consentPrivacyLink": "Privacy Policy",
+      "consentTDSPrefix": "I have read and hereby provide my consent on the",
+      "consentTDSLink": "TDS Declaration",
+      "fillAllFields": "Fill all fields",
+      "acceptTermsAlert": "Please accept the Terms & Conditions and TDS Declaration to continue",
+      "signIn": "Sign In",
+      "loginErrorMsg": "Invalid credentials",
+      "openDocumentError": "Could not open document",
+      "newDriverTitle": "New driver?",
+      "newDriverSub": "Join bogie in 4 simple steps",
+      "steps": "Sign up,Verify OTP,Choose vehicle,Upload docs",
+      "registerBtn": "Register as Driver"
+    },
+    "signup": {
+      "driverBadge": "DRIVER",
+      "title": "Create Driver Account",
+      "subtitle": "Start earning with bogie today",
+      "fullNameLabel": "FULL NAME",
+      "fullNamePlaceholder": "Rahul Kumar",
+      "emailLabel": "EMAIL ADDRESS",
+      "emailPlaceholder": "rahul@example.com",
+      "mobileLabel": "MOBILE NUMBER",
+      "mobilePlaceholder": "+91 98765 43210",
+      "passwordLabel": "PASSWORD",
+      "passwordPlaceholder": "Min 8 characters",
+      "referralLabel": "REFERRAL CODE (OPTIONAL)",
+      "referralPlaceholder": "e.g. GD3M8B1C",
+      "referralOk": "✓ Referred by {{name}}",
+      "referralBad": "Invalid code — you can still sign up",
+      "sendOtp": "Send OTP",
+      "footerText": "Already have an account? ",
+      "signInLink": "Sign In",
+      "alerts": {
+        "fillAllFields": "Fill all fields",
+        "enterValidPhone": "Enter valid phone number",
+        "passwordMin8": "Password must be at least 8 characters",
+        "genericErrorTitle": "Error",
+        "genericErrorMsg": "Something went wrong. Try again."
+      }
+    },
+    "otp": {
+      "back": "← Back",
+      "title": "Verify your number",
+      "subtitlePrefix": "We sent a 6-digit OTP to",
+      "phoneFallback": "+91 XXXXX XXXXX",
+      "verify": "Verify OTP",
+      "resendText": "Did not receive it? ",
+      "resendTimer": "Resend in {{sec}}s",
+      "resendLink": "Resend OTP",
+      "enterOtpAlert": "Enter 6-digit OTP",
+      "invalidOtpTitle": "Invalid OTP",
+      "invalidOtpMsg": "Please check and try again"
+    },
+    "vehicleSelect": {
+      "back": "← Back",
+      "step": "Step 2 of 4",
+      "title": "What do you drive?",
+      "subtitle": "Choose your vehicle category",
+      "subTitle": "Select specific vehicle type",
+      "continue": "Continue →",
+      "categories": {
+        "cab": {
+          "title": "Cab",
+          "subtitle": "2-Wheeler, 3-Wheeler, 4-Wheeler",
+          "desc": "Passenger rides: bikes, autos, cars, SUVs"
+        },
+        "truck": {
+          "title": "Truck",
+          "subtitle": "Within City & Outstation",
+          "desc": "Local goods transport and long-distance logistics"
+        },
+        "ambulance": {
+          "title": "Ambulance",
+          "subtitle": "BLS / ALS / Patient Transport",
+          "desc": "Medical emergency and patient transport services"
+        }
+      },
+      "options": {
+        "cab_2w": "2 Wheeler (Bike/Scooter)",
+        "cab_3w": "3 Wheeler (Auto)",
+        "cab_4w": "4 Wheeler (Car)",
+        "cab_4w_suv": "4 Wheeler (SUV)",
+        "truck_city_tata_ace": "Tata Ace / Mini Truck (City)",
+        "truck_city_14ft": "14ft Truck (City)",
+        "truck_city_open": "Open Body Truck (City)",
+        "truck_city_container": "Container Truck (City)",
+        "truck_os_14ft": "14ft Truck (Outstation)",
+        "truck_os_20ft": "20ft Truck (Outstation)",
+        "truck_os_container": "Container (Outstation)",
+        "truck_os_trailer": "Trailer (Outstation)",
+        "ambulance_bls": "Basic Life Support (BLS)",
+        "ambulance_als": "Advanced Life Support (ALS)",
+        "ambulance_transport": "Patient Transport"
+      }
+    },
+    "register": {
+      "steps": {
+        "personal": "Personal",
+        "vehicle": "Vehicle",
+        "documents": "Documents",
+        "bankTerms": "Bank & Terms"
+      },
+      "headerTitle": "Driver Registration",
+      "headerSub": "Step {{step}} of 4 — {{name}}",
+      "back": "← Back",
+      "continueTo": "Continue to {{step}}",
+      "submit": "Submit Registration",
+      "stepIndicator": "{{step}} / 4",
+      "personal": {
+        "sectionTitle": "Personal Details",
+        "fullName": "FULL NAME *",
+        "fullNamePh": "Rahul Kumar",
+        "mobile": "MOBILE NUMBER *",
+        "mobilePh": "+91 98765 43210",
+        "email": "EMAIL ADDRESS *",
+        "emailPh": "rahul@example.com",
+        "password": "PASSWORD *",
+        "passwordPh": "Min 8 characters",
+        "dob": "DATE OF BIRTH",
+        "dobPh": "DD-MM-YYYY",
+        "address": "ADDRESS",
+        "addressPh": "House no., street, city",
+        "phoneVerified": "Phone verified",
+        "vehicleInfo": "Vehicle: {{vehicle}}"
+      },
+      "vehicle": {
+        "sectionTitle": "Vehicle Details",
+        "categoryLabel": "Category: {{category}}",
+        "regNumber": "VEHICLE REGISTRATION NUMBER *",
+        "regNumberPh": "DL-01-AB-1234",
+        "model": "VEHICLE MODEL *",
+        "modelPh": "Tata Ace / Honda Activa...",
+        "ambulanceModel": "AMBULANCE MODEL",
+        "ambulanceModelPh": "Force Traveller / Tata Winger...",
+        "color": "VEHICLE COLOR",
+        "colorPh": "White / Black...",
+        "payload": "PAYLOAD CAPACITY (TONS)",
+        "payloadPh": "e.g. 1.5",
+        "fuelType": "FUEL TYPE",
+        "gstNumber": "GST NUMBER *",
+        "gstNumberPh": "22AAAAA0000A1Z5",
+        "teamSize": "TEAM SIZE",
+        "teamSizePh": "Number of workers",
+        "emtCertified": "EMT / Paramedic Certified",
+        "available247": "Available 24x7",
+        "categoryPrefix": "Category:"
+      },
+      "documents": {
+        "sectionTitle": "Documents",
+        "sectionNote": "Upload clear photos of each document",
+        "required": "Required",
+        "optional": "Optional",
+        "uploaded": "Uploaded",
+        "notUploaded": "Not uploaded yet",
+        "reupload": "Re-upload",
+        "uploadPhoto": "Upload Photo",
+        "reviewNote": "Documents are reviewed by our team within 24 hours. Keep originals ready.",
+        "expiryDateLabel": "EXPIRY DATE",
+        "expiryPh": "DD/MM/YYYY",
+        "permissionNeeded": "Permission needed",
+        "cameraPermissionNeeded": "Camera permission needed",
+        "pickErrorMsg": "Error picking image",
+        "uploadSourceTitle": "Upload document",
+        "uploadSourceMsg": "Choose source",
+        "camera": "Camera",
+        "gallery": "Gallery",
+        "cancel": "Cancel"
+      },
+      "bank": {
+        "sectionTitle": "Bank Account Details",
+        "sectionNote": "Earnings transferred weekly to your account",
+        "accountHolder": "ACCOUNT HOLDER NAME *",
+        "accountHolderPh": "As per bank records",
+        "accountNumber": "ACCOUNT NUMBER *",
+        "accountNumberPh": "XXXXXXXXXXXXXXXX",
+        "ifsc": "IFSC CODE *",
+        "ifscPh": "SBIN0001234",
+        "bankName": "BANK NAME *",
+        "bankNamePh": "State Bank of India",
+        "upi": "UPI ID (optional)",
+        "upiPh": "name@upi",
+        "termsTitle": "Terms & Conditions",
+        "agreeTerms": "I agree to the Terms & Conditions",
+        "mvagTitle": "MVAG Self-Declaration",
+        "mvagIntro": "Required under the Motor Vehicle Aggregator Guidelines, 2020.",
+        "mvagDeclaration": "I declare that I have not been convicted in the last 3 years of driving under the influence of alcohol or drugs, and have never been convicted of any cognizable offence including fraud, sexual offences, or use of criminal force."
+      },
+      "commonDocs": {
+        "passport_photo": {
+          "label": "Passport Size Photo"
+        },
+        "aadhaar": {
+          "label": "Aadhaar Card",
+          "numberLabel": "Aadhaar Number",
+          "numberPlaceholder": "12-digit number"
+        },
+        "pan_card": {
+          "label": "PAN Card",
+          "numberLabel": "PAN Number"
+        },
+        "driving_license": {
+          "label": "Driving License",
+          "numberLabel": "License Number",
+          "expiryLabel": "License Expiry"
+        },
+        "bank_passbook": {
+          "label": "Bank Passbook / Cheque",
+          "numberLabel": "Account Number"
+        },
+        "police_clearance": {
+          "label": "Police Clearance Certificate (PCC)",
+          "note": "Get your PCC from your local police station or your state police online portal (Delhi: Delhi Police Citizen Services)."
+        }
+      },
+      "vehicleDocs": {
+        "two_wheeler": {
+          "rc": {
+            "label": "Registration Certificate (RC)",
+            "numberLabel": "RC Number",
+            "expiryLabel": "RC Expiry"
+          },
+          "insurance": {
+            "label": "Insurance Certificate",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Insurance Expiry"
+          },
+          "puc": {
+            "label": "Pollution Certificate (PUC)",
+            "numberLabel": "PUC Number",
+            "expiryLabel": "PUC Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Vehicle Photo"
+          }
+        },
+        "truck_city": {
+          "rc": {
+            "label": "Registration Certificate (RC)",
+            "numberLabel": "RC Number",
+            "expiryLabel": "RC Expiry"
+          },
+          "insurance": {
+            "label": "Insurance Certificate",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Insurance Expiry"
+          },
+          "puc": {
+            "label": "Pollution Certificate (PUC)",
+            "numberLabel": "PUC Number",
+            "expiryLabel": "PUC Expiry"
+          },
+          "fitness": {
+            "label": "Fitness Certificate",
+            "numberLabel": "Fitness Cert. No.",
+            "expiryLabel": "Fitness Expiry"
+          },
+          "permit": {
+            "label": "Vehicle Permit",
+            "numberLabel": "Permit Number",
+            "expiryLabel": "Permit Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Vehicle Photo (Front)"
+          },
+          "vehicle_photo_side": {
+            "label": "Vehicle Photo (Side)"
+          }
+        },
+        "truck_outstation": {
+          "rc": {
+            "label": "Registration Certificate (RC)",
+            "numberLabel": "RC Number",
+            "expiryLabel": "RC Expiry"
+          },
+          "insurance": {
+            "label": "Insurance Certificate",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Insurance Expiry"
+          },
+          "puc": {
+            "label": "Pollution Certificate (PUC)",
+            "numberLabel": "PUC Number",
+            "expiryLabel": "PUC Expiry"
+          },
+          "fitness": {
+            "label": "Fitness Certificate",
+            "numberLabel": "Fitness Cert. No.",
+            "expiryLabel": "Fitness Expiry"
+          },
+          "national_permit": {
+            "label": "National Permit",
+            "numberLabel": "National Permit No.",
+            "expiryLabel": "Permit Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Vehicle Photo"
+          }
+        },
+        "packers": {
+          "gst_cert": {
+            "label": "GST Certificate",
+            "numberLabel": "GST Number"
+          },
+          "goods_insurance": {
+            "label": "Goods Insurance",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Vehicle / Team Photo"
+          }
+        },
+        "ambulance": {
+          "rc": {
+            "label": "Registration Certificate (RC)",
+            "numberLabel": "RC Number",
+            "expiryLabel": "RC Expiry"
+          },
+          "insurance": {
+            "label": "Insurance Certificate",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Insurance Expiry"
+          },
+          "emt_cert": {
+            "label": "EMT / Paramedic Certificate",
+            "numberLabel": "Certificate No.",
+            "expiryLabel": "Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Ambulance Photo (Front)"
+          },
+          "vehicle_photo_side": {
+            "label": "Ambulance Photo (Side)"
+          }
+        }
+      },
+      "alerts": {
+        "fillPersonal": "Fill all personal details",
+        "invalidDobTitle": "Invalid date of birth",
+        "invalidDobMsg": "Use DD-MM-YYYY, e.g. 15-08-1995",
+        "fillVehicle": "Fill vehicle number and model",
+        "gstRequired": "GST number required",
+        "missingDocsTitle": "Missing documents",
+        "missingDocsMsg": "Please upload: {{list}}",
+        "fillBank": "Fill all bank details",
+        "agreeTermsAlert": "Please agree to Terms & Conditions",
+        "agreeMvagAlert": "Please accept the MVAG self-declaration to continue",
+        "submittedTitle": "Registration Submitted!",
+        "submittedPartial": "{{uploaded}} document(s) uploaded, {{failed}} failed. Re-upload from the Documents tab.",
+        "submittedFull": "Your account and documents are under review.",
+        "submitErrorTitle": "Error",
+        "submitErrorMsg": "Registration failed. Try again."
+      }
+    }
+  },
+  "home": {
+    "greeting": "Hi, {{name}}",
+    "subGreeting": "Ready to earn today?",
+    "driverFallback": "Driver",
+    "toggle": {
+      "onlineTitle": "You are Online",
+      "offlineTitle": "You are Offline",
+      "onlineSub": "Accepting ride requests",
+      "offlineSub": "Go online to start earning"
+    },
+    "statusLabels": {
+      "accepted": "Heading to Pickup",
+      "arriving": "Arrived at Pickup",
+      "inProgress": "Trip in Progress"
+    },
+    "activeRide": {
+      "fallbackTitle": "Ride in progress"
+    },
+    "verifyBanner": {
+      "title": "⏳ Verification in progress",
+      "text": "You can go online once your documents are approved.",
+      "pendingCount": "{{count}} pending",
+      "rejectedCount": "{{count}} rejected",
+      "link": "View Documents →"
+    },
+    "blockedBanner": {
+      "text": "🚫 Account suspended — wallet below -₹1,000. Contact support to clear dues.",
+      "link": "View Ledger →"
+    },
+    "stats": {
+      "title": "Your Stats",
+      "rating": "Rating",
+      "totalRides": "Total Rides"
+    },
+    "recentTrips": {
+      "title": "Recent Trips"
+    },
+    "reviews": {
+      "title": "Recent Reviews"
+    },
+    "tips": {
+      "title": "Tips for more earnings",
+      "item1": "Peak hours: 8-10 AM, 5-9 PM",
+      "item2": "High demand: Connaught Place, Cyber Hub",
+      "item3": "Keep rating above 4.5 for more requests"
+    },
+    "popup": {
+      "title": "New Ride Request!",
+      "serviceFallback": "Ride",
+      "distanceLabel": "Distance",
+      "fareLabel": "Fare",
+      "typeLabel": "Type",
+      "typeFallback": "Cab",
+      "reject": "✕  Reject",
+      "accept": "✓  Accept",
+      "batteryHint": "🔋 Battery below 15% — charge to accept",
+      "countdownSec": "sec"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 Battery Too Low",
+      "batteryTooLowMsg": "Your battery is below 15%. Please charge your phone to accept rides. Riders depend on your phone staying alive during the trip!",
+      "acceptError": "Could not accept ride",
+      "lowBatteryTitle": "⚠️ Low Battery",
+      "lowBatteryMsg": "Low battery ({{pct}}%). You won't be able to accept rides until you charge above 15% or plug in your charger.",
+      "driverIdMissing": "Driver ID not found. Please log in again.",
+      "sessionExpiredTitle": "Session Expired",
+      "sessionExpiredMsg": "Please log in again to continue.",
+      "verificationTitle": "⏳ Verification in progress",
+      "verificationMsg": "You can go online once your documents are approved.",
+      "viewDocuments": "View Documents",
+      "updateStatusError": "Could not update status"
+    }
+  },
+  "orders": {
+    "title": {
+      "current": "Current Ride",
+      "requests": "Ride Requests"
+    },
+    "subtitle": {
+      "loading": "Loading...",
+      "enableLocation": "Enable location to see requests",
+      "newRequestsWaiting_one": "{{count}} new request waiting",
+      "newRequestsWaiting_other": "{{count}} new requests waiting",
+      "requestsNearYou_one": "{{count}} request near you",
+      "requestsNearYou_other": "{{count}} requests near you"
+    },
+    "status": {
+      "headingToRider": "Heading to Rider",
+      "arrivedPickup": "Arrived at Pickup",
+      "tripInProgress": "Trip in Progress"
+    },
+    "nextAction": {
+      "arriving": "I'm Arriving",
+      "startRide": "Picked Up · Start Ride",
+      "complete": "Complete Trip"
+    },
+    "map": {
+      "back": "← Back",
+      "pickupDistPrefix": "📍 Rider {{dist}}",
+      "dropDistPrefix": "🏁 Drop {{dist}}",
+      "markerYou": "You",
+      "markerPickup": "Pickup",
+      "markerDrop": "Drop"
+    },
+    "sheet": {
+      "routeTitle": "Route",
+      "fareTitle": "Fare",
+      "estimated": "Estimated",
+      "yourEarnings": "Your earnings (80%)",
+      "distance": "Distance",
+      "expandHint": "▲  Route details",
+      "collapse": "▼  Collapse"
+    },
+    "restorePill": "↑ {{name}} details",
+    "restorePillFallback": "Ride",
+    "card": {
+      "mapChip": "🗺 View Map",
+      "navigate": "🗺 Navigate",
+      "call": "📞 Call",
+      "cancelRide": "Cancel Ride",
+      "toPickup": "📍 {{dist}} to pickup",
+      "toDrop": "🏁 {{dist}} to drop",
+      "distanceFromYou": "🚗 {{dist}} from you",
+      "tripDistance": "{{km}} km trip",
+      "lockedNotice": "🔒 Complete current ride to accept",
+      "reject": "✕ Reject",
+      "accept": "✓ Accept"
+    },
+    "pending": {
+      "title": "Incoming Requests"
+    },
+    "empty": {
+      "looking": "Looking for rides...",
+      "noRequestsActive": "No new requests right now",
+      "noRequestsIdle": "No ride requests right now",
+      "subActive": "New requests will appear here while you complete the current ride",
+      "subIdle": "New requests appear automatically every 4 seconds"
+    },
+    "otp": {
+      "title": "Enter Ride OTP",
+      "subtitle": "Ask the rider for the 4-digit OTP\nshown on their app to start the ride",
+      "verify": "Start Ride",
+      "errors": {
+        "bookingNotFound": "Booking not found. Please refresh.",
+        "enterOtp": "Enter 4-digit OTP",
+        "invalid": "Invalid OTP. Try again."
+      }
+    },
+    "completion": {
+      "title": "Trip Completed!",
+      "sub": "Great work, {{name}} reached safely",
+      "totalFare": "Total Fare",
+      "yourEarnings": "Your Earnings",
+      "distance": "Distance",
+      "done": "Done"
+    },
+    "voice": {
+      "accepted": "Ride accepted. Head to the pickup location",
+      "arriving": "You have arrived at the pickup point. Waiting for rider",
+      "inProgress": "Trip started. Head to the drop location",
+      "completed": "Trip completed. Great work!",
+      "approachingDrop": "Approaching drop location in about 500 metres",
+      "atDrop": "You are almost at the drop location. Prepare to stop",
+      "approachingPickup": "Approaching pickup location in about 500 metres",
+      "atPickup": "You are at the pickup location. Wait for the rider"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 Battery Too Low",
+      "batteryTooLowMsg": "Your battery is below 15%. Please charge your phone to accept rides. Riders depend on your phone staying alive during the trip!",
+      "cannotAcceptTitle": "Cannot Accept",
+      "cannotAcceptMsg": "Could not accept booking",
+      "updateStatusError": "Could not update status",
+      "cancelRideTitle": "Cancel Ride",
+      "cancelRideMsg": "Are you sure you want to cancel this ride? Repeated cancellations may result in a temporary block.",
+      "keepRide": "Keep Ride",
+      "yesCancel": "Yes, Cancel",
+      "cancelRideError": "Could not cancel the ride. Please try again.",
+      "callRiderTitle": "Call Rider",
+      "callRiderMsg": "Call {{name}} at {{phone}}?",
+      "callRiderFallback": "rider",
+      "callBtn": "Call"
+    },
+    "chat": {
+      "quickReplies": [
+        "I've arrived",
+        "5 minutes away",
+        "Traffic delay, on my way"
+      ],
+      "rideInProgress": "Ride in progress",
+      "chatUnavailable": "Chat unavailable",
+      "emptySendMsg": "Send a message to your rider.",
+      "emptyBeforeAccept": "Chat opens once you accept the ride.",
+      "inputPlaceholder": "Type a message...",
+      "disabledBarText": "💬 Chat is available once you accept the ride"
+    }
+  },
+  "sos": {
+    "floatingLabel": "SOS",
+    "inlineTitle": "In immediate danger?",
+    "inlineSub": "Tap for Emergency SOS",
+    "sheetTitle": "🚨 Emergency SOS",
+    "sheetSub": "Are you in danger? Choose an action:",
+    "callPolice": "📞 Call Police (112)",
+    "callAmbulance": "📞 Call Ambulance (108)",
+    "shareLocation": "📤 Share Live Location",
+    "alertSupport": "🎧 Alert bogie Support",
+    "emergencyMessage": "🚨 EMERGENCY! I need help. I'm on a bogie trip. My live location: {{link}}\nBooking: #{{id}}",
+    "riderLine": "Rider: {{name}}",
+    "locationUnavailable": "location unavailable",
+    "shareLocationTitle": "Share Location",
+    "shareLocationMsg": "Send emergency alert to {{name}}?",
+    "shareLocationFallbackName": "your emergency contact",
+    "shareViaOtherApps": "Share via other apps",
+    "smsToContact": "SMS to {{name}}",
+    "smsFallbackName": "contact",
+    "shareErrorMsg": "Could not share location. Please try again.",
+    "supportHelpTitle": "✅ Help is on the way",
+    "supportHelpMsg": "bogie support has been alerted with your location and ride details. Stay calm — help is on the way.",
+    "supportQueuedTitle": "Alert queued",
+    "supportQueuedMsg": "We couldn't reach support right now. If this is urgent, please call 112 directly."
+  },
+  "earnings": {
+    "pageTitle": "Earnings",
+    "filterByPeriod": "FILTER BY PERIOD",
+    "earned": "Earned",
+    "debited": "Debited",
+    "net": "Net",
+    "thisWeek": "THIS WEEK",
+    "earningsLabel": "Earnings",
+    "timeSpent": "Time Spent",
+    "tripsTaken": "Trips Taken",
+    "todaySummary": "TODAY'S SUMMARY",
+    "trips": "TRIPS",
+    "trip": "Trip",
+    "noTripsToday": "No trips on this day",
+    "days": {
+      "mon": "Mon", "tue": "Tue", "wed": "Wed", "thu": "Thu",
+      "fri": "Fri", "sat": "Sat", "sun": "Sun"
+    }
+  },
+  "documents": {
+    "title": "My Documents",
+    "verifiedCount": "{{approved}}/{{total}} verified",
+    "allVerified": "All documents verified!",
+    "pendingCount": "{{count}} document pending",
+    "pendingCount_other": "{{count}} documents pending",
+    "loading": "Loading documents...",
+    "completeRegistrationFirst": "Complete your registration first",
+    "noDocsRequired": "No documents required yet",
+    "required": "Required",
+    "policeClearanceHelp": "Get your PCC from your local police station or your state police online portal (Delhi: Delhi Police Citizen Services). Upload the certificate PDF/photo here.",
+    "pdf": "PDF",
+    "image": "Image",
+    "view": "View",
+    "reupload": "Re-upload",
+    "uploadFile": "Upload File",
+    "formatNote": "Accepted: JPG, PNG, PDF · Max 10MB",
+    "status": {
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "pending": "Under Review",
+      "missing": "Not Uploaded"
+    },
+    "alerts": {
+      "loadErrorTitle": "Error",
+      "loadErrorMsg": "Could not load documents",
+      "fileTooLargeTitle": "File too large",
+      "fileTooLargeMsg": "Please upload a file under 10MB",
+      "invalidTypeTitle": "Invalid file type",
+      "invalidTypeMsg": "Only JPG, PNG and PDF files are allowed",
+      "uploadedTitle": "Uploaded",
+      "uploadedMsg": "{{label}} submitted for review.",
+      "uploadFailedTitle": "Upload failed",
+      "uploadFailedMsg": "Please try again",
+      "deleteTitle": "Delete document?",
+      "deleteMsg": "Remove {{label}}? You will need to upload it again.",
+      "deleteErrorMsg": "Could not delete document"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unreadCount": "{{count}} unread",
+    "emptyTitle": "No notifications",
+    "emptyAll": "Offers, announcements, and news will appear here",
+    "emptyCategory": "No {{category}} notifications",
+    "categories": {
+      "all": "All",
+      "goodwill": "Goodwill",
+      "incentives": "Incentives",
+      "suspension": "Suspension",
+      "updates": "Updates"
+    },
+    "timeAgo": {
+      "justNow": "just now",
+      "minutes": "{{count}}m ago",
+      "hours": "{{count}}h ago",
+      "days": "{{count}}d ago"
+    }
+  },
+  "profile": {
+    "home": {
+      "signOutTitle": "Sign Out",
+      "signOutMsg": "Are you sure you want to sign out?",
+      "chatWithSupport": "Chat with Support",
+      "supportSub": "24/7 · AI + Human agents",
+      "version": "bogie Driver v1.0.0"
+    },
+    "settings": {
+      "title": "Settings",
+      "language": "Language",
+      "languageSub": "Choose your preferred language"
+    },
+    "ledger": {
+      "title": "Ledger",
+      "blockedText": "Account suspended — wallet below -₹1,000.\nContact support to clear dues.",
+      "lowBalanceText": "Below minimum balance — maintain ₹500 to withdraw.",
+      "balanceLabel": "Ledger balance",
+      "minBalanceLabel": "Minimum balance",
+      "withdraw": "Withdraw ₹{{amount}}",
+      "clearDues": "Clear Dues",
+      "maintainInfo": "Maintain ₹500 ledger balance to withdraw money",
+      "totalEarnings": "Total Earnings",
+      "totalRides": "Total Rides",
+      "monthlyStatement": "MONTHLY STATEMENT",
+      "downloadStatement": "Download Statement",
+      "updateNeededTitle": "Update Needed",
+      "updateNeededMsg": "Statement downloads need the latest app update. Please check back after updating bogie.",
+      "downloadErrorTitle": "Error",
+      "downloadErrorMsg": "Could not download statement. Try again.",
+      "transactions": "TRANSACTIONS",
+      "noTransactions": "No transactions yet",
+      "noTransactionsSub": "Complete trips to see your ledger",
+      "crn": "CRN {{crn}}",
+      "entryLabels": {
+        "registrationFee": "Registration Fee",
+        "commission": "bogie Commission (20%)",
+        "tripEarnings": "Trip Earnings",
+        "referralBonus": "Referral Bonus — friend's first trip",
+        "transaction": "Transaction"
+      }
+    },
+    "payments": {
+      "title": "Payments",
+      "tripEarnings": "Trip Earnings",
+      "unknownDestination": "Unknown destination",
+      "crnDesc": "CRN: {{crn}} · {{drop}}",
+      "success": "Success",
+      "noMoreItems": "No more items",
+      "noPaymentsYet": "No payments yet",
+      "noPaymentsSub": "Complete trips to see earnings here"
+    },
+    "contact": {
+      "title": "Contact Us",
+      "forDrivers": "FOR DRIVERS",
+      "callSupport": "Call Support",
+      "emailSupport": "Email Support",
+      "helpline": {
+        "title": "Driver Helpline",
+        "hours": "Available: 8 AM – 10 PM, 7 days"
+      },
+      "email": {
+        "title": "Email Support",
+        "responseTime": "Response within 4 hours"
+      },
+      "chat": {
+        "title": "In-App Chat",
+        "line1": "Available on Home screen",
+        "line2": "Fastest response"
+      },
+      "office": {
+        "title": "Office Address"
+      },
+      "emergency": {
+        "title": "EMERGENCY",
+        "danger": "If you are in danger",
+        "accident": "Road accident",
+        "medical": "Medical emergency",
+        "call": "Call {{num}}"
+      }
+    },
+    "edit": {
+      "title": "Edit Profile",
+      "selectLanguage": "Select Language",
+      "savedTitle": "Saved",
+      "savedMsg": "Profile updated successfully.",
+      "savedLocallyTitle": "Saved locally",
+      "savedLocallyMsg": "Address saved. Will sync when online.",
+      "defaultDriverName": "Driver",
+      "personalInfo": "PERSONAL INFO",
+      "homeAddress": "Home Address",
+      "homeAddressPlaceholder": "Enter your home address",
+      "mobileNumber": "Mobile Number",
+      "languagePrefs": "LANGUAGE PREFERENCES",
+      "appLanguage": "Preferred App Language",
+      "trainingLanguage": "Training Language",
+      "saving": "Saving…",
+      "saveChanges": "Save Changes"
+    },
+    "help": {
+      "title": "Help & Support",
+      "invalidPhone": "Enter a valid phone number",
+      "savedTitle": "Saved",
+      "savedMsg": "Your emergency contact will be offered when you share your live location.",
+      "saveErrorMsg": "Could not save. Please try again.",
+      "emergencyNumbersTitle": "EMERGENCY NUMBERS",
+      "emergencyContactTitle": "EMERGENCY CONTACT",
+      "nameLabel": "Name",
+      "namePlaceholder": "e.g. Spouse, Brother",
+      "phoneLabel": "Phone number",
+      "phonePlaceholder": "10-digit mobile number",
+      "contactHint": "When you use Share Live Location in an SOS, we'll offer to send it straight to this contact via SMS.",
+      "contactSupportTitle": "Contact Support",
+      "contactAvailability": "Available 8 AM – 10 PM, every day",
+      "emergencyNumbers": {
+        "police": "Police",
+        "ambulance": "Ambulance"
+      },
+      "faq": {
+        "sections": {
+          "rideIssues": "RIDE ISSUES",
+          "earnings": "EARNINGS",
+          "documents": "DOCUMENTS",
+          "technical": "TECHNICAL"
+        },
+        "rideIssues": {
+          "accept": {
+            "q": "How do I accept a ride request?",
+            "a": "When a new request appears, tap Accept within 30 seconds. The request auto-expires if not accepted."
+          },
+          "cancel": {
+            "q": "Can I cancel an accepted ride?",
+            "a": "Yes, but only before reaching the pickup point. Frequent cancellations affect your rating and may lead to penalties."
+          }
+        },
+        "earnings": {
+          "paid": {
+            "q": "When do I get paid?",
+            "a": "Earnings accumulate in your ledger account. You can withdraw when your balance exceeds ₹500."
+          },
+          "commission": {
+            "q": "What is the commission structure?",
+            "a": "bogie charges 20% commission per trip. You keep 80% of the fare, credited directly to your ledger."
+          },
+          "negativeBalance": {
+            "q": "Why is my ledger balance negative?",
+            "a": "A negative balance means you have outstanding dues to bogie. Clear dues to resume withdrawals."
+          }
+        },
+        "documents": {
+          "rejected": {
+            "q": "My documents were rejected. What now?",
+            "a": "Check the rejection reason in the Docs tab. Re-upload the correct, clear document."
+          },
+          "verifyTime": {
+            "q": "When will my documents be verified?",
+            "a": "Verification typically takes 24-48 business hours. You'll receive a notification once done."
+          }
+        },
+        "technical": {
+          "noRides": {
+            "q": "App is not showing ride requests.",
+            "a": "Ensure location permission is set to ALWAYS ON in phone settings. Check your internet connection and try toggling offline/online once."
+          },
+          "gpsInaccurate": {
+            "q": "GPS is inaccurate.",
+            "a": "Move to an open area away from tall buildings. Toggle location off and on. Restart the app if the issue persists."
+          }
+        }
+      }
+    },
+    "refer": {
+      "title": "Refer & Earn",
+      "loadError": "Couldn't load your referral code.",
+      "shareMessage": "🚖 Drive with bogie! Use my referral code *{{code}}* when signing up and start earning. Download: {{link}}",
+      "copiedTitle": "Copied",
+      "codeCopiedMsg": "Referral code copied to clipboard",
+      "linkCopiedMsg": "Referral link copied to clipboard",
+      "heroTitle": "Refer a driver, earn ₹50!",
+      "heroSub": "You get ₹50 when they complete their first trip. Plus ₹25 when THEY refer another driver too!",
+      "yourCode": "YOUR REFERRAL CODE",
+      "copy": "📋 Copy",
+      "shareWhatsApp": "💬 Share on WhatsApp",
+      "copyLink": "🔗 Copy Link",
+      "driversJoined": "Drivers Joined",
+      "earned": "Earned",
+      "pending": "Pending",
+      "myReferrals": "My Referrals",
+      "noReferralsYet": "No referrals yet",
+      "noReferralsSub": "Share your code to start earning",
+      "viaYourReferral": " (via your referral)",
+      "joined": "Joined {{date}}",
+      "status": {
+        "pending": "⏳ Pending first trip",
+        "credited": "✅ Credited"
+      }
+    },
+    "terms": {
+      "title": "Terms of Service"
+    },
+    "privacy": {
+      "title": "Privacy Policy"
+    },
+    "training": {
+      "title": "Training",
+      "bannerTitle": "Driver Training",
+      "bannerSub": "Welcome to bogie Partner Training",
+      "moduleNum": "MODULE {{num}}",
+      "unlockAfter3": "Complete Module 3 to unlock",
+      "unlockAfter4": "Complete Module 4 to unlock",
+      "support": "Support:",
+      "modules": {
+        "gettingStarted": {
+          "title": "Getting Started",
+          "items": {
+            "useApp": "How to use the bogie driver app",
+            "acceptReject": "Accepting and rejecting rides",
+            "navigation": "Navigation basics",
+            "onlineOffline": "Going online/offline"
+          }
+        },
+        "customerService": {
+          "title": "Customer Service",
+          "items": {
+            "excellentService": "Delivering excellent service",
+            "greeting": "Greeting passengers",
+            "complaints": "Handling complaints",
+            "ratingSystem": "Rating system explained"
+          }
+        },
+        "safetyGuidelines": {
+          "title": "Safety Guidelines",
+          "items": {
+            "roadSafety": "Road safety and passenger safety",
+            "trafficRules": "Traffic rules reminder",
+            "emergencyProcedures": "Emergency procedures",
+            "accidentReporting": "Accident reporting"
+          }
+        },
+        "earningsPayments": {
+          "title": "Earnings & Payments",
+          "items": {
+            "understandingEarnings": "Understanding your earnings",
+            "ledgerCommissions": "Ledger and commissions",
+            "withdrawalProcess": "Withdrawal process"
+          }
+        },
+        "advancedTips": {
+          "title": "Advanced Tips",
+          "items": {
+            "peakHours": "Peak hours strategy",
+            "highDemandAreas": "High demand areas in Delhi NCR",
+            "maximizingRatings": "Maximizing ratings"
+          }
+        }
+      }
+    }
+  },
+  "support": {
+    "header": "BOGIE SUPPORT",
+    "aiAvailable": "🤖 AI Assistant available 24/7",
+    "startNewChat": "Start New Chat",
+    "emptyTitle": "No conversations yet",
+    "emptySub": "Tap \"Start New Chat\" to get help from our support team.",
+    "recentConversations": "RECENT CONVERSATIONS",
+    "noMessagesYet": "No messages yet",
+    "supportChat": "Support Chat",
+    "sendToStart": "Send a message to get started.",
+    "typeMessage": "Type your message...",
+    "quickIssuesBtn": "📋 Quick issues ▾",
+    "botName": "🤖 bogie Assistant",
+    "agentFallback": "Support Agent",
+    "newChatTitle": "New Support Chat",
+    "whatHelp": "What do you need help with?",
+    "yourMessage": "Your message",
+    "messagePlaceholder": "Type your issue in detail...",
+    "startChatBtn": "Start Chat →",
+    "selectCategoryTitle": "Select a category",
+    "selectCategoryMsg": "Please tap one of the issue categories above.",
+    "addMessageTitle": "Add a message",
+    "addMessageMsg": "Please describe your issue in detail.",
+    "startChatErrorMsg": "Could not start chat. Please try again.",
+    "status": {
+      "open": "open",
+      "inProgress": "in progress",
+      "resolved": "✅ Resolved"
+    },
+    "timeAgo": {
+      "justNow": "just now",
+      "minutes": "{{count}} min ago",
+      "hours": "{{count}} hr ago",
+      "days": "{{count}} days ago"
+    },
+    "quickIssues": {
+      "riderNoShow": "Rider didn't show up",
+      "noRides": "App not showing rides",
+      "paymentNotReceived": "Payment not received",
+      "walletIssue": "Wallet issue",
+      "accountBlocked": "Account blocked",
+      "docVerification": "Document verification",
+      "navigationIssue": "Navigation issue",
+      "emergency": "Emergency on ride"
+    },
+    "categorySubjects": {
+      "riderNoShow": "Rider no-show issue",
+      "noRides": "App not showing rides",
+      "paymentNotReceived": "Payment not received",
+      "walletIssue": "Driver wallet issue",
+      "accountBlocked": "Driver account blocked",
+      "docVerification": "Document verification issue",
+      "navigationIssue": "Navigation issue",
+      "emergency": "Emergency - urgent help needed"
+    }
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "subtitle": "The app encountered an error.",
+    "tryAgain": "Try Again"
+  }
+}

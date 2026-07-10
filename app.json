@@ -1,0 +1,108 @@
+{
+  "expo": {
+    "name": "bogie Driver",
+    "slug": "gogoo-driver",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "gogoodriver",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "plugins": [
+      "expo-router",
+      "expo-location",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow bogie Driver to access your photos to upload documents.",
+          "cameraPermission": "Allow bogie Driver to use your camera to capture documents."
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#FFFFFF",
+          "imageWidth": 280
+        }
+      ]
+    ],
+    "android": {
+      "package": "com.gogoo.driver",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": ""
+        }
+      },
+      "googleServicesFile": "./google-services.json",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            {
+              "scheme": "https",
+              "host": "bogie.in",
+              "pathPrefix": "/dr"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
+    },
+    "ios": {
+      "bundleIdentifier": "com.gogoo.driver",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "bogie Driver uses your location to receive nearby ride requests and navigate trips.",
+        "NSContactsUsageDescription": "bogie Driver uses your contacts so you can quickly invite friends to refer them.",
+        "NSCameraUsageDescription": "bogie Driver uses your camera to capture document photos and scan QR codes.",
+        "NSMicrophoneUsageDescription": "bogie Driver uses your microphone for in-app voice notes during support chats."
+      },
+      "config": {
+        "googleMapsApiKey": ""
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "666854e8-37ae-4a1a-b8a5-be5262dbf348"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/666854e8-37ae-4a1a-b8a5-be5262dbf348"
+    }
+  }
+}

@@ -1,0 +1,1014 @@
+{
+  "common": {
+    "error": "ତ୍ରୁଟି",
+    "ok": "ଠିକ୍ ଅଛି",
+    "cancel": "ବାତିଲ୍ କରନ୍ତୁ",
+    "delete": "ଡିଲିଟ୍ କରନ୍ତୁ",
+    "change": "ବଦଳାନ୍ତୁ",
+    "update": "ଅପଡେଟ୍ କରନ୍ତୁ",
+    "save": "ସେଭ୍ କରନ୍ତୁ",
+    "remove": "ହଟାନ୍ତୁ",
+    "retry": "ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ",
+    "pickupFallback": "ପିକଅପ୍",
+    "dropFallback": "ଡ୍ରପ୍",
+    "pickupLocationFallback": "ପିକଅପ୍ ଲୋକେସନ୍",
+    "dropLocationFallback": "ଡ୍ରପ୍ ଲୋକେସନ୍",
+    "riderFallback": "ରାଇଡର୍",
+    "bookingFallback": "ବୁକିଂ",
+    "fareAmount": "Rs.{{amount}}",
+    "distanceKm": "{{km}} କିମି",
+    "distanceM": "{{m}} ମି",
+    "tabs": {
+      "home": "ହୋମ୍",
+      "orders": "ଅର୍ଡର୍ସ",
+      "earnings": "ରୋଜଗାର",
+      "docs": "ଡକ୍ୟୁମେଣ୍ଟ",
+      "profile": "ପ୍ରୋଫାଇଲ୍"
+    }
+  },
+  "auth": {
+    "login": {
+      "driverBadge": "ଡ୍ରାଇଭର୍",
+      "welcomeTitle": "ପୁଣି ସ୍ୱାଗତ",
+      "welcomeSub": "ଆପଣଙ୍କର ଡ୍ରାଇଭର୍ ଆକାଉଣ୍ଟରେ ସାଇନ୍ ଇନ୍ କରନ୍ତୁ",
+      "emailLabel": "ଇମେଲ୍",
+      "emailPlaceholder": "driver@example.com",
+      "passwordLabel": "ପାସୱାର୍ଡ",
+      "passwordPlaceholder": "ଅତିକମରେ 8 ଅକ୍ଷର",
+      "consentTermsPrefix": "ମୁଁ ପଢ଼ିଛି ଏବଂ ସହମତ ଅଛି",
+      "consentTermsLink": "ନିୟମ ଏବଂ ସର୍ତ୍ତାବଳୀ",
+      "consentAnd": "ଏବଂ",
+      "consentPrivacyLink": "ପ୍ରାଇଭେସି ପଲିସୀ",
+      "consentTDSPrefix": "ମୁଁ ପଢ଼ିଛି ଏବଂ ଏଥିପାଇଁ ମୋର ସହମତି ଦେଉଛି",
+      "consentTDSLink": "TDS ଘୋଷଣା",
+      "fillAllFields": "ସମସ୍ତ ଫିଲ୍ଡ ପୂରଣ କରନ୍ତୁ",
+      "acceptTermsAlert": "ଜାରି ରଖିବାକୁ ନିୟମ ଓ ସର୍ତ୍ତାବଳୀ ଏବଂ TDS ଘୋଷଣା ସ୍ୱୀକାର କରନ୍ତୁ",
+      "signIn": "ସାଇନ୍ ଇନ୍ କରନ୍ତୁ",
+      "loginErrorMsg": "ଭୁଲ ତଥ୍ୟ",
+      "openDocumentError": "ଡକ୍ୟୁମେଣ୍ଟ ଖୋଲି ହେଲା ନାହିଁ",
+      "newDriverTitle": "ନୂଆ ଡ୍ରାଇଭର?",
+      "newDriverSub": "4ଟି ସହଜ ପାହାଚରେ bogie ସହିତ ଯୋଡ଼ନ୍ତୁ",
+      "steps": "ସାଇନ୍ ଅପ୍ କରନ୍ତୁ,OTP ଯାଞ୍ଚ କରନ୍ତୁ,ଗାଡ଼ି ବାଛନ୍ତୁ,ଡକ୍ୟୁମେଣ୍ଟ ଅପଲୋଡ୍ କରନ୍ତୁ",
+      "registerBtn": "ଡ୍ରାଇଭର୍ ଭାବରେ ପଞ୍ଜୀକରଣ କରନ୍ତୁ"
+    },
+    "signup": {
+      "driverBadge": "ଡ୍ରାଇଭର୍",
+      "title": "ଡ୍ରାଇଭର୍ ଆକାଉଣ୍ଟ ତିଆରି କରନ୍ତୁ",
+      "subtitle": "ଆଜି ହିଁ bogie ସହିତ ରୋଜଗାର ଆରମ୍ଭ କରନ୍ତୁ",
+      "fullNameLabel": "ପୂରା ନାମ",
+      "fullNamePlaceholder": "ରାହୁଲ କୁମାର",
+      "emailLabel": "ଇମେଲ୍ ଠିକଣା",
+      "emailPlaceholder": "rahul@example.com",
+      "mobileLabel": "ମୋବାଇଲ୍ ନମ୍ବର",
+      "mobilePlaceholder": "+91 98765 43210",
+      "passwordLabel": "ପାସୱାର୍ଡ",
+      "passwordPlaceholder": "ଅତିକମରେ 8 ଅକ୍ଷର",
+      "referralLabel": "ରେଫେରାଲ୍ କୋଡ୍ (ଇଚ୍ଛାଧୀନ)",
+      "referralPlaceholder": "ଯେମିତି GD3M8B1C",
+      "referralOk": "✓ {{name}} ଙ୍କ ଦ୍ୱାରା ରେଫର୍ ହୋଇଛି",
+      "referralBad": "ଅବୈଧ କୋଡ୍ — ଆପଣ ତଥାପି ସାଇନ୍ ଅପ୍ କରିପାରିବେ",
+      "sendOtp": "OTP ପଠାନ୍ତୁ",
+      "footerText": "ପୂର୍ବରୁ ଆକାଉଣ୍ଟ ଅଛି? ",
+      "signInLink": "ସାଇନ୍ ଇନ୍ କରନ୍ତୁ",
+      "alerts": {
+        "fillAllFields": "ସମସ୍ତ ଫିଲ୍ଡ ପୂରଣ କରନ୍ତୁ",
+        "enterValidPhone": "ବୈଧ ଫୋନ୍ ନମ୍ବର ଦିଅନ୍ତୁ",
+        "passwordMin8": "ପାସୱାର୍ଡ ଅତିକମରେ 8 ଅକ୍ଷରର ହେବା ଆବଶ୍ୟକ",
+        "genericErrorTitle": "ତ୍ରୁଟି",
+        "genericErrorMsg": "କିଛି ଭୁଲ ହୋଇଗଲା। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"
+      }
+    },
+    "otp": {
+      "back": "← ପଛକୁ",
+      "title": "ଆପଣଙ୍କର ନମ୍ବର ଯାଞ୍ଚ କରନ୍ତୁ",
+      "subtitlePrefix": "ଆମେ 6-ଅଙ୍କର OTP ପଠାଇଛୁ",
+      "phoneFallback": "+91 XXXXX XXXXX",
+      "verify": "OTP ଯାଞ୍ଚ କରନ୍ତୁ",
+      "resendText": "OTP ମିଳିଲା ନାହିଁ? ",
+      "resendTimer": "{{sec}} ସେକେଣ୍ଡରେ ପୁଣି ପଠାନ୍ତୁ",
+      "resendLink": "OTP ପୁଣି ପଠାନ୍ତୁ",
+      "enterOtpAlert": "6-ଅଙ୍କର OTP ଦିଅନ୍ତୁ",
+      "invalidOtpTitle": "ଭୁଲ OTP",
+      "invalidOtpMsg": "ଦୟାକରି ଯାଞ୍ଚ କରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ"
+    },
+    "vehicleSelect": {
+      "back": "← ପଛକୁ",
+      "step": "ପାହାଚ 2 / 4",
+      "title": "ଆପଣ କଣ ଚଳାନ୍ତି?",
+      "subtitle": "ଆପଣଙ୍କର ଗାଡ଼ି ବର୍ଗ ବାଛନ୍ତୁ",
+      "subTitle": "ନିର୍ଦ୍ଦିଷ୍ଟ ଗାଡ଼ି ପ୍ରକାର ବାଛନ୍ତୁ",
+      "continue": "ଆଗକୁ ବଢ଼ନ୍ତୁ →",
+      "categories": {
+        "cab": {
+          "title": "କ୍ୟାବ୍",
+          "subtitle": "2-ଚକିଆ, 3-ଚକିଆ, 4-ଚକିଆ",
+          "desc": "ଯାତ୍ରୀ ରାଇଡ୍: ବାଇକ୍, ଅଟୋ, କାର୍, SUV"
+        },
+        "truck": {
+          "title": "ଟ୍ରକ୍",
+          "subtitle": "ସହର ଭିତରେ ଏବଂ ବାହାରେ",
+          "desc": "ସ୍ଥାନୀୟ ସାମଗ୍ରୀ ପରିବହନ ଏବଂ ଦୂର ଲଜିଷ୍ଟିକ୍ସ"
+        },
+        "ambulance": {
+          "title": "ଆମ୍ବୁଲାନ୍ସ",
+          "subtitle": "BLS / ALS / ରୋଗୀ ପରିବହନ",
+          "desc": "ମେଡିକାଲ୍ ଜରୁରୀକାଳୀନ ଏବଂ ରୋଗୀ ପରିବହନ ସେବା"
+        }
+      },
+      "options": {
+        "cab_2w": "2 ଚକିଆ (ବାଇକ୍/ସ୍କୁଟର)",
+        "cab_3w": "3 ଚକିଆ (ଅଟୋ)",
+        "cab_4w": "4 ଚକିଆ (କାର୍)",
+        "cab_4w_suv": "4 ଚକିଆ (SUV)",
+        "truck_city_tata_ace": "ଟାଟା ଏସ୍ / ମିନି ଟ୍ରକ୍ (ସହର)",
+        "truck_city_14ft": "14 ଫୁଟ ଟ୍ରକ୍ (ସହର)",
+        "truck_city_open": "ଓପନ୍ ବଡି ଟ୍ରକ୍ (ସହର)",
+        "truck_city_container": "କଣ୍ଟେନର୍ ଟ୍ରକ୍ (ସହର)",
+        "truck_os_14ft": "14 ଫୁଟ ଟ୍ରକ୍ (ବାହାର)",
+        "truck_os_20ft": "20 ଫୁଟ ଟ୍ରକ୍ (ବାହାର)",
+        "truck_os_container": "କଣ୍ଟେନର୍ (ବାହାର)",
+        "truck_os_trailer": "ଟ୍ରେଲର୍ (ବାହାର)",
+        "ambulance_bls": "ବେସିକ୍ ଲାଇଫ୍ ସପୋର୍ଟ (BLS)",
+        "ambulance_als": "ଆଡଭାନ୍ସଡ୍ ଲାଇଫ୍ ସପୋର୍ଟ (ALS)",
+        "ambulance_transport": "ରୋଗୀ ପରିବହନ"
+      }
+    },
+    "register": {
+      "steps": {
+        "personal": "ବ୍ୟକ୍ତିଗତ",
+        "vehicle": "ଗାଡ଼ି",
+        "documents": "ଡକ୍ୟୁମେଣ୍ଟ",
+        "bankTerms": "ବ୍ୟାଙ୍କ ଓ ସର୍ତ୍ତାବଳୀ"
+      },
+      "headerTitle": "ଡ୍ରାଇଭର୍ ପଞ୍ଜୀକରଣ",
+      "headerSub": "ପାହାଚ {{step}} / 4 — {{name}}",
+      "back": "← ପଛକୁ",
+      "continueTo": "{{step}} କୁ ଆଗକୁ ବଢ଼ନ୍ତୁ",
+      "submit": "ପଞ୍ଜୀକରଣ ଦାଖଲ କରନ୍ତୁ",
+      "stepIndicator": "{{step}} / 4",
+      "personal": {
+        "sectionTitle": "ବ୍ୟକ୍ତିଗତ ବିବରଣୀ",
+        "fullName": "ପୂରା ନାମ *",
+        "fullNamePh": "ରାହୁଲ କୁମାର",
+        "mobile": "ମୋବାଇଲ୍ ନମ୍ବର *",
+        "mobilePh": "+91 98765 43210",
+        "email": "ଇମେଲ୍ ଠିକଣା *",
+        "emailPh": "rahul@example.com",
+        "password": "ପାସୱାର୍ଡ *",
+        "passwordPh": "ଅତିକମରେ 8 ଅକ୍ଷର",
+        "dob": "ଜନ୍ମ ତାରିଖ",
+        "dobPh": "DD-MM-YYYY",
+        "address": "ଠିକଣା",
+        "addressPh": "ଘର ନମ୍ବର, ରାସ୍ତା, ସହର",
+        "phoneVerified": "ଫୋନ୍ ଯାଞ୍ଚ ହୋଇଗଲା",
+        "vehicleInfo": "ଗାଡ଼ି: {{vehicle}}"
+      },
+      "vehicle": {
+        "sectionTitle": "ଗାଡ଼ି ବିବରଣୀ",
+        "categoryLabel": "ବର୍ଗ: {{category}}",
+        "regNumber": "ଗାଡ଼ି ପଞ୍ଜୀକରଣ ନମ୍ବର *",
+        "regNumberPh": "DL-01-AB-1234",
+        "model": "ଗାଡ଼ି ମଡେଲ୍ *",
+        "modelPh": "ଟାଟା ଏସ୍ / ହୋଣ୍ଡା ଆକ୍ଟିଭା...",
+        "ambulanceModel": "ଆମ୍ବୁଲାନ୍ସ ମଡେଲ୍",
+        "ambulanceModelPh": "ଫୋର୍ସ ଟ୍ରାଭେଲର୍ / ଟାଟା ୱିଙ୍ଗର୍...",
+        "color": "ଗାଡ଼ି ରଙ୍ଗ",
+        "colorPh": "ଧଳା / କଳା...",
+        "payload": "ପେଲୋଡ୍ କ୍ଷମତା (ଟନ୍)",
+        "payloadPh": "ଯେମିତି 1.5",
+        "fuelType": "ଇନ୍ଧନ ପ୍ରକାର",
+        "gstNumber": "GST ନମ୍ବର *",
+        "gstNumberPh": "22AAAAA0000A1Z5",
+        "teamSize": "ଟିମ୍ ଆକାର",
+        "teamSizePh": "କର୍ମଚାରୀ ସଂଖ୍ୟା",
+        "emtCertified": "EMT / ପାରାମେଡିକ୍ ପ୍ରମାଣିତ",
+        "available247": "24x7 ଉପଲବ୍ଧ",
+        "categoryPrefix": "ବର୍ଗ:"
+      },
+      "documents": {
+        "sectionTitle": "ଡକ୍ୟୁମେଣ୍ଟ",
+        "sectionNote": "ପ୍ରତ୍ୟେକ ଡକ୍ୟୁମେଣ୍ଟର ସ୍ପଷ୍ଟ ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ",
+        "required": "ଆବଶ୍ୟକ",
+        "optional": "ଇଚ୍ଛାଧୀନ",
+        "uploaded": "ଅପଲୋଡ୍ ହୋଇଗଲା",
+        "notUploaded": "ଏପର୍ଯ୍ୟନ୍ତ ଅପଲୋଡ୍ ହୋଇନାହିଁ",
+        "reupload": "ପୁଣି ଅପଲୋଡ୍ କରନ୍ତୁ",
+        "uploadPhoto": "ଫଟୋ ଅପଲୋଡ୍ କରନ୍ତୁ",
+        "reviewNote": "ଡକ୍ୟୁମେଣ୍ଟଗୁଡ଼ିକ ଆମ ଟିମ୍ ଦ୍ୱାରା 24 ଘଣ୍ଟା ମଧ୍ୟରେ ସମୀକ୍ଷା ହୁଏ। ମୂଳ ଡକ୍ୟୁମେଣ୍ଟ ପ୍ରସ୍ତୁତ ରଖନ୍ତୁ।",
+        "expiryDateLabel": "ସମାପ୍ତି ତାରିଖ",
+        "expiryPh": "DD/MM/YYYY",
+        "permissionNeeded": "ଅନୁମତି ଆବଶ୍ୟକ",
+        "cameraPermissionNeeded": "କ୍ୟାମେରା ଅନୁମତି ଆବଶ୍ୟକ",
+        "pickErrorMsg": "ଫଟୋ ବାଛିବାରେ ତ୍ରୁଟି",
+        "uploadSourceTitle": "ଡକ୍ୟୁମେଣ୍ଟ ଅପଲୋଡ୍ କରନ୍ତୁ",
+        "uploadSourceMsg": "ଉତ୍ସ ବାଛନ୍ତୁ",
+        "camera": "କ୍ୟାମେରା",
+        "gallery": "ଗ୍ୟାଲେରୀ",
+        "cancel": "ବାତିଲ୍ କରନ୍ତୁ"
+      },
+      "bank": {
+        "sectionTitle": "ବ୍ୟାଙ୍କ ଆକାଉଣ୍ଟ ବିବରଣୀ",
+        "sectionNote": "ରୋଜଗାର ପ୍ରତି ସପ୍ତାହ ଆପଣଙ୍କ ଆକାଉଣ୍ଟକୁ ଟ୍ରାନ୍ସଫର୍ ହୁଏ",
+        "accountHolder": "ଆକାଉଣ୍ଟ ଧାରକଙ୍କ ନାମ *",
+        "accountHolderPh": "ବ୍ୟାଙ୍କ ରେକର୍ଡ ଅନୁସାରେ",
+        "accountNumber": "ଆକାଉଣ୍ଟ ନମ୍ବର *",
+        "accountNumberPh": "XXXXXXXXXXXXXXXX",
+        "ifsc": "IFSC କୋଡ୍ *",
+        "ifscPh": "SBIN0001234",
+        "bankName": "ବ୍ୟାଙ୍କ ନାମ *",
+        "bankNamePh": "ଷ୍ଟେଟ୍ ବ୍ୟାଙ୍କ ଅଫ୍ ଇଣ୍ଡିଆ",
+        "upi": "UPI ID (ଇଚ୍ଛାଧୀନ)",
+        "upiPh": "name@upi",
+        "termsTitle": "ନିୟମ ଏବଂ ସର୍ତ୍ତାବଳୀ",
+        "agreeTerms": "ମୁଁ ନିୟମ ଏବଂ ସର୍ତ୍ତାବଳୀ ସହିତ ସହମତ",
+        "mvagTitle": "MVAG ସ୍ୱ-ଘୋଷଣା",
+        "mvagIntro": "ମୋଟର ଭେହିକଲ୍ ଆଗ୍ରିଗେଟର୍ ଗାଇଡଲାଇନ୍ସ, 2020 ଅନୁଯାୟୀ ଆବଶ୍ୟକ।",
+        "mvagDeclaration": "ମୁଁ ଘୋଷଣା କରୁଛି ଯେ ଗତ 3 ବର୍ଷରେ ମୁଁ ମଦ ବା ନିଶାଜାତ ପଦାର୍ଥର ପ୍ରଭାବରେ ଗାଡ଼ି ଚଳାଇବା ପାଇଁ ଦୋଷୀ ସାବ୍ୟସ୍ତ ହୋଇନାହିଁ, ଏବଂ ପ୍ରତାରଣା, ଯୌନ ଅପରାଧ କିମ୍ବା ଆପରାଧିକ ବଳ ପ୍ରୟୋଗ ସହିତ କୌଣସି ଜ୍ଞାତସାର ଅପରାଧରେ କେବେ ହେଁ ଦୋଷୀ ସାବ୍ୟସ୍ତ ହୋଇନାହିଁ।"
+      },
+      "commonDocs": {
+        "passport_photo": {
+          "label": "ପାସପୋର୍ଟ ସାଇଜ୍ ଫଟୋ"
+        },
+        "aadhaar": {
+          "label": "ଆଧାର କାର୍ଡ",
+          "numberLabel": "ଆଧାର ନମ୍ବର",
+          "numberPlaceholder": "12-ଅଙ୍କ ନମ୍ବର"
+        },
+        "pan_card": {
+          "label": "ପାନ୍ କାର୍ଡ",
+          "numberLabel": "ପାନ୍ ନମ୍ବର"
+        },
+        "driving_license": {
+          "label": "ଡ୍ରାଇଭିଂ ଲାଇସେନ୍ସ",
+          "numberLabel": "ଲାଇସେନ୍ସ ନମ୍ବର",
+          "expiryLabel": "ଲାଇସେନ୍ସ ସମାପ୍ତି"
+        },
+        "bank_passbook": {
+          "label": "ବ୍ୟାଙ୍କ ପାସବୁକ୍ / ଚେକ୍",
+          "numberLabel": "ଆକାଉଣ୍ଟ ନମ୍ବର"
+        },
+        "police_clearance": {
+          "label": "ପୋଲିସ୍ କ୍ଲିଅରାନ୍ସ ସାର୍ଟିଫିକେଟ୍ (PCC)",
+          "note": "ଆପଣଙ୍କର PCC ଆପଣଙ୍କ ନିକଟସ୍ଥ ପୋଲିସ୍ ଷ୍ଟେସନ୍ କିମ୍ବା ରାଜ୍ୟ ପୋଲିସ୍ ଅନଲାଇନ୍ ପୋର୍ଟାଲରୁ ପ୍ରାପ୍ତ କରନ୍ତୁ (ଦିଲ୍ଲୀ: Delhi Police Citizen Services)।"
+        }
+      },
+      "vehicleDocs": {
+        "two_wheeler": {
+          "rc": {
+            "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",
+            "numberLabel": "RC ନମ୍ବର",
+            "expiryLabel": "RC ସମାପ୍ତି"
+          },
+          "insurance": {
+            "label": "ବୀମା ପ୍ରମାଣପତ୍ର",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ବୀମା ସମାପ୍ତି"
+          },
+          "puc": {
+            "label": "ପ୍ରଦୂଷଣ ପ୍ରମାଣପତ୍ର (PUC)",
+            "numberLabel": "PUC ନମ୍ବର",
+            "expiryLabel": "PUC ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଗାଡ଼ି ଫଟୋ"
+          }
+        },
+        "truck_city": {
+          "rc": {
+            "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",
+            "numberLabel": "RC ନମ୍ବର",
+            "expiryLabel": "RC ସମାପ୍ତି"
+          },
+          "insurance": {
+            "label": "ବୀମା ପ୍ରମାଣପତ୍ର",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ବୀମା ସମାପ୍ତି"
+          },
+          "puc": {
+            "label": "ପ୍ରଦୂଷଣ ପ୍ରମାଣପତ୍ର (PUC)",
+            "numberLabel": "PUC ନମ୍ବର",
+            "expiryLabel": "PUC ସମାପ୍ତି"
+          },
+          "fitness": {
+            "label": "ଫିଟନେସ୍ ସାର୍ଟିଫିକେଟ୍",
+            "numberLabel": "ଫିଟନେସ୍ ସାର୍ଟି. ନମ୍ବର",
+            "expiryLabel": "ଫିଟନେସ୍ ସମାପ୍ତି"
+          },
+          "permit": {
+            "label": "ଗାଡ଼ି ପରମିଟ୍",
+            "numberLabel": "ପରମିଟ୍ ନମ୍ବର",
+            "expiryLabel": "ପରମିଟ୍ ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଗାଡ଼ି ଫଟୋ (ଆଗରୁ)"
+          },
+          "vehicle_photo_side": {
+            "label": "ଗାଡ଼ି ଫଟୋ (ପାର୍ଶ୍ୱରୁ)"
+          }
+        },
+        "truck_outstation": {
+          "rc": {
+            "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",
+            "numberLabel": "RC ନମ୍ବର",
+            "expiryLabel": "RC ସମାପ୍ତି"
+          },
+          "insurance": {
+            "label": "ବୀମା ପ୍ରମାଣପତ୍ର",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ବୀମା ସମାପ୍ତି"
+          },
+          "puc": {
+            "label": "ପ୍ରଦୂଷଣ ପ୍ରମାଣପତ୍ର (PUC)",
+            "numberLabel": "PUC ନମ୍ବର",
+            "expiryLabel": "PUC ସମାପ୍ତି"
+          },
+          "fitness": {
+            "label": "ଫିଟନେସ୍ ସାର୍ଟିଫିକେଟ୍",
+            "numberLabel": "ଫିଟନେସ୍ ସାର୍ଟି. ନମ୍ବର",
+            "expiryLabel": "ଫିଟନେସ୍ ସମାପ୍ତି"
+          },
+          "national_permit": {
+            "label": "ଜାତୀୟ ପରମିଟ୍",
+            "numberLabel": "ଜାତୀୟ ପରମିଟ୍ ନମ୍ବର",
+            "expiryLabel": "ପରମିଟ୍ ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଗାଡ଼ି ଫଟୋ"
+          }
+        },
+        "packers": {
+          "gst_cert": {
+            "label": "GST ସାର୍ଟିଫିକେଟ୍",
+            "numberLabel": "GST ନମ୍ବର"
+          },
+          "goods_insurance": {
+            "label": "ସାମଗ୍ରୀ ବୀମା",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଗାଡ଼ି / ଟିମ୍ ଫଟୋ"
+          }
+        },
+        "ambulance": {
+          "rc": {
+            "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",
+            "numberLabel": "RC ନମ୍ବର",
+            "expiryLabel": "RC ସମାପ୍ତି"
+          },
+          "insurance": {
+            "label": "ବୀମା ପ୍ରମାଣପତ୍ର",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ବୀମା ସମାପ୍ତି"
+          },
+          "emt_cert": {
+            "label": "EMT / ପାରାମେଡିକ୍ ସାର୍ଟିଫିକେଟ୍",
+            "numberLabel": "ସାର୍ଟିଫିକେଟ୍ ନମ୍ବର",
+            "expiryLabel": "ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଆମ୍ବୁଲାନ୍ସ ଫଟୋ (ଆଗରୁ)"
+          },
+          "vehicle_photo_side": {
+            "label": "ଆମ୍ବୁଲାନ୍ସ ଫଟୋ (ପାର୍ଶ୍ୱରୁ)"
+          }
+        }
+      },
+      "alerts": {
+        "fillPersonal": "ସମସ୍ତ ବ୍ୟକ୍ତିଗତ ବିବରଣୀ ପୂରଣ କରନ୍ତୁ",
+        "invalidDobTitle": "ଅବୈଧ ଜନ୍ମ ତାରିଖ",
+        "invalidDobMsg": "DD-MM-YYYY ଫର୍ମାଟରେ ଦିଅନ୍ତୁ, ଯେମିତି 15-08-1995",
+        "fillVehicle": "ଗାଡ଼ି ନମ୍ବର ଏବଂ ମଡେଲ୍ ପୂରଣ କରନ୍ତୁ",
+        "gstRequired": "GST ନମ୍ବର ଆବଶ୍ୟକ",
+        "missingDocsTitle": "ଡକ୍ୟୁମେଣ୍ଟ ଅଧୁରା",
+        "missingDocsMsg": "ଦୟାକରି ଅପଲୋଡ୍ କରନ୍ତୁ: {{list}}",
+        "fillBank": "ସମସ୍ତ ବ୍ୟାଙ୍କ ବିବରଣୀ ପୂରଣ କରନ୍ତୁ",
+        "agreeTermsAlert": "ଦୟାକରି ନିୟମ ଓ ସର୍ତ୍ତାବଳୀ ସହିତ ସହମତ ହୁଅନ୍ତୁ",
+        "agreeMvagAlert": "ଜାରି ରଖିବାକୁ MVAG ସ୍ୱ-ଘୋଷଣା ସ୍ୱୀକାର କରନ୍ତୁ",
+        "submittedTitle": "ପଞ୍ଜୀକରଣ ଦାଖଲ ହୋଇଗଲା!",
+        "submittedPartial": "{{uploaded}} ଡକ୍ୟୁମେଣ୍ଟ ଅପଲୋଡ୍ ହେଲା, {{failed}} ବିଫଳ ହେଲା। ଡକ୍ୟୁମେଣ୍ଟ ଟ୍ୟାବରୁ ପୁଣି ଅପଲୋଡ୍ କରନ୍ତୁ।",
+        "submittedFull": "ଆପଣଙ୍କର ଆକାଉଣ୍ଟ ଏବଂ ଡକ୍ୟୁମେଣ୍ଟ ସମୀକ୍ଷାଧୀନ ଅଛି।",
+        "submitErrorTitle": "ତ୍ରୁଟି",
+        "submitErrorMsg": "ପଞ୍ଜୀକରଣ ବିଫଳ ହେଲା। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"
+      }
+    }
+  },
+  "home": {
+    "greeting": "ନମସ୍କାର, {{name}}",
+    "subGreeting": "ଆଜି ରୋଜଗାର କରିବାକୁ ପ୍ରସ୍ତୁତ?",
+    "driverFallback": "ଡ୍ରାଇଭର୍",
+    "toggle": {
+      "onlineTitle": "ଆପଣ ଅନଲାଇନ୍ ଅଛନ୍ତି",
+      "offlineTitle": "ଆପଣ ଅଫଲାଇନ୍ ଅଛନ୍ତି",
+      "onlineSub": "ରାଇଡ୍ ରିକୱେଷ୍ଟ ଗ୍ରହଣ ହେଉଛି",
+      "offlineSub": "ରୋଜଗାର ଆରମ୍ଭ କରିବାକୁ ଅନଲାଇନ୍ ଯାଆନ୍ତୁ"
+    },
+    "statusLabels": {
+      "accepted": "ପିକଅପ୍ ଆଡ଼କୁ ଯାଉଛନ୍ତି",
+      "arriving": "ପିକଅପ୍ ରେ ପହଞ୍ଚିଗଲେ",
+      "inProgress": "ଯାତ୍ରା ଚାଲିଛି"
+    },
+    "activeRide": {
+      "fallbackTitle": "ରାଇଡ୍ ଚାଲିଛି"
+    },
+    "verifyBanner": {
+      "title": "⏳ ଯାଞ୍ଚ ଚାଲିଛି",
+      "text": "ଆପଣଙ୍କର ଡକ୍ୟୁମେଣ୍ଟ ମଞ୍ଜୁର ହେଲେ ଆପଣ ଅନଲାଇନ୍ ଯାଇପାରିବେ।",
+      "pendingCount": "{{count}} ପେଣ୍ଡିଂ",
+      "rejectedCount": "{{count}} ପ୍ରତ୍ୟାଖ୍ୟାତ",
+      "link": "ଡକ୍ୟୁମେଣ୍ଟ ଦେଖନ୍ତୁ →"
+    },
+    "blockedBanner": {
+      "text": "🚫 ଆକାଉଣ୍ଟ ସସ୍ପେଣ୍ଡ — ୱାଲେଟ୍ -₹1,000ରୁ କମ୍। ବକେୟା ପାଇଁ ସପୋର୍ଟ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ।",
+      "link": "ଲେଜର୍ ଦେଖନ୍ତୁ →"
+    },
+    "stats": {
+      "title": "ଆପଣଙ୍କର ଆଙ୍କଡ଼ା",
+      "rating": "ରେଟିଂ",
+      "totalRides": "ମୋଟ ରାଇଡ୍"
+    },
+    "recentTrips": {
+      "title": "ସାମ୍ପ୍ରତିକ ଯାତ୍ରା"
+    },
+    "reviews": {
+      "title": "ସାମ୍ପ୍ରତିକ ସମୀକ୍ଷା"
+    },
+    "tips": {
+      "title": "ଅଧିକ ରୋଜଗାର ପାଇଁ ଟିପ୍ସ",
+      "item1": "ପିକ୍ ଘଣ୍ଟା: ସକାଳ 8-10, ସନ୍ଧ୍ୟା 5-9",
+      "item2": "ଅଧିକ ଚାହିଦା: କନଅଟ୍ ପ୍ଲେସ୍, ସାଇବର୍ ହବ୍",
+      "item3": "ଅଧିକ ରିକୱେଷ୍ଟ ପାଇଁ ରେଟିଂ 4.5ରୁ ଉପରେ ରଖନ୍ତୁ"
+    },
+    "popup": {
+      "title": "ନୂଆ ରାଇଡ୍ ରିକୱେଷ୍ଟ!",
+      "serviceFallback": "ରାଇଡ୍",
+      "distanceLabel": "ଦୂରତା",
+      "fareLabel": "ଭଡ଼ା",
+      "typeLabel": "ପ୍ରକାର",
+      "typeFallback": "କ୍ୟାବ୍",
+      "reject": "✕  ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ",
+      "accept": "✓  ଗ୍ରହଣ କରନ୍ତୁ",
+      "batteryHint": "🔋 ବ୍ୟାଟେରୀ 15%ରୁ କମ୍ — ଗ୍ରହଣ କରିବାକୁ ଚାର୍ଜ କରନ୍ତୁ",
+      "countdownSec": "ସେକ୍"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 ବ୍ୟାଟେରୀ ଅତି କମ୍",
+      "batteryTooLowMsg": "ଆପଣଙ୍କର ବ୍ୟାଟେରୀ 15%ରୁ କମ୍ ଅଛି। ରାଇଡ୍ ଗ୍ରହଣ କରିବାକୁ ଦୟାକରି ଆପଣଙ୍କର ଫୋନ୍ ଚାର୍ଜ କରନ୍ତୁ। ଯାତ୍ରା ସମୟରେ ଆପଣଙ୍କର ଫୋନ୍ ଚାଲୁ ରହିବା ରାଇଡର୍‌ମାନଙ୍କ ପାଇଁ ଜରୁରୀ!",
+      "acceptError": "ରାଇଡ୍ ଗ୍ରହଣ ହୋଇପାରିଲା ନାହିଁ",
+      "lowBatteryTitle": "⚠️ ବ୍ୟାଟେରୀ କମ୍",
+      "lowBatteryMsg": "ବ୍ୟାଟେରୀ କମ୍ ଅଛି ({{pct}}%)। ଯେପର୍ଯ୍ୟନ୍ତ ଆପଣ 15%ରୁ ଉପରକୁ ଚାର୍ଜ ନକରନ୍ତି କିମ୍ବା ଚାର୍ଜର୍ ଲଗାଇ ନ ଦିଅନ୍ତି, ଆପଣ ରାଇଡ୍ ଗ୍ରହଣ କରିପାରିବେ ନାହିଁ।",
+      "driverIdMissing": "ଡ୍ରାଇଭର୍ ID ମିଳିଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଲଗଇନ୍ କରନ୍ତୁ।",
+      "sessionExpiredTitle": "ସେସନ୍ ସମାପ୍ତ ହେଲା",
+      "sessionExpiredMsg": "ଜାରି ରଖିବାକୁ ଦୟାକରି ପୁଣି ଲଗଇନ୍ କରନ୍ତୁ।",
+      "verificationTitle": "⏳ ଯାଞ୍ଚ ଚାଲିଛି",
+      "verificationMsg": "ଆପଣଙ୍କର ଡକ୍ୟୁମେଣ୍ଟ ମଞ୍ଜୁର ହେଲେ ଆପଣ ଅନଲାଇନ୍ ଯାଇପାରିବେ।",
+      "viewDocuments": "ଡକ୍ୟୁମେଣ୍ଟ ଦେଖନ୍ତୁ",
+      "updateStatusError": "ସ୍ଥିତି ଅପଡେଟ୍ ହୋଇପାରିଲା ନାହିଁ"
+    }
+  },
+  "orders": {
+    "title": {
+      "current": "ମୌଜୁଦା ରାଇଡ୍",
+      "requests": "ରାଇଡ୍ ରିକୱେଷ୍ଟ"
+    },
+    "subtitle": {
+      "loading": "ଲୋଡ୍ ହେଉଛି...",
+      "enableLocation": "ରିକୱେଷ୍ଟ ଦେଖିବାକୁ ଲୋକେସନ୍ ଅନ୍ କରନ୍ତୁ",
+      "newRequestsWaiting_one": "{{count}} ନୂଆ ରିକୱେଷ୍ଟ ଅପେକ୍ଷାରେ",
+      "newRequestsWaiting_other": "{{count}} ନୂଆ ରିକୱେଷ୍ଟ ଅପେକ୍ଷାରେ",
+      "requestsNearYou_one": "{{count}} ରିକୱେଷ୍ଟ ଆପଣଙ୍କ ପାଖରେ",
+      "requestsNearYou_other": "{{count}} ରିକୱେଷ୍ଟ ଆପଣଙ୍କ ପାଖରେ"
+    },
+    "status": {
+      "headingToRider": "ରାଇଡର୍ ଆଡ଼କୁ ଯାଉଛନ୍ତି",
+      "arrivedPickup": "ପିକଅପ୍ ରେ ପହଞ୍ଚିଗଲେ",
+      "tripInProgress": "ଯାତ୍ରା ଚାଲିଛି"
+    },
+    "nextAction": {
+      "arriving": "ମୁଁ ପହଞ୍ଚୁଛି",
+      "startRide": "ପିକ୍ ଅପ୍ ହେଲା · ରାଇଡ୍ ଆରମ୍ଭ କରନ୍ତୁ",
+      "complete": "ଯାତ୍ରା ସମାପ୍ତ କରନ୍ତୁ"
+    },
+    "map": {
+      "back": "← ପଛକୁ",
+      "pickupDistPrefix": "📍 ରାଇଡର୍ {{dist}}",
+      "dropDistPrefix": "🏁 ଡ୍ରପ୍ {{dist}}",
+      "markerYou": "ଆପଣ",
+      "markerPickup": "ପିକଅପ୍",
+      "markerDrop": "ଡ୍ରପ୍"
+    },
+    "sheet": {
+      "routeTitle": "ରୁଟ୍",
+      "fareTitle": "ଭଡ଼ା",
+      "estimated": "ଆକଳିତ",
+      "yourEarnings": "ଆପଣଙ୍କର ରୋଜଗାର (80%)",
+      "distance": "ଦୂରତା",
+      "expandHint": "▲  ରୁଟ୍ ବିବରଣୀ",
+      "collapse": "▼  ଛୋଟ କରନ୍ତୁ"
+    },
+    "restorePill": "↑ {{name}} ବିବରଣୀ",
+    "restorePillFallback": "ରାଇଡ୍",
+    "card": {
+      "mapChip": "🗺 ମାନଚିତ୍ର ଦେଖନ୍ତୁ",
+      "navigate": "🗺 ନେଭିଗେଟ୍ କରନ୍ତୁ",
+      "call": "📞 କଲ୍ କରନ୍ତୁ",
+      "cancelRide": "ରାଇଡ୍ ବାତିଲ୍ କରନ୍ତୁ",
+      "toPickup": "📍 ପିକଅପ୍ ପାଇଁ {{dist}}",
+      "toDrop": "🏁 ଡ୍ରପ୍ ପାଇଁ {{dist}}",
+      "distanceFromYou": "🚗 ଆପଣଙ୍କଠାରୁ {{dist}} ଦୂର",
+      "tripDistance": "{{km}} କିମିର ଯାତ୍ରା",
+      "lockedNotice": "🔒 ଗ୍ରହଣ କରିବାକୁ ମୌଜୁଦା ରାଇଡ୍ ସମାପ୍ତ କରନ୍ତୁ",
+      "reject": "✕ ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ",
+      "accept": "✓ ଗ୍ରହଣ କରନ୍ତୁ"
+    },
+    "pending": {
+      "title": "ଆସୁଥିବା ରିକୱେଷ୍ଟ"
+    },
+    "empty": {
+      "looking": "ରାଇଡ୍ ଖୋଜାଯାଉଛି...",
+      "noRequestsActive": "ବର୍ତ୍ତମାନ କୌଣସି ନୂଆ ରିକୱେଷ୍ଟ ନାହିଁ",
+      "noRequestsIdle": "ବର୍ତ୍ତମାନ କୌଣସି ରାଇଡ୍ ରିକୱେଷ୍ଟ ନାହିଁ",
+      "subActive": "ମୌଜୁଦା ରାଇଡ୍ ସମାପ୍ତ କରୁଥିବା ସମୟରେ ନୂଆ ରିକୱେଷ୍ଟ ଏଠାରେ ଦେଖାଯିବ",
+      "subIdle": "ପ୍ରତି 4 ସେକେଣ୍ଡରେ ସ୍ୱୟଂଚାଳିତ ଭାବରେ ନୂଆ ରିକୱେଷ୍ଟ ଦେଖାଯାଏ"
+    },
+    "otp": {
+      "title": "ରାଇଡ୍ OTP ଦିଅନ୍ତୁ",
+      "subtitle": "ରାଇଡ୍ ଆରମ୍ଭ କରିବାକୁ ରାଇଡରଙ୍କ ଆପ୍ ରେ ଥିବା 4-ଅଙ୍କ OTP ମାଗନ୍ତୁ",
+      "verify": "ରାଇଡ୍ ଆରମ୍ଭ କରନ୍ତୁ",
+      "errors": {
+        "bookingNotFound": "ବୁକିଂ ମିଳିଲା ନାହିଁ। ଦୟାକରି ରିଫ୍ରେସ୍ କରନ୍ତୁ।",
+        "enterOtp": "4-ଅଙ୍କ OTP ଦିଅନ୍ତୁ",
+        "invalid": "ଭୁଲ OTP। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।"
+      }
+    },
+    "completion": {
+      "title": "ଯାତ୍ରା ସମାପ୍ତ ହେଲା!",
+      "sub": "ବହୁତ ଭଲ, {{name}} ସୁରକ୍ଷିତ ପହଞ୍ଚିଗଲେ",
+      "totalFare": "ମୋଟ ଭଡ଼ା",
+      "yourEarnings": "ଆପଣଙ୍କର ରୋଜଗାର",
+      "distance": "ଦୂରତା",
+      "done": "ହୋଇଗଲା"
+    },
+    "voice": {
+      "accepted": "ରାଇଡ୍ ଗ୍ରହଣ ହେଲା। ପିକଅପ୍ ଲୋକେସନ୍ ଆଡ଼କୁ ବଢ଼ନ୍ତୁ",
+      "arriving": "ଆପଣ ପିକଅପ୍ ପଏଣ୍ଟରେ ପହଞ୍ଚିଗଲେଣି। ରାଇଡରଙ୍କୁ ଅପେକ୍ଷା କରନ୍ତୁ",
+      "inProgress": "ଯାତ୍ରା ଆରମ୍ଭ ହେଲା। ଡ୍ରପ୍ ଲୋକେସନ୍ ଆଡ଼କୁ ବଢ଼ନ୍ତୁ",
+      "completed": "ଯାତ୍ରା ସମାପ୍ତ ହେଲା। ବହୁତ ଭଲ କାମ!",
+      "approachingDrop": "ଡ୍ରପ୍ ଲୋକେସନ୍ ପାଖାପାଖି 500 ମିଟର ଦୂରରେ ଅଛି",
+      "atDrop": "ଆପଣ ଡ୍ରପ୍ ଲୋକେସନ୍ ପାଖରେ ଅଛନ୍ତି। ରହିବାକୁ ପ୍ରସ୍ତୁତ ହୁଅନ୍ତୁ",
+      "approachingPickup": "ପିକଅପ୍ ଲୋକେସନ୍ ପାଖାପାଖି 500 ମିଟର ଦୂରରେ ଅଛି",
+      "atPickup": "ଆପଣ ପିକଅପ୍ ଲୋକେସନ୍ ରେ ଅଛନ୍ତି। ରାଇଡରଙ୍କୁ ଅପେକ୍ଷା କରନ୍ତୁ"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 ବ୍ୟାଟେରୀ ଅତି କମ୍",
+      "batteryTooLowMsg": "ଆପଣଙ୍କର ବ୍ୟାଟେରୀ 15%ରୁ କମ୍ ଅଛି। ରାଇଡ୍ ଗ୍ରହଣ କରିବାକୁ ଦୟାକରି ଆପଣଙ୍କର ଫୋନ୍ ଚାର୍ଜ କରନ୍ତୁ। ଯାତ୍ରା ସମୟରେ ଆପଣଙ୍କର ଫୋନ୍ ଚାଲୁ ରହିବା ରାଇଡର୍‌ମାନଙ୍କ ପାଇଁ ଜରୁରୀ!",
+      "cannotAcceptTitle": "ଗ୍ରହଣ ହୋଇପାରିଲା ନାହିଁ",
+      "cannotAcceptMsg": "ବୁକିଂ ଗ୍ରହଣ ହୋଇପାରିଲା ନାହିଁ",
+      "updateStatusError": "ସ୍ଥିତି ଅପଡେଟ୍ ହୋଇପାରିଲା ନାହିଁ",
+      "cancelRideTitle": "ରାଇଡ୍ ବାତିଲ୍ କରନ୍ତୁ",
+      "cancelRideMsg": "ଆପଣ ନିଶ୍ଚିତ କି ଏହି ରାଇଡ୍ ବାତିଲ୍ କରିବାକୁ ଚାହାଁନ୍ତି? ବାରମ୍ବାର ବାତିଲ୍ କଲେ ଆପଣଙ୍କର ଆକାଉଣ୍ଟ କିଛି ସମୟ ପାଇଁ ବ୍ଲକ୍ ହୋଇପାରେ।",
+      "keepRide": "ରାଇଡ୍ ରଖନ୍ତୁ",
+      "yesCancel": "ହଁ, ବାତିଲ୍ କରନ୍ତୁ",
+      "cancelRideError": "ରାଇଡ୍ ବାତିଲ୍ ହୋଇପାରିଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
+      "callRiderTitle": "ରାଇଡରଙ୍କୁ କଲ୍ କରନ୍ତୁ",
+      "callRiderMsg": "{{phone}} ରେ {{name}} ଙ୍କୁ କଲ୍ କରିବେ?",
+      "callRiderFallback": "ରାଇଡର୍",
+      "callBtn": "କଲ୍ କରନ୍ତୁ"
+    },
+    "chat": {
+      "quickReplies": [
+        "ମୁଁ ପହଞ୍ଚିଗଲି",
+        "5 ମିନିଟ୍ ଦୂରରେ ଅଛି",
+        "ଟ୍ରାଫିକ୍ ଯୋଗୁଁ ଡେରି ହେଉଛି, ଆସୁଛି"
+      ],
+      "rideInProgress": "ରାଇଡ୍ ଚାଲିଛି",
+      "chatUnavailable": "ଚାଟ୍ ଉପଲବ୍ଧ ନାହିଁ",
+      "emptySendMsg": "ଆପଣଙ୍କର ରାଇଡରଙ୍କୁ ଏକ ମେସେଜ୍ ପଠାନ୍ତୁ।",
+      "emptyBeforeAccept": "ରାଇଡ୍ ଗ୍ରହଣ କରିବା ପରେ ଚାଟ୍ ଖୁଲିବ।",
+      "inputPlaceholder": "ମେସେଜ୍ ଟାଇପ୍ କରନ୍ତୁ...",
+      "disabledBarText": "💬 ରାଇଡ୍ ଗ୍ରହଣ କରିବା ପରେ ଚାଟ୍ ଉପଲବ୍ଧ ହେବ"
+    }
+  },
+  "sos": {
+    "floatingLabel": "SOS",
+    "inlineTitle": "ତୁରନ୍ତ ବିପଦରେ ଅଛନ୍ତି?",
+    "inlineSub": "ଜରୁରୀକାଳୀନ SOS ପାଇଁ ଟାପ୍ କରନ୍ତୁ",
+    "sheetTitle": "🚨 ଜରୁରୀକାଳୀନ SOS",
+    "sheetSub": "ଆପଣ ବିପଦରେ ଅଛନ୍ତି କି? ଏକ କାର୍ଯ୍ୟ ବାଛନ୍ତୁ:",
+    "callPolice": "📞 ପୋଲିସକୁ କଲ୍ କରନ୍ତୁ (112)",
+    "callAmbulance": "📞 ଆମ୍ବୁଲାନ୍ସକୁ କଲ୍ କରନ୍ତୁ (108)",
+    "shareLocation": "📤 ଲାଇଭ୍ ଲୋକେସନ୍ ସେୟାର୍ କରନ୍ତୁ",
+    "alertSupport": "🎧 bogie ସପୋର୍ଟକୁ ସୂଚିତ କରନ୍ତୁ",
+    "emergencyMessage": "🚨 ଜରୁରୀକାଳୀନ! ମୋତେ ସାହାଯ୍ୟ ଦରକାର। ମୁଁ ଏକ bogie ଯାତ୍ରାରେ ଅଛି। ମୋର ଲାଇଭ୍ ଲୋକେସନ୍: {{link}}\nବୁକିଂ: #{{id}}",
+    "riderLine": "ରାଇଡର୍: {{name}}",
+    "locationUnavailable": "ଲୋକେସନ୍ ଉପଲବ୍ଧ ନାହିଁ",
+    "shareLocationTitle": "ଲୋକେସନ୍ ସେୟାର୍ କରନ୍ତୁ",
+    "shareLocationMsg": "{{name}} ଙ୍କୁ ଜରୁରୀକାଳୀନ ଆଲର୍ଟ ପଠାଇବେ?",
+    "shareLocationFallbackName": "ଆପଣଙ୍କର ଜରୁରୀକାଳୀନ କଣ୍ଟାକ୍ଟ",
+    "shareViaOtherApps": "ଅନ୍ୟ ଆପ୍ ମାଧ୍ୟମରେ ସେୟାର୍ କରନ୍ତୁ",
+    "smsToContact": "{{name}} ଙ୍କୁ SMS କରନ୍ତୁ",
+    "smsFallbackName": "କଣ୍ଟାକ୍ଟ",
+    "shareErrorMsg": "ଲୋକେସନ୍ ସେୟାର୍ ହୋଇପାରିଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
+    "supportHelpTitle": "✅ ସାହାଯ୍ୟ ଆସୁଛି",
+    "supportHelpMsg": "bogie ସପୋର୍ଟକୁ ଆପଣଙ୍କର ଲୋକେସନ୍ ଏବଂ ରାଇଡ୍ ବିବରଣୀ ସହିତ ସୂଚିତ କରାଯାଇଛି। ଶାନ୍ତ ରୁହନ୍ତୁ — ସାହାଯ୍ୟ ଆସୁଛି।",
+    "supportQueuedTitle": "ଆଲର୍ଟ ପଠାଯାଇଛି",
+    "supportQueuedMsg": "ଆମେ ବର୍ତ୍ତମାନ ସପୋର୍ଟ ପାଖରେ ପହଞ୍ଚିପାରିଲୁ ନାହିଁ। ଏହା ଜରୁରୀ ହେଲେ, ଦୟାକରି ସିଧାସଳଖ 112 କୁ କଲ୍ କରନ୍ତୁ।"
+  },
+  "earnings": {
+    "pageTitle": "ରୋଜଗାର",
+    "filterByPeriod": "ଅବଧି ଅନୁସାରେ ଫିଲ୍ଟର୍ କରନ୍ତୁ",
+    "earned": "ରୋଜଗାର ହେଲା",
+    "debited": "ଡେବିଟ୍ ହେଲା",
+    "net": "ନେଟ୍",
+    "thisWeek": "ଏହି ସପ୍ତାହ",
+    "earningsLabel": "ରୋଜଗାର",
+    "timeSpent": "ବିତାଇଥିବା ସମୟ",
+    "tripsTaken": "ସମ୍ପୂର୍ଣ୍ଣ ଟ୍ରିପ୍",
+    "todaySummary": "ଆଜିର ସାରାଂଶ",
+    "trips": "ଟ୍ରିପ୍",
+    "trip": "ଟ୍ରିପ୍",
+    "noTripsToday": "ଏହି ଦିନ କୌଣସି ଟ୍ରିପ୍ ନାହିଁ",
+    "days": {
+      "mon": "ସୋମ", "tue": "ମଙ୍ଗଳ", "wed": "ବୁଧ", "thu": "ଗୁରୁ",
+      "fri": "ଶୁକ୍ର", "sat": "ଶନି", "sun": "ରବି"
+    }
+  },
+  "documents": {
+    "title": "ମୋର ଡକ୍ୟୁମେଣ୍ଟ",
+    "verifiedCount": "{{approved}}/{{total}} ଯାଞ୍ଚିତ",
+    "allVerified": "ସମସ୍ତ ଡକ୍ୟୁମେଣ୍ଟ ଯାଞ୍ଚିତ ହୋଇଗଲା!",
+    "pendingCount": "{{count}} ଡକ୍ୟୁମେଣ୍ଟ ବାକି ଅଛି",
+    "pendingCount_other": "{{count}} ଡକ୍ୟୁମେଣ୍ଟ ବାକି ଅଛି",
+    "loading": "ଡକ୍ୟୁମେଣ୍ଟ ଲୋଡ୍ ହେଉଛି...",
+    "completeRegistrationFirst": "ପ୍ରଥମେ ଆପଣଙ୍କର ପଞ୍ଜୀକରଣ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ",
+    "noDocsRequired": "ବର୍ତ୍ତମାନ କୌଣସି ଡକ୍ୟୁମେଣ୍ଟ ଆବଶ୍ୟକ ନାହିଁ",
+    "required": "ଆବଶ୍ୟକ",
+    "policeClearanceHelp": "ଆପଣଙ୍କର PCC ସ୍ଥାନୀୟ ପୋଲିସ୍ ଷ୍ଟେସନ୍ କିମ୍ବା ରାଜ୍ୟ ପୋଲିସ୍ ଅନଲାଇନ୍ ପୋର୍ଟାଲରୁ ପ୍ରାପ୍ତ କରନ୍ତୁ (ଦିଲ୍ଲୀ: Delhi Police Citizen Services)। ସାର୍ଟିଫିକେଟ୍ PDF/ଫଟୋ ଏଠାରେ ଅପଲୋଡ୍ କରନ୍ତୁ।",
+    "pdf": "PDF",
+    "image": "ଇମେଜ୍",
+    "view": "ଦେଖନ୍ତୁ",
+    "reupload": "ପୁଣି ଅପଲୋଡ୍ କରନ୍ତୁ",
+    "uploadFile": "ଫାଇଲ୍ ଅପଲୋଡ୍ କରନ୍ତୁ",
+    "formatNote": "ଗ୍ରହଣୀୟ: JPG, PNG, PDF · ସର୍ବାଧିକ 10MB",
+    "status": {
+      "approved": "ଅନୁମୋଦିତ",
+      "rejected": "ପ୍ରତ୍ୟାଖ୍ୟାତ",
+      "pending": "ସମୀକ୍ଷାଧୀନ",
+      "missing": "ଅପଲୋଡ୍ ହୋଇନାହିଁ"
+    },
+    "alerts": {
+      "loadErrorTitle": "ତ୍ରୁଟି",
+      "loadErrorMsg": "ଡକ୍ୟୁମେଣ୍ଟ ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ",
+      "fileTooLargeTitle": "ଫାଇଲ୍ ବହୁତ ବଡ଼",
+      "fileTooLargeMsg": "ଦୟାକରି 10MB ରୁ କମ୍ ଫାଇଲ୍ ଅପଲୋଡ୍ କରନ୍ତୁ",
+      "invalidTypeTitle": "ଅବୈଧ ଫାଇଲ୍ ପ୍ରକାର",
+      "invalidTypeMsg": "କେବଳ JPG, PNG ଏବଂ PDF ଫାଇଲ୍ ଗ୍ରହଣୀୟ",
+      "uploadedTitle": "ଅପଲୋଡ୍ ହେଲା",
+      "uploadedMsg": "{{label}} ସମୀକ୍ଷା ପାଇଁ ଦାଖଲ ହେଲା।",
+      "uploadFailedTitle": "ଅପଲୋଡ୍ ବିଫଳ ହେଲା",
+      "uploadFailedMsg": "ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ",
+      "deleteTitle": "ଡକ୍ୟୁମେଣ୍ଟ ଡିଲିଟ୍ କରିବେ?",
+      "deleteMsg": "{{label}} କାଢ଼ିଦେବେ? ଆପଣଙ୍କୁ ଏହାକୁ ପୁଣି ଅପଲୋଡ୍ କରିବାକୁ ପଡ଼ିବ।",
+      "deleteErrorMsg": "ଡକ୍ୟୁମେଣ୍ଟ ଡିଲିଟ୍ ହୋଇପାରିଲା ନାହିଁ"
+    }
+  },
+  "notifications": {
+    "title": "ବିଜ୍ଞପ୍ତି",
+    "unreadCount": "{{count}} ଅପଠିତ",
+    "emptyTitle": "କୌଣସି ବିଜ୍ଞପ୍ତି ନାହିଁ",
+    "emptyAll": "ଅଫର୍, ଘୋଷଣା ଏବଂ ଖବର ଏଠାରେ ଦେଖାଯିବ",
+    "emptyCategory": "କୌଣସି {{category}} ବିଜ୍ଞପ୍ତି ନାହିଁ",
+    "categories": {
+      "all": "ସମସ୍ତ",
+      "goodwill": "ସଦ୍ଭାବନା",
+      "incentives": "ଇନ୍ସେଣ୍ଟିଭ୍",
+      "suspension": "ନିଲମ୍ବନ",
+      "updates": "ଅପଡେଟ୍"
+    },
+    "timeAgo": {
+      "justNow": "ଏବେ ଏବେ",
+      "minutes": "{{count}} ମିନିଟ୍ ପୂର୍ବେ",
+      "hours": "{{count}} ଘଣ୍ଟା ପୂର୍ବେ",
+      "days": "{{count}} ଦିନ ପୂର୍ବେ"
+    }
+  },
+  "profile": {
+    "home": {
+      "signOutTitle": "ସାଇନ୍ ଆଉଟ୍",
+      "signOutMsg": "ଆପଣ ନିଶ୍ଚିତ କି ସାଇନ୍ ଆଉଟ୍ କରିବାକୁ ଚାହାଁନ୍ତି?",
+      "chatWithSupport": "ସପୋର୍ଟ ସହିତ ଚାଟ୍ କରନ୍ତୁ",
+      "supportSub": "24/7 · AI + ମାନବ ଏଜେଣ୍ଟ",
+      "version": "bogie ଡ୍ରାଇଭର୍ v1.0.0"
+    },
+    "settings": {
+      "title": "ସେଟିଂସ୍",
+      "language": "ଭାଷା",
+      "languageSub": "ଆପଣଙ୍କର ପସନ୍ଦର ଭାଷା ବାଛନ୍ତୁ"
+    },
+    "ledger": {
+      "title": "ଲେଜର୍",
+      "blockedText": "ଆକାଉଣ୍ଟ ନିଲମ୍ବିତ — ୱାଲେଟ୍ -₹1,000 ରୁ କମ୍ ଅଛି।\nବକେୟା ପରିଶୋଧ ପାଇଁ ସପୋର୍ଟ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ।",
+      "lowBalanceText": "ସର୍ବନିମ୍ନ ବାଲାନ୍ସରୁ କମ୍ — ଉଠାଇବା ପାଇଁ ₹500 ବଜାୟ ରଖନ୍ତୁ।",
+      "balanceLabel": "ଲେଜର୍ ବାଲାନ୍ସ",
+      "minBalanceLabel": "ସର୍ବନିମ୍ନ ବାଲାନ୍ସ",
+      "withdraw": "₹{{amount}} ଉଠାନ୍ତୁ",
+      "clearDues": "ବକେୟା ପରିଶୋଧ କରନ୍ତୁ",
+      "maintainInfo": "ଉଠାଇବା ପାଇଁ ₹500 ଲେଜର୍ ବାଲାନ୍ସ ବଜାୟ ରଖନ୍ତୁ",
+      "totalEarnings": "ମୋଟ ରୋଜଗାର",
+      "totalRides": "ମୋଟ ରାଇଡ୍",
+      "monthlyStatement": "ମାସିକ ବିବରଣୀ",
+      "downloadStatement": "ବିବରଣୀ ଡାଉନଲୋଡ୍ କରନ୍ତୁ",
+      "updateNeededTitle": "ଅପଡେଟ୍ ଆବଶ୍ୟକ",
+      "updateNeededMsg": "ବିବରଣୀ ଡାଉନଲୋଡ୍ କରିବାକୁ ଆପ୍‌ର ନୂତନ ଅପଡେଟ୍ ଆବଶ୍ୟକ। ଦୟାକରି bogie ଅପଡେଟ୍ କରିବା ପରେ ପୁଣି ଦେଖନ୍ତୁ।",
+      "downloadErrorTitle": "ତ୍ରୁଟି",
+      "downloadErrorMsg": "ବିବରଣୀ ଡାଉନଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ। ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
+      "noTransactions": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ଲେନଦେନ ନାହିଁ",
+      "noTransactionsSub": "ଆପଣଙ୍କର ଲେଜର୍ ଦେଖିବାକୁ ଟ୍ରିପ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ",
+      "transactions": "ଲେନଦେନ",
+      "crn": "CRN {{crn}}",
+      "entryLabels": {
+        "registrationFee": "ପଞ୍ଜୀକରଣ ଶୁଳ୍କ",
+        "commission": "bogie କମିଶନ୍ (20%)",
+        "tripEarnings": "ଟ୍ରିପ୍ ରୋଜଗାର",
+        "referralBonus": "ରେଫରାଲ୍ ବୋନସ୍ — ସାଙ୍ଗର ପ୍ରଥମ ଟ୍ରିପ୍",
+        "transaction": "ଲେନଦେନ"
+      }
+    },
+    "payments": {
+      "title": "ପେମେଣ୍ଟ",
+      "tripEarnings": "ଟ୍ରିପ୍ ରୋଜଗାର",
+      "unknownDestination": "ଅଜଣା ଗନ୍ତବ୍ୟ",
+      "crnDesc": "CRN: {{crn}} · {{drop}}",
+      "success": "ସଫଳ",
+      "noMoreItems": "ଆଉ କୌଣସି ଆଇଟମ୍ ନାହିଁ",
+      "noPaymentsYet": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ପେମେଣ୍ଟ ନାହିଁ",
+      "noPaymentsSub": "ଏଠାରେ ରୋଜଗାର ଦେଖିବାକୁ ଟ୍ରିପ୍ ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ"
+    },
+    "contact": {
+      "title": "ଆମ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ",
+      "forDrivers": "ଡ୍ରାଇଭରମାନଙ୍କ ପାଇଁ",
+      "callSupport": "ସପୋର୍ଟକୁ କଲ୍ କରନ୍ତୁ",
+      "emailSupport": "ଇମେଲ୍ ସପୋର୍ଟ",
+      "helpline": {
+        "title": "ଡ୍ରାଇଭର ହେଲ୍ପଲାଇନ୍",
+        "hours": "ଉପଲବ୍ଧ: ସକାଳ 8 ଟାରୁ ରାତି 10 ଟା, ସାତ ଦିନ"
+      },
+      "email": {
+        "title": "ଇମେଲ୍ ସପୋର୍ଟ",
+        "responseTime": "4 ଘଣ୍ଟା ମଧ୍ୟରେ ଉତ୍ତର"
+      },
+      "chat": {
+        "title": "ଇନ୍-ଆପ୍ ଚାଟ୍",
+        "line1": "ହୋମ୍ ସ୍କ୍ରିନ୍‌ରେ ଉପଲବ୍ଧ",
+        "line2": "ସବୁଠାରୁ ଶୀଘ୍ର ଉତ୍ତର"
+      },
+      "office": {
+        "title": "ଅଫିସ୍ ଠିକଣା"
+      },
+      "emergency": {
+        "title": "ଜରୁରୀକାଳୀନ",
+        "danger": "ଯଦି ଆପଣ ବିପଦରେ ଅଛନ୍ତି",
+        "accident": "ରାସ୍ତା ଦୁର୍ଘଟଣା",
+        "medical": "ମେଡିକାଲ୍ ଜରୁରୀକାଳୀନ",
+        "call": "{{num}} କୁ କଲ୍ କରନ୍ତୁ"
+      }
+    },
+    "edit": {
+      "title": "ପ୍ରୋଫାଇଲ୍ ଏଡିଟ୍ କରନ୍ତୁ",
+      "selectLanguage": "ଭାଷା ବାଛନ୍ତୁ",
+      "savedTitle": "ସେଭ୍ ହୋଇଗଲା",
+      "savedMsg": "ପ୍ରୋଫାଇଲ୍ ସଫଳତାର ସହିତ ଅପଡେଟ୍ ହୋଇଗଲା।",
+      "savedLocallyTitle": "ସ୍ଥାନୀୟ ଭାବରେ ସେଭ୍ ହେଲା",
+      "savedLocallyMsg": "ଠିକଣା ସେଭ୍ ହୋଇଗଲା। ଅନଲାଇନ୍ ହେଲେ ସିଙ୍କ ହେବ।",
+      "defaultDriverName": "ଡ୍ରାଇଭର୍",
+      "personalInfo": "ବ୍ୟକ୍ତିଗତ ସୂଚନା",
+      "homeAddress": "ଘର ଠିକଣା",
+      "homeAddressPlaceholder": "ଆପଣଙ୍କର ଘର ଠିକଣା ଲେଖନ୍ତୁ",
+      "mobileNumber": "ମୋବାଇଲ୍ ନମ୍ବର",
+      "languagePrefs": "ଭାଷା ପସନ୍ଦ",
+      "appLanguage": "ପସନ୍ଦର ଆପ୍ ଭାଷା",
+      "trainingLanguage": "ତାଲିମ ଭାଷା",
+      "saving": "ସେଭ୍ ହେଉଛି…",
+      "saveChanges": "ପରିବର୍ତ୍ତନ ସେଭ୍ କରନ୍ତୁ"
+    },
+    "help": {
+      "title": "ସହାୟତା ଏବଂ ସପୋର୍ଟ",
+      "invalidPhone": "ଏକ ସଠିକ୍ ଫୋନ୍ ନମ୍ବର ଲେଖନ୍ତୁ",
+      "savedTitle": "ସେଭ୍ ହୋଇଗଲା",
+      "savedMsg": "ଯେତେବେଳେ ଆପଣ ଲାଇଭ୍ ଲୋକେସନ୍ ସେୟାର୍ କରିବେ, ଆମେ ଏହାକୁ ଏହି ସମ୍ପର୍କଙ୍କୁ ପଠାଇବାର ପ୍ରସ୍ତାବ ଦେବୁ।",
+      "saveErrorMsg": "ସେଭ୍ ହୋଇପାରିଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
+      "emergencyNumbersTitle": "ଜରୁରୀକାଳୀନ ନମ୍ବର",
+      "emergencyContactTitle": "ଜରୁରୀକାଳୀନ ସମ୍ପର୍କ",
+      "nameLabel": "ନାମ",
+      "namePlaceholder": "ଯେମିତି ପତି/ପତ୍ନୀ, ଭାଇ",
+      "phoneLabel": "ଫୋନ୍ ନମ୍ବର",
+      "phonePlaceholder": "10 ଅଙ୍କର ମୋବାଇଲ୍ ନମ୍ବର",
+      "contactHint": "ଯେତେବେଳେ ଆପଣ SOS ରେ ଲାଇଭ୍ ଲୋକେସନ୍ ସେୟାର୍ କରିବେ, ଆମେ ଏହାକୁ ସିଧାସଳଖ ଏହି ସମ୍ପର୍କଙ୍କୁ SMS ମାଧ୍ୟମରେ ପଠାଇବାର ପ୍ରସ୍ତାବ ଦେବୁ।",
+      "contactSupportTitle": "ସପୋର୍ଟ ସହିତ ଯୋଗାଯୋଗ କରନ୍ତୁ",
+      "contactAvailability": "ଉପଲବ୍ଧ: ସକାଳ 8 ଟାରୁ ରାତି 10 ଟା, ପ୍ରତିଦିନ",
+      "emergencyNumbers": {
+        "police": "ପୋଲିସ୍",
+        "ambulance": "ଆମ୍ବୁଲାନ୍ସ"
+      },
+      "faq": {
+        "sections": {
+          "rideIssues": "ରାଇଡ୍ ସମସ୍ୟା",
+          "earnings": "ରୋଜଗାର",
+          "documents": "ଡକ୍ୟୁମେଣ୍ଟ",
+          "technical": "ଟେକ୍ନିକାଲ୍"
+        },
+        "rideIssues": {
+          "accept": {
+            "q": "ମୁଁ କିପରି ରାଇଡ୍ ରିକ୍ୱେଷ୍ଟ ଗ୍ରହଣ କରିବି?",
+            "a": "ଯେତେବେଳେ ନୂଆ ରିକ୍ୱେଷ୍ଟ ଆସେ, 30 ସେକେଣ୍ଡ ମଧ୍ୟରେ Accept ଉପରେ ଟାପ୍ କରନ୍ତୁ। ଗ୍ରହଣ ନହେଲେ ରିକ୍ୱେଷ୍ଟ ନିଜେ ଶେଷ ହୋଇଯାଏ।"
+          },
+          "cancel": {
+            "q": "ମୁଁ ଗ୍ରହଣ କରିଥିବା ରାଇଡ୍ ବାତିଲ୍ କରିପାରିବି କି?",
+            "a": "ହଁ, କିନ୍ତୁ ପିକଅପ୍ ପଏଣ୍ଟରେ ପହଞ୍ଚିବା ପୂର୍ବରୁ। ବାରମ୍ବାର ବାତିଲ୍ କରିବା ଆପଣଙ୍କର ରେଟିଂରେ ପ୍ରଭାବ ପକାଏ ଏବଂ ଜରିମାନା ମଧ୍ୟ ହୋଇପାରେ।"
+          }
+        },
+        "earnings": {
+          "paid": {
+            "q": "ମୋତେ କେବେ ପେମେଣ୍ଟ ମିଳିବ?",
+            "a": "ରୋଜଗାର ଆପଣଙ୍କର ଲେଜର୍ ଖାତାରେ ଜମା ହୋଇଥାଏ। ବାଲାନ୍ସ ₹500 ରୁ ଅଧିକ ହେଲେ ଆପଣ ଉଠାଇପାରିବେ।"
+          },
+          "commission": {
+            "q": "କମିଶନ୍ ଢାଞ୍ଚା କ'ଣ?",
+            "a": "bogie ପ୍ରତ୍ୟେକ ଟ୍ରିପ୍‌ରେ 20% କମିଶନ୍ ନେଇଥାଏ। ବାକି 80% ଭଡା ସିଧାସଳଖ ଆପଣଙ୍କର ଲେଜର୍‌ରେ ଜମା ହୁଏ।"
+          },
+          "negativeBalance": {
+            "q": "ମୋର ଲେଜର୍ ବାଲାନ୍ସ ନେଗେଟିଭ୍ କାହିଁକି?",
+            "a": "ନେଗେଟିଭ୍ ବାଲାନ୍ସର ଅର୍ଥ ହେଉଛି bogie ପାଖରେ ଆପଣଙ୍କର କିଛି ବକେୟା ଅଛି। ଉଠାଇବା ପୁଣି ଆରମ୍ଭ କରିବାକୁ ବକେୟା ପରିଶୋଧ କରନ୍ତୁ।"
+          }
+        },
+        "documents": {
+          "rejected": {
+            "q": "ମୋର ଡକ୍ୟୁମେଣ୍ଟ ପ୍ରତ୍ୟାଖ୍ୟାନ ହେଲା। ବର୍ତ୍ତମାନ କ'ଣ କରିବି?",
+            "a": "Docs ଟ୍ୟାବ୍‌ରେ ପ୍ରତ୍ୟାଖ୍ୟାନର କାରଣ ଦେଖନ୍ତୁ। ସଠିକ୍ ଏବଂ ସ୍ପଷ୍ଟ ଡକ୍ୟୁମେଣ୍ଟ ପୁଣି ଅପଲୋଡ୍ କରନ୍ତୁ।"
+          },
+          "verifyTime": {
+            "q": "ମୋର ଡକ୍ୟୁମେଣ୍ଟ କେବେ ଯାଞ୍ଚ ହେବ?",
+            "a": "ଯାଞ୍ଚ ସାଧାରଣତଃ 24-48 କାର୍ଯ୍ୟ-ଘଣ୍ଟା ନେଇଥାଏ। ସମ୍ପୂର୍ଣ୍ଣ ହେଲେ ଆପଣଙ୍କୁ ଏକ ବିଜ୍ଞପ୍ତି ମିଳିବ।"
+          }
+        },
+        "technical": {
+          "noRides": {
+            "q": "ଆପ୍‌ରେ ରାଇଡ୍ ରିକ୍ୱେଷ୍ଟ ଦେଖାଉନାହିଁ।",
+            "a": "ଫୋନ୍ ସେଟିଂସ୍‌ରେ ଲୋକେସନ୍ ପରମିସନ୍ ସର୍ବଦା ON ରଖନ୍ତୁ। ଆପଣଙ୍କର ଇଣ୍ଟରନେଟ୍ ସଂଯୋଗ ଯାଞ୍ଚ କରନ୍ତୁ ଏବଂ ଥରେ ଅଫଲାଇନ୍/ଅନଲାଇନ୍ ଟୋଗଲ୍ କରି ଦେଖନ୍ତୁ।"
+          },
+          "gpsInaccurate": {
+            "q": "GPS ସଠିକ୍ ନାହିଁ।",
+            "a": "ଉଚ୍ଚ ଅଟ୍ଟାଳିକାଠାରୁ ଦୂରରେ ଏକ ଖୋଲା ସ୍ଥାନକୁ ଯାଆନ୍ତୁ। ଲୋକେସନ୍‌କୁ ଅଫ୍ କରି ପୁଣି ଅନ୍ କରନ୍ତୁ। ସମସ୍ୟା ରହିଲେ ଆପ୍‌କୁ ପୁନଃ ଆରମ୍ଭ କରନ୍ତୁ।"
+          }
+        }
+      }
+    },
+    "refer": {
+      "title": "ରେଫର୍ କରନ୍ତୁ ଏବଂ ରୋଜଗାର କରନ୍ତୁ",
+      "loadError": "ଆପଣଙ୍କର ରେଫରାଲ୍ କୋଡ୍ ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ।",
+      "shareMessage": "🚖 bogie ସହିତ ଡ୍ରାଇଭ୍ କରନ୍ତୁ! ସାଇନ୍ ଅପ୍ କରିବା ସମୟରେ ମୋର ରେଫରାଲ୍ କୋଡ୍ *{{code}}* ବ୍ୟବହାର କରନ୍ତୁ ଏବଂ ରୋଜଗାର ଆରମ୍ଭ କରନ୍ତୁ। ଡାଉନଲୋଡ୍ କରନ୍ତୁ: {{link}}",
+      "copiedTitle": "କପି ହୋଇଗଲା",
+      "codeCopiedMsg": "ରେଫରାଲ୍ କୋଡ୍ କ୍ଲିପବୋର୍ଡରେ କପି ହୋଇଗଲା",
+      "linkCopiedMsg": "ରେଫରାଲ୍ ଲିଙ୍କ୍ କ୍ଲିପବୋର୍ଡରେ କପି ହୋଇଗଲା",
+      "heroTitle": "ଏକ ଡ୍ରାଇଭରକୁ ରେଫର୍ କରନ୍ତୁ, ₹50 ରୋଜଗାର କରନ୍ତୁ!",
+      "heroSub": "ସେମାନେ ପ୍ରଥମ ଟ୍ରିପ୍ ସମ୍ପୂର୍ଣ୍ଣ କଲେ ଆପଣ ₹50 ପାଇବେ। ଆଉ ସେମାନେ ଅନ୍ୟ ଡ୍ରାଇଭରକୁ ରେଫର୍ କଲେ ₹25 ମଧ୍ୟ ମିଳିବ!",
+      "yourCode": "ଆପଣଙ୍କର ରେଫରାଲ୍ କୋଡ୍",
+      "copy": "📋 କପି କରନ୍ତୁ",
+      "shareWhatsApp": "💬 WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
+      "copyLink": "🔗 ଲିଙ୍କ୍ କପି କରନ୍ତୁ",
+      "driversJoined": "ଯୋଗଦେଇଥିବା ଡ୍ରାଇଭର୍",
+      "earned": "ରୋଜଗାର",
+      "pending": "ବକେୟା",
+      "myReferrals": "ମୋର ରେଫରାଲ୍",
+      "noReferralsYet": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ରେଫରାଲ୍ ନାହିଁ",
+      "noReferralsSub": "ରୋଜଗାର ଆରମ୍ଭ କରିବାକୁ ଆପଣଙ୍କର କୋଡ୍ ସେୟାର୍ କରନ୍ତୁ",
+      "viaYourReferral": " (ଆପଣଙ୍କର ରେଫରାଲ୍ ମାଧ୍ୟମରେ)",
+      "joined": "{{date}} ରେ ଯୋଗଦେଲେ",
+      "status": {
+        "pending": "⏳ ପ୍ରଥମ ଟ୍ରିପ୍ ବାକି",
+        "credited": "✅ ଜମା ହୋଇଗଲା"
+      }
+    },
+    "terms": {
+      "title": "ସେବା ସର୍ତ୍ତାବଳୀ"
+    },
+    "privacy": {
+      "title": "ଗୋପନୀୟତା ନୀତି"
+    },
+    "training": {
+      "title": "ତାଲିମ",
+      "bannerTitle": "ଡ୍ରାଇଭର ତାଲିମ",
+      "bannerSub": "bogie ପାର୍ଟନର୍ ତାଲିମକୁ ସ୍ୱାଗତ",
+      "moduleNum": "ମଡ୍ୟୁଲ୍ {{num}}",
+      "unlockAfter3": "ଅନଲକ୍ କରିବାକୁ ମଡ୍ୟୁଲ୍ 3 ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ",
+      "unlockAfter4": "ଅନଲକ୍ କରିବାକୁ ମଡ୍ୟୁଲ୍ 4 ସମ୍ପୂର୍ଣ୍ଣ କରନ୍ତୁ",
+      "support": "ସପୋର୍ଟ:",
+      "modules": {
+        "gettingStarted": {
+          "title": "ଆରମ୍ଭ କରନ୍ତୁ",
+          "items": {
+            "useApp": "bogie ଡ୍ରାଇଭର ଆପ୍ କିପରି ବ୍ୟବହାର କରିବେ",
+            "acceptReject": "ରାଇଡ୍ ଗ୍ରହଣ ଏବଂ ପ୍ରତ୍ୟାଖ୍ୟାନ କରିବା",
+            "navigation": "ନେଭିଗେସନ୍‌ର ମୌଳିକ ବିଷୟ",
+            "onlineOffline": "ଅନଲାଇନ୍/ଅଫଲାଇନ୍ ହେବା"
+          }
+        },
+        "customerService": {
+          "title": "ଗ୍ରାହକ ସେବା",
+          "items": {
+            "excellentService": "ଉତ୍କୃଷ୍ଟ ସେବା ପ୍ରଦାନ କରିବା",
+            "greeting": "ଯାତ୍ରୀମାନଙ୍କୁ ଅଭିବାଦନ କରିବା",
+            "complaints": "ଅଭିଯୋଗ ପରିଚାଳନା କରିବା",
+            "ratingSystem": "ରେଟିଂ ସିଷ୍ଟମ୍ ବୁଝିବା"
+          }
+        },
+        "safetyGuidelines": {
+          "title": "ସୁରକ୍ଷା ନିର୍ଦ୍ଦେଶାବଳୀ",
+          "items": {
+            "roadSafety": "ରାସ୍ତା ଏବଂ ଯାତ୍ରୀ ସୁରକ୍ଷା",
+            "trafficRules": "ଟ୍ରାଫିକ୍ ନିୟମର ସ୍ମରଣ",
+            "emergencyProcedures": "ଜରୁରୀକାଳୀନ ପ୍ରକ୍ରିୟା",
+            "accidentReporting": "ଦୁର୍ଘଟଣା ରିପୋର୍ଟ କରିବା"
+          }
+        },
+        "earningsPayments": {
+          "title": "ରୋଜଗାର ଏବଂ ପେମେଣ୍ଟ",
+          "items": {
+            "understandingEarnings": "ଆପଣଙ୍କର ରୋଜଗାରକୁ ବୁଝିବା",
+            "ledgerCommissions": "ଲେଜର୍ ଏବଂ କମିଶନ୍",
+            "withdrawalProcess": "ଉଠାଇବା ପ୍ରକ୍ରିୟା"
+          }
+        },
+        "advancedTips": {
+          "title": "ଉନ୍ନତ ଟିପ୍ସ",
+          "items": {
+            "peakHours": "ପିକ୍ ଆବର୍ସ ରଣନୀତି",
+            "highDemandAreas": "ଦିଲ୍ଲୀ NCR ରେ ଅଧିକ ଚାହିଦା ଥିବା ଅଞ୍ଚଳ",
+            "maximizingRatings": "ରେଟିଂ ବଢାଇବା"
+          }
+        }
+      }
+    }
+  },
+  "support": {
+    "header": "BOGIE ସପୋର୍ଟ",
+    "aiAvailable": "🤖 AI ଆସିଷ୍ଟାଣ୍ଟ 24/7 ଉପଲବ୍ଧ",
+    "startNewChat": "ନୂଆ ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ",
+    "emptyTitle": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ବାର୍ତ୍ତାଳାପ ନାହିଁ",
+    "emptySub": "ଆମର ସପୋର୍ଟ ଟିମ୍‌ଠାରୁ ସାହାଯ୍ୟ ପାଇବାକୁ \"ନୂଆ ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ\" ଉପରେ ଟାପ୍ କରନ୍ତୁ।",
+    "recentConversations": "ସାମ୍ପ୍ରତିକ ବାର୍ତ୍ତାଳାପ",
+    "noMessagesYet": "ଏପର୍ଯ୍ୟନ୍ତ କୌଣସି ମେସେଜ୍ ନାହିଁ",
+    "supportChat": "ସପୋର୍ଟ ଚାଟ୍",
+    "sendToStart": "ଆରମ୍ଭ କରିବାକୁ ଏକ ମେସେଜ୍ ପଠାନ୍ତୁ।",
+    "typeMessage": "ଆପଣଙ୍କର ମେସେଜ୍ ଲେଖନ୍ତୁ...",
+    "quickIssuesBtn": "📋 ସାଧାରଣ ସମସ୍ୟା ▾",
+    "botName": "🤖 bogie ଆସିଷ୍ଟାଣ୍ଟ",
+    "agentFallback": "ସପୋର୍ଟ ଏଜେଣ୍ଟ",
+    "newChatTitle": "ନୂଆ ସପୋର୍ଟ ଚାଟ୍",
+    "whatHelp": "ଆପଣଙ୍କୁ କେଉଁଥିରେ ସାହାଯ୍ୟ ଆବଶ୍ୟକ?",
+    "yourMessage": "ଆପଣଙ୍କର ମେସେଜ୍",
+    "messagePlaceholder": "ଆପଣଙ୍କର ସମସ୍ୟା ବିସ୍ତୃତ ଭାବରେ ଲେଖନ୍ତୁ...",
+    "startChatBtn": "ଚାଟ୍ ଆରମ୍ଭ କରନ୍ତୁ →",
+    "selectCategoryTitle": "ଏକ ବର୍ଗ ବାଛନ୍ତୁ",
+    "selectCategoryMsg": "ଦୟାକରି ଉପରେ ଥିବା ସମସ୍ୟା ବର୍ଗ ମଧ୍ୟରୁ ଗୋଟିଏ ଉପରେ ଟାପ୍ କରନ୍ତୁ।",
+    "addMessageTitle": "ଏକ ମେସେଜ୍ ଯୋଡନ୍ତୁ",
+    "addMessageMsg": "ଦୟାକରି ଆପଣଙ୍କର ସମସ୍ୟା ବିସ୍ତୃତ ଭାବରେ ବର୍ଣ୍ଣନା କରନ୍ତୁ।",
+    "startChatErrorMsg": "ଚାଟ୍ ଆରମ୍ଭ ହୋଇପାରିଲା ନାହିଁ। ଦୟାକରି ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ।",
+    "status": {
+      "open": "ଖୋଲା",
+      "inProgress": "ପ୍ରଗତିରେ",
+      "resolved": "✅ ସମାଧାନ ହେଲା"
+    },
+    "timeAgo": {
+      "justNow": "ଏବେ ଏବେ",
+      "minutes": "{{count}} ମିନିଟ୍ ପୂର୍ବେ",
+      "hours": "{{count}} ଘଣ୍ଟା ପୂର୍ବେ",
+      "days": "{{count}} ଦିନ ପୂର୍ବେ"
+    },
+    "quickIssues": {
+      "riderNoShow": "ରାଇଡର୍ ଆସିଲେ ନାହିଁ",
+      "noRides": "ଆପ୍‌ରେ ରାଇଡ୍ ଦେଖାଉନାହିଁ",
+      "paymentNotReceived": "ପେମେଣ୍ଟ ମିଳିଲା ନାହିଁ",
+      "walletIssue": "ୱାଲେଟ୍ ସମସ୍ୟା",
+      "accountBlocked": "ଆକାଉଣ୍ଟ ବ୍ଲକ୍ ହୋଇଛି",
+      "docVerification": "ଡକ୍ୟୁମେଣ୍ଟ ଯାଞ୍ଚ",
+      "navigationIssue": "ନେଭିଗେସନ୍ ସମସ୍ୟା",
+      "emergency": "ରାଇଡ୍‌ରେ ଜରୁରୀକାଳୀନ"
+    },
+    "categorySubjects": {
+      "riderNoShow": "ରାଇଡର୍ ନ ଆସିବା ସମସ୍ୟା",
+      "noRides": "ଆପ୍‌ରେ ରାଇଡ୍ ଦେଖାଉନାହିଁ",
+      "paymentNotReceived": "ପେମେଣ୍ଟ ମିଳିଲା ନାହିଁ",
+      "walletIssue": "ଡ୍ରାଇଭର ୱାଲେଟ୍ ସମସ୍ୟା",
+      "accountBlocked": "ଡ୍ରାଇଭର ଆକାଉଣ୍ଟ ବ୍ଲକ୍ ହୋଇଛି",
+      "docVerification": "ଡକ୍ୟୁମେଣ୍ଟ ଯାଞ୍ଚ ସମସ୍ୟା",
+      "navigationIssue": "ନେଭିଗେସନ୍ ସମସ୍ୟା",
+      "emergency": "ଜରୁରୀକାଳୀନ - ତୁରନ୍ତ ସାହାଯ୍ୟ ଆବଶ୍ୟକ"
+    }
+  },
+  "errorBoundary": {
+    "title": "କିଛି ଭୁଲ୍ ହୋଇଗଲା",
+    "subtitle": "ଆପ୍‌ରେ ଏକ ତ୍ରୁଟି ହେଲା।",
+    "tryAgain": "ପୁଣି ଚେଷ୍ଟା କରନ୍ତୁ"
+  }
+}

@@ -1,0 +1,1014 @@
+{
+  "common": {
+    "error": "गड़बड़ी",
+    "ok": "ठीक है",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "change": "बदलें",
+    "update": "अपडेट करें",
+    "save": "सेव करें",
+    "remove": "हटाएं",
+    "retry": "फिर से कोशिश करें",
+    "pickupFallback": "पिकअप",
+    "dropFallback": "ड्रॉप",
+    "pickupLocationFallback": "पिकअप लोकेशन",
+    "dropLocationFallback": "ड्रॉप लोकेशन",
+    "riderFallback": "राइडर",
+    "bookingFallback": "बुकिंग",
+    "fareAmount": "Rs.{{amount}}",
+    "distanceKm": "{{km}} किमी",
+    "distanceM": "{{m}} मी",
+    "tabs": {
+      "home": "होम",
+      "orders": "ऑर्डर्स",
+      "earnings": "कमाई",
+      "docs": "दस्तावेज़",
+      "profile": "प्रोफाइल"
+    }
+  },
+  "auth": {
+    "login": {
+      "driverBadge": "ड्राइवर",
+      "welcomeTitle": "वापसी पर स्वागत है",
+      "welcomeSub": "अपने ड्राइवर अकाउंट में साइन इन करें",
+      "emailLabel": "ईमेल",
+      "emailPlaceholder": "driver@example.com",
+      "passwordLabel": "पासवर्ड",
+      "passwordPlaceholder": "कम से कम 8 अक्षर",
+      "consentTermsPrefix": "मैंने पढ़ लिया है और सहमत हूं",
+      "consentTermsLink": "नियम और शर्तें",
+      "consentAnd": "और",
+      "consentPrivacyLink": "प्राइवेसी पॉलिसी",
+      "consentTDSPrefix": "मैंने पढ़ लिया है और इसके लिए अपनी सहमति देता/देती हूं",
+      "consentTDSLink": "TDS घोषणा",
+      "fillAllFields": "सभी फ़ील्ड भरें",
+      "acceptTermsAlert": "जारी रखने के लिए नियम व शर्तें और TDS घोषणा स्वीकार करें",
+      "signIn": "साइन इन करें",
+      "loginErrorMsg": "गलत जानकारी",
+      "openDocumentError": "दस्तावेज़ नहीं खुल सका",
+      "newDriverTitle": "नए ड्राइवर हैं?",
+      "newDriverSub": "4 आसान चरणों में bogie से जुड़ें",
+      "steps": "साइन अप करें,OTP वेरिफाई करें,वाहन चुनें,दस्तावेज़ अपलोड करें",
+      "registerBtn": "ड्राइवर के रूप में रजिस्टर करें"
+    },
+    "signup": {
+      "driverBadge": "ड्राइवर",
+      "title": "ड्राइवर अकाउंट बनाएं",
+      "subtitle": "आज ही bogie के साथ कमाई शुरू करें",
+      "fullNameLabel": "पूरा नाम",
+      "fullNamePlaceholder": "राहुल कुमार",
+      "emailLabel": "ईमेल पता",
+      "emailPlaceholder": "rahul@example.com",
+      "mobileLabel": "मोबाइल नंबर",
+      "mobilePlaceholder": "+91 98765 43210",
+      "passwordLabel": "पासवर्ड",
+      "passwordPlaceholder": "कम से कम 8 अक्षर",
+      "referralLabel": "रेफरल कोड (वैकल्पिक)",
+      "referralPlaceholder": "जैसे GD3M8B1C",
+      "referralOk": "✓ {{name}} द्वारा रेफर किया गया",
+      "referralBad": "अमान्य कोड — आप फिर भी साइन अप कर सकते हैं",
+      "sendOtp": "OTP भेजें",
+      "footerText": "पहले से अकाउंट है? ",
+      "signInLink": "साइन इन करें",
+      "alerts": {
+        "fillAllFields": "सभी फ़ील्ड भरें",
+        "enterValidPhone": "मान्य फ़ोन नंबर डालें",
+        "passwordMin8": "पासवर्ड कम से कम 8 अक्षर का होना चाहिए",
+        "genericErrorTitle": "गड़बड़ी",
+        "genericErrorMsg": "कुछ गड़बड़ हो गई। फिर से कोशिश करें।"
+      }
+    },
+    "otp": {
+      "back": "← वापस",
+      "title": "अपना नंबर वेरिफाई करें",
+      "subtitlePrefix": "हमने 6-अंकों का OTP भेजा है",
+      "phoneFallback": "+91 XXXXX XXXXX",
+      "verify": "OTP वेरिफाई करें",
+      "resendText": "OTP नहीं मिला? ",
+      "resendTimer": "{{sec}} सेकंड में फिर भेजें",
+      "resendLink": "OTP फिर भेजें",
+      "enterOtpAlert": "6-अंकों का OTP डालें",
+      "invalidOtpTitle": "गलत OTP",
+      "invalidOtpMsg": "कृपया जांचें और फिर से कोशिश करें"
+    },
+    "vehicleSelect": {
+      "back": "← वापस",
+      "step": "चरण 2 / 4",
+      "title": "आप क्या चलाते हैं?",
+      "subtitle": "अपनी वाहन श्रेणी चुनें",
+      "subTitle": "विशिष्ट वाहन प्रकार चुनें",
+      "continue": "आगे बढ़ें →",
+      "categories": {
+        "cab": {
+          "title": "कैब",
+          "subtitle": "2-व्हीलर, 3-व्हीलर, 4-व्हीलर",
+          "desc": "यात्री राइड: बाइक, ऑटो, कार, SUV"
+        },
+        "truck": {
+          "title": "ट्रक",
+          "subtitle": "शहर के अंदर व आउटस्टेशन",
+          "desc": "स्थानीय सामान परिवहन और लंबी दूरी की लॉजिस्टिक्स"
+        },
+        "ambulance": {
+          "title": "एम्बुलेंस",
+          "subtitle": "BLS / ALS / मरीज़ परिवहन",
+          "desc": "मेडिकल इमरजेंसी और मरीज़ परिवहन सेवाएं"
+        }
+      },
+      "options": {
+        "cab_2w": "2 व्हीलर (बाइक/स्कूटर)",
+        "cab_3w": "3 व्हीलर (ऑटो)",
+        "cab_4w": "4 व्हीलर (कार)",
+        "cab_4w_suv": "4 व्हीलर (SUV)",
+        "truck_city_tata_ace": "टाटा ऐस / मिनी ट्रक (शहर)",
+        "truck_city_14ft": "14 फीट ट्रक (शहर)",
+        "truck_city_open": "ओपन बॉडी ट्रक (शहर)",
+        "truck_city_container": "कंटेनर ट्रक (शहर)",
+        "truck_os_14ft": "14 फीट ट्रक (आउटस्टेशन)",
+        "truck_os_20ft": "20 फीट ट्रक (आउटस्टेशन)",
+        "truck_os_container": "कंटेनर (आउटस्टेशन)",
+        "truck_os_trailer": "ट्रेलर (आउटस्टेशन)",
+        "ambulance_bls": "बेसिक लाइफ सपोर्ट (BLS)",
+        "ambulance_als": "एडवांस्ड लाइफ सपोर्ट (ALS)",
+        "ambulance_transport": "मरीज़ परिवहन"
+      }
+    },
+    "register": {
+      "steps": {
+        "personal": "व्यक्तिगत",
+        "vehicle": "वाहन",
+        "documents": "दस्तावेज़",
+        "bankTerms": "बैंक व शर्तें"
+      },
+      "headerTitle": "ड्राइवर पंजीकरण",
+      "headerSub": "चरण {{step}} / 4 — {{name}}",
+      "back": "← वापस",
+      "continueTo": "{{step}} पर आगे बढ़ें",
+      "submit": "पंजीकरण जमा करें",
+      "stepIndicator": "{{step}} / 4",
+      "personal": {
+        "sectionTitle": "व्यक्तिगत जानकारी",
+        "fullName": "पूरा नाम *",
+        "fullNamePh": "राहुल कुमार",
+        "mobile": "मोबाइल नंबर *",
+        "mobilePh": "+91 98765 43210",
+        "email": "ईमेल पता *",
+        "emailPh": "rahul@example.com",
+        "password": "पासवर्ड *",
+        "passwordPh": "कम से कम 8 अक्षर",
+        "dob": "जन्म तिथि",
+        "dobPh": "DD-MM-YYYY",
+        "address": "पता",
+        "addressPh": "मकान नं., सड़क, शहर",
+        "phoneVerified": "फ़ोन वेरिफाई हो गया",
+        "vehicleInfo": "वाहन: {{vehicle}}"
+      },
+      "vehicle": {
+        "sectionTitle": "वाहन की जानकारी",
+        "categoryLabel": "श्रेणी: {{category}}",
+        "regNumber": "वाहन पंजीकरण नंबर *",
+        "regNumberPh": "DL-01-AB-1234",
+        "model": "वाहन मॉडल *",
+        "modelPh": "टाटा ऐस / होंडा एक्टिवा...",
+        "ambulanceModel": "एम्बुलेंस मॉडल",
+        "ambulanceModelPh": "फोर्स ट्रैवलर / टाटा विंगर...",
+        "color": "वाहन का रंग",
+        "colorPh": "सफ़ेद / काला...",
+        "payload": "पेलोड क्षमता (टन)",
+        "payloadPh": "जैसे 1.5",
+        "fuelType": "ईंधन प्रकार",
+        "gstNumber": "GST नंबर *",
+        "gstNumberPh": "22AAAAA0000A1Z5",
+        "teamSize": "टीम का आकार",
+        "teamSizePh": "कर्मचारियों की संख्या",
+        "emtCertified": "EMT / पैरामेडिक प्रमाणित",
+        "available247": "24x7 उपलब्ध",
+        "categoryPrefix": "श्रेणी:"
+      },
+      "documents": {
+        "sectionTitle": "दस्तावेज़",
+        "sectionNote": "हर दस्तावेज़ की स्पष्ट फोटो अपलोड करें",
+        "required": "आवश्यक",
+        "optional": "वैकल्पिक",
+        "uploaded": "अपलोड हो गया",
+        "notUploaded": "अभी तक अपलोड नहीं हुआ",
+        "reupload": "फिर से अपलोड करें",
+        "uploadPhoto": "फोटो अपलोड करें",
+        "reviewNote": "दस्तावेज़ों की समीक्षा हमारी टीम 24 घंटे में करती है। मूल दस्तावेज़ तैयार रखें।",
+        "expiryDateLabel": "समाप्ति तिथि",
+        "expiryPh": "DD/MM/YYYY",
+        "permissionNeeded": "अनुमति आवश्यक है",
+        "cameraPermissionNeeded": "कैमरा अनुमति आवश्यक है",
+        "pickErrorMsg": "फोटो चुनने में गड़बड़ी",
+        "uploadSourceTitle": "दस्तावेज़ अपलोड करें",
+        "uploadSourceMsg": "स्रोत चुनें",
+        "camera": "कैमरा",
+        "gallery": "गैलरी",
+        "cancel": "रद्द करें"
+      },
+      "bank": {
+        "sectionTitle": "बैंक खाते की जानकारी",
+        "sectionNote": "कमाई हर हफ्ते आपके खाते में ट्रांसफर होती है",
+        "accountHolder": "खाताधारक का नाम *",
+        "accountHolderPh": "बैंक रिकॉर्ड के अनुसार",
+        "accountNumber": "खाता नंबर *",
+        "accountNumberPh": "XXXXXXXXXXXXXXXX",
+        "ifsc": "IFSC कोड *",
+        "ifscPh": "SBIN0001234",
+        "bankName": "बैंक का नाम *",
+        "bankNamePh": "स्टेट बैंक ऑफ इंडिया",
+        "upi": "UPI ID (वैकल्पिक)",
+        "upiPh": "name@upi",
+        "termsTitle": "नियम और शर्तें",
+        "agreeTerms": "मैं नियम और शर्तों से सहमत हूं",
+        "mvagTitle": "MVAG स्व-घोषणा",
+        "mvagIntro": "मोटर वाहन एग्रीगेटर दिशानिर्देश, 2020 के तहत आवश्यक।",
+        "mvagDeclaration": "मैं घोषणा करता/करती हूं कि पिछले 3 वर्षों में मुझे शराब या नशीले पदार्थों के प्रभाव में वाहन चलाने का दोषी नहीं ठहराया गया है, और मुझे धोखाधड़ी, यौन अपराध या आपराधिक बल के प्रयोग सहित किसी भी संज्ञेय अपराध का कभी दोषी नहीं ठहराया गया है।"
+      },
+      "commonDocs": {
+        "passport_photo": {
+          "label": "पासपोर्ट साइज़ फोटो"
+        },
+        "aadhaar": {
+          "label": "आधार कार्ड",
+          "numberLabel": "आधार नंबर",
+          "numberPlaceholder": "12 अंकों का नंबर"
+        },
+        "pan_card": {
+          "label": "पैन कार्ड",
+          "numberLabel": "पैन नंबर"
+        },
+        "driving_license": {
+          "label": "ड्राइविंग लाइसेंस",
+          "numberLabel": "लाइसेंस नंबर",
+          "expiryLabel": "लाइसेंस समाप्ति"
+        },
+        "bank_passbook": {
+          "label": "बैंक पासबुक / चेक",
+          "numberLabel": "खाता नंबर"
+        },
+        "police_clearance": {
+          "label": "पुलिस क्लीयरेंस सर्टिफिकेट (PCC)",
+          "note": "अपना PCC अपने नज़दीकी पुलिस स्टेशन या राज्य पुलिस के ऑनलाइन पोर्टल से प्राप्त करें (दिल्ली: Delhi Police Citizen Services)।"
+        }
+      },
+      "vehicleDocs": {
+        "two_wheeler": {
+          "rc": {
+            "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",
+            "numberLabel": "RC नंबर",
+            "expiryLabel": "RC समाप्ति"
+          },
+          "insurance": {
+            "label": "बीमा प्रमाणपत्र",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "बीमा समाप्ति"
+          },
+          "puc": {
+            "label": "प्रदूषण प्रमाणपत्र (PUC)",
+            "numberLabel": "PUC नंबर",
+            "expiryLabel": "PUC समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "वाहन फोटो"
+          }
+        },
+        "truck_city": {
+          "rc": {
+            "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",
+            "numberLabel": "RC नंबर",
+            "expiryLabel": "RC समाप्ति"
+          },
+          "insurance": {
+            "label": "बीमा प्रमाणपत्र",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "बीमा समाप्ति"
+          },
+          "puc": {
+            "label": "प्रदूषण प्रमाणपत्र (PUC)",
+            "numberLabel": "PUC नंबर",
+            "expiryLabel": "PUC समाप्ति"
+          },
+          "fitness": {
+            "label": "फिटनेस सर्टिफिकेट",
+            "numberLabel": "फिटनेस सर्टि. नंबर",
+            "expiryLabel": "फिटनेस समाप्ति"
+          },
+          "permit": {
+            "label": "वाहन परमिट",
+            "numberLabel": "परमिट नंबर",
+            "expiryLabel": "परमिट समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "वाहन फोटो (सामने से)"
+          },
+          "vehicle_photo_side": {
+            "label": "वाहन फोटो (साइड से)"
+          }
+        },
+        "truck_outstation": {
+          "rc": {
+            "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",
+            "numberLabel": "RC नंबर",
+            "expiryLabel": "RC समाप्ति"
+          },
+          "insurance": {
+            "label": "बीमा प्रमाणपत्र",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "बीमा समाप्ति"
+          },
+          "puc": {
+            "label": "प्रदूषण प्रमाणपत्र (PUC)",
+            "numberLabel": "PUC नंबर",
+            "expiryLabel": "PUC समाप्ति"
+          },
+          "fitness": {
+            "label": "फिटनेस सर्टिफिकेट",
+            "numberLabel": "फिटनेस सर्टि. नंबर",
+            "expiryLabel": "फिटनेस समाप्ति"
+          },
+          "national_permit": {
+            "label": "राष्ट्रीय परमिट",
+            "numberLabel": "राष्ट्रीय परमिट नंबर",
+            "expiryLabel": "परमिट समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "वाहन फोटो"
+          }
+        },
+        "packers": {
+          "gst_cert": {
+            "label": "GST सर्टिफिकेट",
+            "numberLabel": "GST नंबर"
+          },
+          "goods_insurance": {
+            "label": "माल बीमा",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "वाहन / टीम फोटो"
+          }
+        },
+        "ambulance": {
+          "rc": {
+            "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",
+            "numberLabel": "RC नंबर",
+            "expiryLabel": "RC समाप्ति"
+          },
+          "insurance": {
+            "label": "बीमा प्रमाणपत्र",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "बीमा समाप्ति"
+          },
+          "emt_cert": {
+            "label": "EMT / पैरामेडिक सर्टिफिकेट",
+            "numberLabel": "सर्टिफिकेट नंबर",
+            "expiryLabel": "समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "एम्बुलेंस फोटो (सामने से)"
+          },
+          "vehicle_photo_side": {
+            "label": "एम्बुलेंस फोटो (साइड से)"
+          }
+        }
+      },
+      "alerts": {
+        "fillPersonal": "सभी व्यक्तिगत जानकारी भरें",
+        "invalidDobTitle": "अमान्य जन्म तिथि",
+        "invalidDobMsg": "DD-MM-YYYY फॉर्मेट में डालें, जैसे 15-08-1995",
+        "fillVehicle": "वाहन नंबर और मॉडल भरें",
+        "gstRequired": "GST नंबर आवश्यक है",
+        "missingDocsTitle": "दस्तावेज़ अधूरे हैं",
+        "missingDocsMsg": "कृपया अपलोड करें: {{list}}",
+        "fillBank": "सभी बैंक जानकारी भरें",
+        "agreeTermsAlert": "कृपया नियम व शर्तों से सहमत हों",
+        "agreeMvagAlert": "जारी रखने के लिए MVAG स्व-घोषणा स्वीकार करें",
+        "submittedTitle": "पंजीकरण जमा हो गया!",
+        "submittedPartial": "{{uploaded}} दस्तावेज़ अपलोड हुए, {{failed}} असफल रहे। दस्तावेज़ टैब से फिर से अपलोड करें।",
+        "submittedFull": "आपका अकाउंट और दस्तावेज़ समीक्षा में हैं।",
+        "submitErrorTitle": "गड़बड़ी",
+        "submitErrorMsg": "पंजीकरण असफल रहा। फिर से कोशिश करें।"
+      }
+    }
+  },
+  "home": {
+    "greeting": "नमस्ते, {{name}}",
+    "subGreeting": "आज कमाई के लिए तैयार हैं?",
+    "driverFallback": "ड्राइवर",
+    "toggle": {
+      "onlineTitle": "आप ऑनलाइन हैं",
+      "offlineTitle": "आप ऑफलाइन हैं",
+      "onlineSub": "राइड रिक्वेस्ट स्वीकार हो रही हैं",
+      "offlineSub": "कमाई शुरू करने के लिए ऑनलाइन जाएं"
+    },
+    "statusLabels": {
+      "accepted": "पिकअप की तरफ जा रहे हैं",
+      "arriving": "पिकअप पर पहुंच गए",
+      "inProgress": "ट्रिप जारी है"
+    },
+    "activeRide": {
+      "fallbackTitle": "राइड जारी है"
+    },
+    "verifyBanner": {
+      "title": "⏳ सत्यापन जारी है",
+      "text": "आपके दस्तावेज़ मंजूर होते ही आप ऑनलाइन जा सकेंगे।",
+      "pendingCount": "{{count}} पेंडिंग",
+      "rejectedCount": "{{count}} रिजेक्ट",
+      "link": "दस्तावेज़ देखें →"
+    },
+    "blockedBanner": {
+      "text": "🚫 अकाउंट सस्पेंड — वॉलेट -₹1,000 से नीचे। बकाया चुकाने के लिए सपोर्ट से संपर्क करें।",
+      "link": "लेजर देखें →"
+    },
+    "stats": {
+      "title": "आपके आंकड़े",
+      "rating": "रेटिंग",
+      "totalRides": "कुल राइड्स"
+    },
+    "recentTrips": {
+      "title": "हाल की ट्रिप्स"
+    },
+    "reviews": {
+      "title": "हाल की समीक्षाएं"
+    },
+    "tips": {
+      "title": "ज़्यादा कमाई के लिए टिप्स",
+      "item1": "पीक ऑवर्स: सुबह 8-10 बजे, शाम 5-9 बजे",
+      "item2": "ज़्यादा डिमांड: कनॉट प्लेस, साइबर हब",
+      "item3": "ज़्यादा रिक्वेस्ट के लिए रेटिंग 4.5 से ऊपर रखें"
+    },
+    "popup": {
+      "title": "नई राइड रिक्वेस्ट!",
+      "serviceFallback": "राइड",
+      "distanceLabel": "दूरी",
+      "fareLabel": "किराया",
+      "typeLabel": "प्रकार",
+      "typeFallback": "कैब",
+      "reject": "✕  रिजेक्ट करें",
+      "accept": "✓  स्वीकार करें",
+      "batteryHint": "🔋 बैटरी 15% से कम — स्वीकार करने के लिए चार्ज करें",
+      "countdownSec": "सेक"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 बैटरी बहुत कम है",
+      "batteryTooLowMsg": "आपकी बैटरी 15% से कम है। राइड स्वीकार करने के लिए कृपया अपना फ़ोन चार्ज करें। ट्रिप के दौरान आपके फ़ोन का चालू रहना राइडर्स के लिए ज़रूरी है!",
+      "acceptError": "राइड स्वीकार नहीं हो सकी",
+      "lowBatteryTitle": "⚠️ बैटरी कम है",
+      "lowBatteryMsg": "बैटरी कम है ({{pct}}%)। जब तक आप 15% से ऊपर चार्ज नहीं करते या चार्जर नहीं लगाते, आप राइड स्वीकार नहीं कर पाएंगे।",
+      "driverIdMissing": "ड्राइवर ID नहीं मिली। कृपया दोबारा लॉग इन करें।",
+      "sessionExpiredTitle": "सेशन खत्म हो गया",
+      "sessionExpiredMsg": "जारी रखने के लिए कृपया दोबारा लॉग इन करें।",
+      "verificationTitle": "⏳ सत्यापन जारी है",
+      "verificationMsg": "आपके दस्तावेज़ मंजूर होते ही आप ऑनलाइन जा सकेंगे।",
+      "viewDocuments": "दस्तावेज़ देखें",
+      "updateStatusError": "स्थिति अपडेट नहीं हो सकी"
+    }
+  },
+  "orders": {
+    "title": {
+      "current": "मौजूदा राइड",
+      "requests": "राइड रिक्वेस्ट्स"
+    },
+    "subtitle": {
+      "loading": "लोड हो रहा है...",
+      "enableLocation": "रिक्वेस्ट देखने के लिए लोकेशन ऑन करें",
+      "newRequestsWaiting_one": "{{count}} नई रिक्वेस्ट इंतज़ार में",
+      "newRequestsWaiting_other": "{{count}} नई रिक्वेस्ट्स इंतज़ार में",
+      "requestsNearYou_one": "{{count}} रिक्वेस्ट आपके पास",
+      "requestsNearYou_other": "{{count}} रिक्वेस्ट्स आपके पास"
+    },
+    "status": {
+      "headingToRider": "राइडर की तरफ जा रहे हैं",
+      "arrivedPickup": "पिकअप पर पहुंच गए",
+      "tripInProgress": "ट्रिप जारी है"
+    },
+    "nextAction": {
+      "arriving": "मैं पहुंच रहा/रही हूं",
+      "startRide": "पिक अप किया · राइड शुरू करें",
+      "complete": "ट्रिप पूरी करें"
+    },
+    "map": {
+      "back": "← वापस",
+      "pickupDistPrefix": "📍 राइडर {{dist}}",
+      "dropDistPrefix": "🏁 ड्रॉप {{dist}}",
+      "markerYou": "आप",
+      "markerPickup": "पिकअप",
+      "markerDrop": "ड्रॉप"
+    },
+    "sheet": {
+      "routeTitle": "रूट",
+      "fareTitle": "किराया",
+      "estimated": "अनुमानित",
+      "yourEarnings": "आपकी कमाई (80%)",
+      "distance": "दूरी",
+      "expandHint": "▲  रूट विवरण",
+      "collapse": "▼  छोटा करें"
+    },
+    "restorePill": "↑ {{name}} विवरण",
+    "restorePillFallback": "राइड",
+    "card": {
+      "mapChip": "🗺 मैप देखें",
+      "navigate": "🗺 नेविगेट करें",
+      "call": "📞 कॉल करें",
+      "cancelRide": "राइड रद्द करें",
+      "toPickup": "📍 पिकअप तक {{dist}}",
+      "toDrop": "🏁 ड्रॉप तक {{dist}}",
+      "distanceFromYou": "🚗 आपसे {{dist}} दूर",
+      "tripDistance": "{{km}} किमी की ट्रिप",
+      "lockedNotice": "🔒 स्वीकार करने के लिए मौजूदा राइड पूरी करें",
+      "reject": "✕ रिजेक्ट करें",
+      "accept": "✓ स्वीकार करें"
+    },
+    "pending": {
+      "title": "आने वाली रिक्वेस्ट्स"
+    },
+    "empty": {
+      "looking": "राइड ढूंढी जा रही है...",
+      "noRequestsActive": "अभी कोई नई रिक्वेस्ट नहीं",
+      "noRequestsIdle": "अभी कोई राइड रिक्वेस्ट नहीं",
+      "subActive": "मौजूदा राइड पूरी करते समय नई रिक्वेस्ट्स यहां दिखेंगी",
+      "subIdle": "हर 4 सेकंड में अपने आप नई रिक्वेस्ट्स दिखती हैं"
+    },
+    "otp": {
+      "title": "राइड OTP दर्ज करें",
+      "subtitle": "राइड शुरू करने के लिए राइडर के ऐप पर दिख रहा 4-अंकों का OTP मांगें",
+      "verify": "राइड शुरू करें",
+      "errors": {
+        "bookingNotFound": "बुकिंग नहीं मिली। कृपया रिफ्रेश करें।",
+        "enterOtp": "4-अंकों का OTP दर्ज करें",
+        "invalid": "गलत OTP। दोबारा कोशिश करें।"
+      }
+    },
+    "completion": {
+      "title": "ट्रिप पूरी हुई!",
+      "sub": "बढ़िया काम, {{name}} सुरक्षित पहुंच गए",
+      "totalFare": "कुल किराया",
+      "yourEarnings": "आपकी कमाई",
+      "distance": "दूरी",
+      "done": "हो गया"
+    },
+    "voice": {
+      "accepted": "राइड स्वीकार हो गई। पिकअप लोकेशन की तरफ बढ़ें",
+      "arriving": "आप पिकअप पॉइंट पर पहुंच गए हैं। राइडर का इंतज़ार करें",
+      "inProgress": "ट्रिप शुरू हो गई। ड्रॉप लोकेशन की तरफ बढ़ें",
+      "completed": "ट्रिप पूरी हो गई। बढ़िया काम!",
+      "approachingDrop": "ड्रॉप लोकेशन लगभग 500 मीटर दूर है",
+      "atDrop": "आप ड्रॉप लोकेशन के करीब हैं। रुकने की तैयारी करें",
+      "approachingPickup": "पिकअप लोकेशन लगभग 500 मीटर दूर है",
+      "atPickup": "आप पिकअप लोकेशन पर हैं। राइडर का इंतज़ार करें"
+    },
+    "alerts": {
+      "batteryTooLowTitle": "🔋 बैटरी बहुत कम है",
+      "batteryTooLowMsg": "आपकी बैटरी 15% से कम है। राइड स्वीकार करने के लिए कृपया अपना फ़ोन चार्ज करें। ट्रिप के दौरान आपके फ़ोन का चालू रहना राइडर्स के लिए ज़रूरी है!",
+      "cannotAcceptTitle": "स्वीकार नहीं हो सकी",
+      "cannotAcceptMsg": "बुकिंग स्वीकार नहीं हो सकी",
+      "updateStatusError": "स्थिति अपडेट नहीं हो सकी",
+      "cancelRideTitle": "राइड रद्द करें",
+      "cancelRideMsg": "क्या आप वाकई यह राइड रद्द करना चाहते हैं? बार-बार रद्द करने पर आपका अकाउंट कुछ समय के लिए ब्लॉक हो सकता है।",
+      "keepRide": "राइड रखें",
+      "yesCancel": "हां, रद्द करें",
+      "cancelRideError": "राइड रद्द नहीं हो सकी। कृपया दोबारा कोशिश करें।",
+      "callRiderTitle": "राइडर को कॉल करें",
+      "callRiderMsg": "{{phone}} पर {{name}} को कॉल करें?",
+      "callRiderFallback": "राइडर",
+      "callBtn": "कॉल करें"
+    },
+    "chat": {
+      "quickReplies": [
+        "मैं पहुंच गया/गई हूं",
+        "5 मिनट दूर हूं",
+        "ट्रैफिक की वजह से देर हो रही है, आ रहा/रही हूं"
+      ],
+      "rideInProgress": "राइड जारी है",
+      "chatUnavailable": "चैट उपलब्ध नहीं है",
+      "emptySendMsg": "अपने राइडर को मैसेज भेजें।",
+      "emptyBeforeAccept": "राइड स्वीकार करते ही चैट खुलेगी।",
+      "inputPlaceholder": "मैसेज टाइप करें...",
+      "disabledBarText": "💬 राइड स्वीकार करते ही चैट उपलब्ध होगी"
+    }
+  },
+  "sos": {
+    "floatingLabel": "SOS",
+    "inlineTitle": "तुरंत खतरे में हैं?",
+    "inlineSub": "इमरजेंसी SOS के लिए टैप करें",
+    "sheetTitle": "🚨 इमरजेंसी SOS",
+    "sheetSub": "क्या आप खतरे में हैं? एक विकल्प चुनें:",
+    "callPolice": "📞 पुलिस को कॉल करें (112)",
+    "callAmbulance": "📞 एम्बुलेंस को कॉल करें (108)",
+    "shareLocation": "📤 लाइव लोकेशन शेयर करें",
+    "alertSupport": "🎧 bogie सपोर्ट को सूचित करें",
+    "emergencyMessage": "🚨 इमरजेंसी! मुझे मदद चाहिए। मैं एक bogie ट्रिप पर हूं। मेरी लाइव लोकेशन: {{link}}\nबुकिंग: #{{id}}",
+    "riderLine": "राइडर: {{name}}",
+    "locationUnavailable": "लोकेशन उपलब्ध नहीं है",
+    "shareLocationTitle": "लोकेशन शेयर करें",
+    "shareLocationMsg": "{{name}} को इमरजेंसी अलर्ट भेजें?",
+    "shareLocationFallbackName": "अपने इमरजेंसी कॉन्टैक्ट",
+    "shareViaOtherApps": "दूसरे ऐप्स से शेयर करें",
+    "smsToContact": "{{name}} को SMS करें",
+    "smsFallbackName": "कॉन्टैक्ट",
+    "shareErrorMsg": "लोकेशन शेयर नहीं हो सकी। कृपया दोबारा कोशिश करें।",
+    "supportHelpTitle": "✅ मदद आ रही है",
+    "supportHelpMsg": "bogie सपोर्ट को आपकी लोकेशन और राइड की जानकारी के साथ सूचित कर दिया गया है। शांत रहें — मदद आ रही है।",
+    "supportQueuedTitle": "अलर्ट भेजा जा चुका है",
+    "supportQueuedMsg": "अभी हम सपोर्ट तक नहीं पहुंच पाए। अगर यह ज़रूरी है, तो कृपया सीधे 112 पर कॉल करें।"
+  },
+  "earnings": {
+    "pageTitle": "कमाई",
+    "filterByPeriod": "अवधि के अनुसार फ़िल्टर करें",
+    "earned": "कमाया",
+    "debited": "डेबिट हुआ",
+    "net": "नेट",
+    "thisWeek": "इस हफ्ते",
+    "earningsLabel": "कमाई",
+    "timeSpent": "बिताया समय",
+    "tripsTaken": "पूरी की गई ट्रिप",
+    "todaySummary": "आज का सारांश",
+    "trips": "ट्रिप्स",
+    "trip": "ट्रिप",
+    "noTripsToday": "इस दिन कोई ट्रिप नहीं",
+    "days": {
+      "mon": "सोम", "tue": "मंगल", "wed": "बुध", "thu": "गुरु",
+      "fri": "शुक्र", "sat": "शनि", "sun": "रवि"
+    }
+  },
+  "documents": {
+    "title": "मेरे दस्तावेज़",
+    "verifiedCount": "{{approved}}/{{total}} सत्यापित",
+    "allVerified": "सभी दस्तावेज़ सत्यापित हो गए!",
+    "pendingCount": "{{count}} दस्तावेज़ बाकी है",
+    "pendingCount_other": "{{count}} दस्तावेज़ बाकी हैं",
+    "loading": "दस्तावेज़ लोड हो रहे हैं...",
+    "completeRegistrationFirst": "पहले अपना पंजीकरण पूरा करें",
+    "noDocsRequired": "अभी कोई दस्तावेज़ आवश्यक नहीं है",
+    "required": "आवश्यक",
+    "policeClearanceHelp": "अपना PCC अपने स्थानीय पुलिस स्टेशन से या अपने राज्य के पुलिस ऑनलाइन पोर्टल से प्राप्त करें (दिल्ली: Delhi Police Citizen Services)। सर्टिफिकेट का PDF/फोटो यहां अपलोड करें।",
+    "pdf": "PDF",
+    "image": "इमेज",
+    "view": "देखें",
+    "reupload": "फिर से अपलोड करें",
+    "uploadFile": "फ़ाइल अपलोड करें",
+    "formatNote": "स्वीकृत: JPG, PNG, PDF · अधिकतम 10MB",
+    "status": {
+      "approved": "स्वीकृत",
+      "rejected": "अस्वीकृत",
+      "pending": "समीक्षाधीन",
+      "missing": "अपलोड नहीं हुआ"
+    },
+    "alerts": {
+      "loadErrorTitle": "गड़बड़ी",
+      "loadErrorMsg": "दस्तावेज़ लोड नहीं हो सके",
+      "fileTooLargeTitle": "फ़ाइल बहुत बड़ी है",
+      "fileTooLargeMsg": "कृपया 10MB से कम की फ़ाइल अपलोड करें",
+      "invalidTypeTitle": "अमान्य फ़ाइल प्रकार",
+      "invalidTypeMsg": "केवल JPG, PNG और PDF फ़ाइलें ही मान्य हैं",
+      "uploadedTitle": "अपलोड हो गया",
+      "uploadedMsg": "{{label}} समीक्षा के लिए भेज दिया गया है।",
+      "uploadFailedTitle": "अपलोड असफल रहा",
+      "uploadFailedMsg": "कृपया फिर से कोशिश करें",
+      "deleteTitle": "दस्तावेज़ हटाएं?",
+      "deleteMsg": "{{label}} हटाएं? आपको इसे दोबारा अपलोड करना होगा।",
+      "deleteErrorMsg": "दस्तावेज़ हटाया नहीं जा सका"
+    }
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "unreadCount": "{{count}} अपठित",
+    "emptyTitle": "कोई सूचना नहीं",
+    "emptyAll": "ऑफ़र, घोषणाएं और खबरें यहां दिखेंगी",
+    "emptyCategory": "कोई {{category}} सूचना नहीं",
+    "categories": {
+      "all": "सभी",
+      "goodwill": "सद्भावना",
+      "incentives": "इंसेंटिव",
+      "suspension": "निलंबन",
+      "updates": "अपडेट"
+    },
+    "timeAgo": {
+      "justNow": "अभी अभी",
+      "minutes": "{{count}} मिनट पहले",
+      "hours": "{{count}} घंटे पहले",
+      "days": "{{count}} दिन पहले"
+    }
+  },
+  "profile": {
+    "home": {
+      "signOutTitle": "साइन आउट",
+      "signOutMsg": "क्या आप वाकई साइन आउट करना चाहते हैं?",
+      "chatWithSupport": "सपोर्ट से चैट करें",
+      "supportSub": "24/7 · AI + मानव एजेंट",
+      "version": "bogie ड्राइवर v1.0.0"
+    },
+    "settings": {
+      "title": "सेटिंग्स",
+      "language": "भाषा",
+      "languageSub": "अपनी पसंदीदा भाषा चुनें"
+    },
+    "ledger": {
+      "title": "लेजर",
+      "blockedText": "खाता निलंबित — वॉलेट -₹1,000 से कम है।\nबकाया चुकाने के लिए सपोर्ट से संपर्क करें।",
+      "lowBalanceText": "न्यूनतम बैलेंस से कम — निकालने के लिए ₹500 बनाए रखें।",
+      "balanceLabel": "लेजर बैलेंस",
+      "minBalanceLabel": "न्यूनतम बैलेंस",
+      "withdraw": "₹{{amount}} निकालें",
+      "clearDues": "बकाया चुकाएं",
+      "maintainInfo": "निकालने के लिए ₹500 लेजर बैलेंस बनाए रखें",
+      "totalEarnings": "कुल कमाई",
+      "totalRides": "कुल राइड्स",
+      "monthlyStatement": "मासिक विवरण",
+      "downloadStatement": "विवरण डाउनलोड करें",
+      "updateNeededTitle": "अपडेट ज़रूरी है",
+      "updateNeededMsg": "स्टेटमेंट डाउनलोड करने के लिए ऐप का नया अपडेट चाहिए। कृपया bogie अपडेट करने के बाद फिर देखें।",
+      "downloadErrorTitle": "गड़बड़ी",
+      "downloadErrorMsg": "स्टेटमेंट डाउनलोड नहीं हो सका। फिर से कोशिश करें।",
+      "noTransactions": "अभी तक कोई लेनदेन नहीं",
+      "noTransactionsSub": "अपना लेजर देखने के लिए ट्रिप पूरी करें",
+      "transactions": "लेनदेन",
+      "crn": "CRN {{crn}}",
+      "entryLabels": {
+        "registrationFee": "पंजीकरण शुल्क",
+        "commission": "bogie कमीशन (20%)",
+        "tripEarnings": "ट्रिप कमाई",
+        "referralBonus": "रेफ़रल बोनस — दोस्त की पहली ट्रिप",
+        "transaction": "लेनदेन"
+      }
+    },
+    "payments": {
+      "title": "भुगतान",
+      "tripEarnings": "ट्रिप कमाई",
+      "unknownDestination": "अज्ञात गंतव्य",
+      "crnDesc": "CRN: {{crn}} · {{drop}}",
+      "success": "सफल",
+      "noMoreItems": "और आइटम नहीं हैं",
+      "noPaymentsYet": "अभी तक कोई भुगतान नहीं",
+      "noPaymentsSub": "यहां कमाई देखने के लिए ट्रिप पूरी करें"
+    },
+    "contact": {
+      "title": "हमसे संपर्क करें",
+      "forDrivers": "ड्राइवरों के लिए",
+      "callSupport": "सपोर्ट को कॉल करें",
+      "emailSupport": "ईमेल सपोर्ट",
+      "helpline": {
+        "title": "ड्राइवर हेल्पलाइन",
+        "hours": "उपलब्ध: सुबह 8 बजे – रात 10 बजे, सातों दिन"
+      },
+      "email": {
+        "title": "ईमेल सपोर्ट",
+        "responseTime": "4 घंटे के अंदर जवाब"
+      },
+      "chat": {
+        "title": "इन-ऐप चैट",
+        "line1": "होम स्क्रीन पर उपलब्ध",
+        "line2": "सबसे तेज़ जवाब"
+      },
+      "office": {
+        "title": "ऑफिस का पता"
+      },
+      "emergency": {
+        "title": "आपातकाल",
+        "danger": "अगर आप खतरे में हैं",
+        "accident": "सड़क दुर्घटना",
+        "medical": "मेडिकल इमरजेंसी",
+        "call": "{{num}} पर कॉल करें"
+      }
+    },
+    "edit": {
+      "title": "प्रोफ़ाइल एडिट करें",
+      "selectLanguage": "भाषा चुनें",
+      "savedTitle": "सेव हो गया",
+      "savedMsg": "प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई।",
+      "savedLocallyTitle": "स्थानीय रूप से सेव हुआ",
+      "savedLocallyMsg": "पता सेव हो गया। ऑनलाइन होने पर सिंक होगा।",
+      "defaultDriverName": "ड्राइवर",
+      "personalInfo": "व्यक्तिगत जानकारी",
+      "homeAddress": "घर का पता",
+      "homeAddressPlaceholder": "अपना घर का पता दर्ज करें",
+      "mobileNumber": "मोबाइल नंबर",
+      "languagePrefs": "भाषा प्राथमिकताएं",
+      "appLanguage": "पसंदीदा ऐप भाषा",
+      "trainingLanguage": "ट्रेनिंग भाषा",
+      "saving": "सेव हो रहा है…",
+      "saveChanges": "बदलाव सेव करें"
+    },
+    "help": {
+      "title": "सहायता और सपोर्ट",
+      "invalidPhone": "एक सही फोन नंबर दर्ज करें",
+      "savedTitle": "सेव हो गया",
+      "savedMsg": "जब आप लाइव लोकेशन शेयर करेंगे, तो हम इसे इस संपर्क को भेजने का विकल्प देंगे।",
+      "saveErrorMsg": "सेव नहीं हो सका। कृपया फिर से कोशिश करें।",
+      "emergencyNumbersTitle": "आपातकालीन नंबर",
+      "emergencyContactTitle": "आपातकालीन संपर्क",
+      "nameLabel": "नाम",
+      "namePlaceholder": "जैसे पति/पत्नी, भाई",
+      "phoneLabel": "फोन नंबर",
+      "phonePlaceholder": "10 अंकों का मोबाइल नंबर",
+      "contactHint": "जब आप SOS में लाइव लोकेशन शेयर करेंगे, तो हम इसे सीधे इस संपर्क को SMS से भेजने का विकल्प देंगे।",
+      "contactSupportTitle": "सपोर्ट से संपर्क करें",
+      "contactAvailability": "उपलब्ध: सुबह 8 बजे – रात 10 बजे, हर दिन",
+      "emergencyNumbers": {
+        "police": "पुलिस",
+        "ambulance": "एम्बुलेंस"
+      },
+      "faq": {
+        "sections": {
+          "rideIssues": "राइड से जुड़े मुद्दे",
+          "earnings": "कमाई",
+          "documents": "दस्तावेज़",
+          "technical": "तकनीकी"
+        },
+        "rideIssues": {
+          "accept": {
+            "q": "मैं राइड रिक्वेस्ट कैसे स्वीकार करूं?",
+            "a": "जब नई रिक्वेस्ट आए, तो 30 सेकंड के अंदर Accept पर टैप करें। स्वीकार न करने पर रिक्वेस्ट अपने आप खत्म हो जाती है।"
+          },
+          "cancel": {
+            "q": "क्या मैं स्वीकार की गई राइड कैंसिल कर सकता हूं?",
+            "a": "हां, लेकिन पिकअप पॉइंट पर पहुंचने से पहले ही। बार-बार कैंसिल करने से आपकी रेटिंग पर असर पड़ता है और जुर्माना भी लग सकता है।"
+          }
+        },
+        "earnings": {
+          "paid": {
+            "q": "मुझे भुगतान कब मिलता है?",
+            "a": "कमाई आपके लेजर खाते में जमा होती जाती है। जब आपका बैलेंस ₹500 से ज़्यादा हो जाए, तब आप निकाल सकते हैं।"
+          },
+          "commission": {
+            "q": "कमीशन कैसे तय होता है?",
+            "a": "bogie हर ट्रिप पर 20% कमीशन लेता है। बाकी 80% किराया सीधे आपके लेजर में जमा होता है।"
+          },
+          "negativeBalance": {
+            "q": "मेरा लेजर बैलेंस नेगेटिव क्यों है?",
+            "a": "नेगेटिव बैलेंस का मतलब है कि आपका bogie पर कुछ बकाया है। निकासी फिर से शुरू करने के लिए बकाया चुकाएं।"
+          }
+        },
+        "documents": {
+          "rejected": {
+            "q": "मेरे दस्तावेज़ रिजेक्ट हो गए। अब क्या करें?",
+            "a": "Docs टैब में रिजेक्शन की वजह देखें। सही और साफ दस्तावेज़ दोबारा अपलोड करें।"
+          },
+          "verifyTime": {
+            "q": "मेरे दस्तावेज़ कब वेरिफाई होंगे?",
+            "a": "वेरिफिकेशन में आमतौर पर 24-48 कार्य-घंटे लगते हैं। पूरा होने पर आपको सूचना मिलेगी।"
+          }
+        },
+        "technical": {
+          "noRides": {
+            "q": "ऐप में राइड रिक्वेस्ट नहीं दिख रही।",
+            "a": "फोन की सेटिंग्स में लोकेशन परमिशन को हमेशा ऑन रखें। इंटरनेट कनेक्शन चेक करें और ऑफलाइन/ऑनलाइन एक बार टॉगल करके देखें।"
+          },
+          "gpsInaccurate": {
+            "q": "GPS सही जगह नहीं दिखा रहा।",
+            "a": "ऊंची इमारतों से दूर, खुली जगह पर जाएं। लोकेशन को ऑफ करके फिर ऑन करें। अगर समस्या बनी रहे तो ऐप को रीस्टार्ट करें।"
+          }
+        }
+      }
+    },
+    "refer": {
+      "title": "रेफर करें और कमाएं",
+      "loadError": "आपका रेफ़रल कोड लोड नहीं हो सका।",
+      "shareMessage": "🚖 bogie के साथ ड्राइव करें! साइन अप करते समय मेरा रेफ़रल कोड *{{code}}* इस्तेमाल करें और कमाई शुरू करें। डाउनलोड करें: {{link}}",
+      "copiedTitle": "कॉपी हो गया",
+      "codeCopiedMsg": "रेफ़रल कोड क्लिपबोर्ड पर कॉपी हो गया",
+      "linkCopiedMsg": "रेफ़रल लिंक क्लिपबोर्ड पर कॉपी हो गई",
+      "heroTitle": "एक ड्राइवर को रेफर करें, ₹50 कमाएं!",
+      "heroSub": "जब वे अपनी पहली ट्रिप पूरी करेंगे तो आपको ₹50 मिलेंगे। और अगर वे किसी और को रेफर करते हैं, तो ₹25 और मिलेंगे!",
+      "yourCode": "आपका रेफ़रल कोड",
+      "copy": "📋 कॉपी करें",
+      "shareWhatsApp": "💬 WhatsApp पर शेयर करें",
+      "copyLink": "🔗 लिंक कॉपी करें",
+      "driversJoined": "जुड़े ड्राइवर",
+      "earned": "कमाई",
+      "pending": "बकाया",
+      "myReferrals": "मेरे रेफ़रल",
+      "noReferralsYet": "अभी तक कोई रेफ़रल नहीं",
+      "noReferralsSub": "कमाई शुरू करने के लिए अपना कोड शेयर करें",
+      "viaYourReferral": " (आपके रेफ़रल से)",
+      "joined": "{{date}} को जुड़े",
+      "status": {
+        "pending": "⏳ पहली ट्रिप बाकी",
+        "credited": "✅ जमा हो गया"
+      }
+    },
+    "terms": {
+      "title": "सेवा की शर्तें"
+    },
+    "privacy": {
+      "title": "गोपनीयता नीति"
+    },
+    "training": {
+      "title": "ट्रेनिंग",
+      "bannerTitle": "ड्राइवर ट्रेनिंग",
+      "bannerSub": "bogie पार्टनर ट्रेनिंग में आपका स्वागत है",
+      "moduleNum": "मॉड्यूल {{num}}",
+      "unlockAfter3": "अनलॉक करने के लिए मॉड्यूल 3 पूरा करें",
+      "unlockAfter4": "अनलॉक करने के लिए मॉड्यूल 4 पूरा करें",
+      "support": "सपोर्ट:",
+      "modules": {
+        "gettingStarted": {
+          "title": "शुरुआत करें",
+          "items": {
+            "useApp": "bogie ड्राइवर ऐप का इस्तेमाल कैसे करें",
+            "acceptReject": "राइड स्वीकार और रिजेक्ट करना",
+            "navigation": "नेविगेशन की बुनियादी बातें",
+            "onlineOffline": "ऑनलाइन/ऑफलाइन होना"
+          }
+        },
+        "customerService": {
+          "title": "ग्राहक सेवा",
+          "items": {
+            "excellentService": "बेहतरीन सेवा देना",
+            "greeting": "यात्रियों का अभिवादन करना",
+            "complaints": "शिकायतें संभालना",
+            "ratingSystem": "रेटिंग सिस्टम को समझना"
+          }
+        },
+        "safetyGuidelines": {
+          "title": "सुरक्षा दिशानिर्देश",
+          "items": {
+            "roadSafety": "सड़क और यात्री सुरक्षा",
+            "trafficRules": "ट्रैफिक नियमों की याद",
+            "emergencyProcedures": "आपातकालीन प्रक्रियाएं",
+            "accidentReporting": "दुर्घटना की रिपोर्ट करना"
+          }
+        },
+        "earningsPayments": {
+          "title": "कमाई और भुगतान",
+          "items": {
+            "understandingEarnings": "अपनी कमाई को समझना",
+            "ledgerCommissions": "लेजर और कमीशन",
+            "withdrawalProcess": "निकासी की प्रक्रिया"
+          }
+        },
+        "advancedTips": {
+          "title": "एडवांस्ड टिप्स",
+          "items": {
+            "peakHours": "पीक ऑवर्स की रणनीति",
+            "highDemandAreas": "दिल्ली NCR में ज़्यादा मांग वाले इलाके",
+            "maximizingRatings": "रेटिंग बढ़ाना"
+          }
+        }
+      }
+    }
+  },
+  "support": {
+    "header": "BOGIE सपोर्ट",
+    "aiAvailable": "🤖 AI असिस्टेंट 24/7 उपलब्ध है",
+    "startNewChat": "नई चैट शुरू करें",
+    "emptyTitle": "अभी तक कोई बातचीत नहीं",
+    "emptySub": "हमारी सपोर्ट टीम से मदद लेने के लिए \"नई चैट शुरू करें\" पर टैप करें।",
+    "recentConversations": "हाल की बातचीत",
+    "noMessagesYet": "अभी तक कोई मैसेज नहीं",
+    "supportChat": "सपोर्ट चैट",
+    "sendToStart": "शुरू करने के लिए एक मैसेज भेजें।",
+    "typeMessage": "अपना मैसेज लिखें...",
+    "quickIssuesBtn": "📋 आम समस्याएं ▾",
+    "botName": "🤖 bogie असिस्टेंट",
+    "agentFallback": "सपोर्ट एजेंट",
+    "newChatTitle": "नई सपोर्ट चैट",
+    "whatHelp": "आपको किस चीज़ में मदद चाहिए?",
+    "yourMessage": "आपका मैसेज",
+    "messagePlaceholder": "अपनी समस्या विस्तार से लिखें...",
+    "startChatBtn": "चैट शुरू करें →",
+    "selectCategoryTitle": "एक श्रेणी चुनें",
+    "selectCategoryMsg": "कृपया ऊपर दी गई समस्या श्रेणियों में से किसी एक पर टैप करें।",
+    "addMessageTitle": "एक मैसेज जोड़ें",
+    "addMessageMsg": "कृपया अपनी समस्या विस्तार से बताएं।",
+    "startChatErrorMsg": "चैट शुरू नहीं हो सकी। कृपया फिर से कोशिश करें।",
+    "status": {
+      "open": "खुला",
+      "inProgress": "प्रगति में",
+      "resolved": "✅ हल हो गया"
+    },
+    "timeAgo": {
+      "justNow": "अभी अभी",
+      "minutes": "{{count}} मिनट पहले",
+      "hours": "{{count}} घंटे पहले",
+      "days": "{{count}} दिन पहले"
+    },
+    "quickIssues": {
+      "riderNoShow": "राइडर नहीं आया",
+      "noRides": "ऐप में राइड नहीं दिख रही",
+      "paymentNotReceived": "भुगतान नहीं मिला",
+      "walletIssue": "वॉलेट में समस्या",
+      "accountBlocked": "खाता ब्लॉक है",
+      "docVerification": "दस्तावेज़ सत्यापन",
+      "navigationIssue": "नेविगेशन में समस्या",
+      "emergency": "राइड पर इमरजेंसी"
+    },
+    "categorySubjects": {
+      "riderNoShow": "राइडर के न आने की समस्या",
+      "noRides": "ऐप में राइड नहीं दिख रही",
+      "paymentNotReceived": "भुगतान नहीं मिला",
+      "walletIssue": "ड्राइवर वॉलेट की समस्या",
+      "accountBlocked": "ड्राइवर खाता ब्लॉक है",
+      "docVerification": "दस्तावेज़ सत्यापन की समस्या",
+      "navigationIssue": "नेविगेशन में समस्या",
+      "emergency": "इमरजेंसी - तुरंत मदद चाहिए"
+    }
+  },
+  "errorBoundary": {
+    "title": "कुछ गड़बड़ हो गई",
+    "subtitle": "ऐप में एक गड़बड़ी आई।",
+    "tryAgain": "फिर से कोशिश करें"
+  }
+}
