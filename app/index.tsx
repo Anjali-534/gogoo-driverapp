@@ -6,6 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import axios from "axios";
 import { setDriverProperties } from "@/services/analytics";
 import { requestPermissionsOnce } from "@/services/permissions";
+import { clearSession } from "@/services/session";
 import { useTranslation } from "react-i18next";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
@@ -69,7 +70,7 @@ export default function Index() {
           setTarget("/(app)/home");
         } catch (e: any) {
           if (e.response?.status === 401) {
-            await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+            await clearSession();
             setTarget("/(auth)/login");
           } else {
             // Network error or server down — token may be fine, go to home

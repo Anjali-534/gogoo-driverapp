@@ -17,6 +17,7 @@ import { isBatteryTooLow } from "@/services/battery";
 import { olaDirections, decodePolyline as olaDecodePolyline, logMapsProvider } from "@/services/olamaps";
 import { COLORS, RADIUS } from "@/constants/theme";
 import i18n, { getCurrentLanguage, type LanguageCode } from "@/i18n";
+import { clearSession } from "@/services/session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 const POLL_MS = 4000;
@@ -305,7 +306,7 @@ export default function OrdersScreen() {
     } catch (e: any) {
       if (e.response?.status === 401) {
         setPending([]);
-        await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+        await clearSession();
         router.replace("/(auth)/login" as any);
       }
     } finally {

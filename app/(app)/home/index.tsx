@@ -18,6 +18,7 @@ import {
 } from "@/services/analytics";
 import { registerPushToken } from "@/services/notifications";
 import { getBatteryLevel, isBatteryTooLow } from "@/services/battery";
+import { clearSession } from "@/services/session";
 import * as Notifications from "expo-notifications";
 import { COLORS, RADIUS } from "@/constants/theme";
 
@@ -351,7 +352,7 @@ export default function DriverHomeScreen() {
       if (!res.data?.is_verified && res.data?.driver_id) fetchDocSummary(res.data.driver_id, token);
     } catch (e: any) {
       if (e?.response?.status === 401) {
-        await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+        await clearSession();
         router.replace("/(auth)/login" as any);
       }
     }
@@ -400,7 +401,7 @@ export default function DriverHomeScreen() {
       const token    = await AsyncStorage.getItem("driver_token");
       const driverId = await AsyncStorage.getItem("driver_id");
       if (!token) {
-        await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+        await clearSession();
         router.replace("/(auth)/login" as any);
         return;
       }
@@ -440,12 +441,12 @@ export default function DriverHomeScreen() {
         setIsOnline(newStatus);
       } else {
         Alert.alert(t("common.error"), t("home.alerts.driverIdMissing"));
-        await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+        await clearSession();
         router.replace("/(auth)/login" as any);
       }
     } catch (e: any) {
       if (e?.response?.status === 401) {
-        await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+        await clearSession();
         Alert.alert(t("home.alerts.sessionExpiredTitle"), t("home.alerts.sessionExpiredMsg"), [
           { text: t("common.ok"), onPress: () => router.replace("/(auth)/login" as any) },
         ]);

@@ -10,6 +10,7 @@ import * as Clipboard from "expo-clipboard";
 import axios from "axios";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
+import { clearSession } from "@/services/session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
@@ -46,7 +47,7 @@ export default function DriverReferScreen() {
       } else {
         console.error("referral/my-code failed:", codeRes.reason?.response?.data || codeRes.reason?.message);
         if (codeRes.reason?.response?.status === 401) {
-          await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+          await clearSession();
           router.replace("/(auth)/login" as any);
           return;
         }

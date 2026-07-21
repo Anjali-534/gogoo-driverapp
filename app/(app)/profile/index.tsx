@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
+import { clearSession } from "@/services/session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
@@ -53,7 +54,7 @@ export default function DriverProfileScreen() {
       {
         text: t("profile.home.signOutTitle"), style: "destructive",
         onPress: async () => {
-          await AsyncStorage.multiRemove(["driver_token", "driver_user", "driver_id"]);
+          await clearSession();
           router.replace("/(auth)/login");
         },
       },
