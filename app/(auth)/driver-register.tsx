@@ -9,6 +9,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
+import { setToken } from "@/services/session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
@@ -217,7 +218,7 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
       const driverId = signupRes.data?.driver_id;
       const res = await axios.post(`${API}/auth/login`, { email, password });
       const token = res.data.access_token;
-      await AsyncStorage.setItem("driver_token", token);
+      await setToken(token);
       await AsyncStorage.setItem("driver_user", JSON.stringify(res.data.user));
       if (driverId) await AsyncStorage.setItem("driver_id", driverId);
       await AsyncStorage.removeItem("pending_referral_code");

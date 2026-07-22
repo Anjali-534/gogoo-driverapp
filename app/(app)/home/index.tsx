@@ -18,7 +18,7 @@ import {
 } from "@/services/analytics";
 import { registerPushToken } from "@/services/notifications";
 import { getBatteryLevel, isBatteryTooLow } from "@/services/battery";
-import { clearSession } from "@/services/session";
+import { clearSession, getToken } from "@/services/session";
 import * as Notifications from "expo-notifications";
 import { COLORS, RADIUS } from "@/constants/theme";
 
@@ -160,7 +160,7 @@ export default function DriverHomeScreen() {
 
   const restoreActiveRide = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const res = await api.get(`/gogoo/driver/active-booking`, {
         timeout: 5000,
@@ -175,7 +175,7 @@ export default function DriverHomeScreen() {
 
   const fetchActiveBooking = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const abRes = await api.get(`/gogoo/driver/active-booking`);
       if (abRes.data?.booking_id) {
@@ -198,7 +198,7 @@ export default function DriverHomeScreen() {
     if (!isOnline) return;
     const poll = setInterval(async () => {
       try {
-        const token = await AsyncStorage.getItem("driver_token");
+        const token = await getToken();
         if (!token) return;
         const res = await api.get(`/gogoo/bookings-pending`);
         const bookings: any[] = res.data?.bookings || res.data || [];
@@ -302,7 +302,7 @@ export default function DriverHomeScreen() {
 
   const fetchUnreadCount = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const res = await api.get(`/gogoo/driver/notifications/unread-count`);
       const count = res.data?.count || 0;
@@ -320,7 +320,7 @@ export default function DriverHomeScreen() {
 
   const fetchProfile = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const res = await api.get(`/gogoo/driver/profile`);
       if (res.data?.driver_id)               await AsyncStorage.setItem("driver_id", res.data.driver_id);
@@ -349,7 +349,7 @@ export default function DriverHomeScreen() {
 
   const fetchRecentReviews = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const res = await api.get(`/gogoo/driver/reviews`);
       setRecentReviews(res.data || []);
@@ -358,7 +358,7 @@ export default function DriverHomeScreen() {
 
   const fetchRecentTrips = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       if (!token) return;
       const res = await api.get(`/gogoo/driver/bookings`);
       setRecentTrips((res.data || []).slice(0, 10));
@@ -369,7 +369,7 @@ export default function DriverHomeScreen() {
     setToggling(true);
     const newStatus = !isOnline;
     try {
-      const token    = await AsyncStorage.getItem("driver_token");
+      const token    = await getToken();
       const driverId = await AsyncStorage.getItem("driver_id");
       if (!token) {
         await clearSession();

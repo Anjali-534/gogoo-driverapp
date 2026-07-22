@@ -6,6 +6,7 @@ import * as Notifications from "expo-notifications";
 import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { I18nextProvider } from "react-i18next";
+import { getToken } from "@/services/session";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { trackDriverInteraction } from "@/services/analytics";
 import i18n, { initI18n } from "@/i18n";
@@ -28,7 +29,7 @@ async function handleReferralURL(url: string | null) {
     const pathMatch = /^\/?dr\/([A-Za-z0-9]+)/i.exec(path || "");
     const code = pathMatch?.[1] || (queryParams?.code as string | undefined);
     if (!code) return;
-    const loggedIn = await AsyncStorage.getItem("driver_token");
+    const loggedIn = await getToken();
     if (loggedIn) return;
     await AsyncStorage.setItem("pending_referral_code", code.toUpperCase());
   } catch {}

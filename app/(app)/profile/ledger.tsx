@@ -4,8 +4,8 @@ import {
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
   Modal, TextInput, KeyboardAvoidingView, Platform,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { getToken } from "@/services/session";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
@@ -96,7 +96,7 @@ export default function LedgerScreen() {
       return;
     }
     try {
-      const token = await AsyncStorage.getItem("driver_token");
+      const token = await getToken();
       const url = `${API}/gogoo/driver/ledger/pdf?month=${month}`;
       const fileUri = FileSystem.documentDirectory + `bogie-ledger-${month}.pdf`;
       const { uri, status } = await FileSystem.downloadAsync(url, fileUri, {

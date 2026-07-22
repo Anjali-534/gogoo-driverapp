@@ -9,6 +9,7 @@ import { usePathname } from "expo-router";
 import { Dimensions, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { getToken } from "./session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
@@ -68,7 +69,7 @@ const postToBackend = async (
   extras: Record<string, any> = {}
 ) => {
   try {
-    const token = await AsyncStorage.getItem("driver_token");
+    const token = await getToken();
     if (!token) return;
     await axios.post(
       `${API}/gogoo/analytics/event`,

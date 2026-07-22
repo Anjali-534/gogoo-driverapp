@@ -11,6 +11,7 @@ import * as Speech from "expo-speech";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/services/api";
+import { getToken } from "@/services/session";
 import { useTranslation } from "react-i18next";
 import { trackOTPVerified, trackOTPFailed, trackRideCompleted } from "@/services/analytics";
 import { isBatteryTooLow } from "@/services/battery";
@@ -169,7 +170,7 @@ export default function OrdersScreen() {
   // ── Boot: load auth + start GPS + polling ─────────────────────────────
   useEffect(() => {
     (async () => {
-      const t = await AsyncStorage.getItem("driver_token") || "";
+      const t = (await getToken()) || "";
       let   d = await AsyncStorage.getItem("driver_id")    || "";
 
       let restoredBookingId: string | null = null;

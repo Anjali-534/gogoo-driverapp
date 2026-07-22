@@ -1,8 +1,7 @@
 import axios from "axios";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { Alert } from "react-native";
-import { clearSession } from "./session";
+import { clearSession, getToken } from "./session";
 import i18n from "@/i18n";
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
@@ -14,7 +13,7 @@ export const API_URL = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-p
 export const api = axios.create({ baseURL: API_URL });
 
 api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem("driver_token");
+  const token = await getToken();
   if (token && !config.headers?.Authorization) {
     config.headers = (config.headers || {}) as typeof config.headers;
     config.headers.Authorization = `Bearer ${token}`;

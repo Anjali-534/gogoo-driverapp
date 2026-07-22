@@ -54,6 +54,7 @@ module.exports = ({ config }) => ({
     "@react-native-firebase/crashlytics/app.plugin.js",
     "@react-native-firebase/perf/app.plugin.js",
     "./plugins/withDisableAndroidBackup.js",
+    "expo-secure-store",
     // Bundles ride_request.wav as a native notification sound (Android raw
     // resource / iOS bundle resource). Guarded on the file existing so a
     // missing sound file can't break `expo prebuild` / EAS builds.

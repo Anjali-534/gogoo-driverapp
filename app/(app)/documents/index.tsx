@@ -6,6 +6,7 @@ import {
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api, API_URL } from "@/services/api";
+import { getToken } from "@/services/session";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
 
@@ -55,7 +56,7 @@ export default function DocumentsScreen() {
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
-      const t = await AsyncStorage.getItem("driver_token");
+      const t = await getToken();
       const storedDriverID = await AsyncStorage.getItem("driver_id");
       setToken(t);
       let did = storedDriverID;

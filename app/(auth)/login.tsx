@@ -8,6 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 import { trackDriverLogin } from "@/services/analytics";
 import { registerPushToken } from "@/services/notifications";
+import { setToken } from "@/services/session";
 import LanguageSwitcherButton from "@/components/LanguageSwitcherButton";
 import i18n from "@/i18n";
 
@@ -45,7 +46,7 @@ export default function DriverLoginScreen() {
   try {
     const res = await axios.post(`${API}/auth/login`, { email, password });
     const token = res.data.access_token;
-    await AsyncStorage.setItem("driver_token", token);
+    await setToken(token);
     await AsyncStorage.setItem("driver_user", JSON.stringify(res.data.user));
     await AsyncStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ agreed: true, at: new Date().toISOString() }));
 

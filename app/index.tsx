@@ -6,7 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import axios from "axios";
 import { setDriverProperties } from "@/services/analytics";
 import { requestPermissionsOnce } from "@/services/permissions";
-import { clearSession } from "@/services/session";
+import { clearSession, clearToken, getToken, migrateTokenIfNeeded } from "@/services/session";
 import { useTranslation } from "react-i18next";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
@@ -23,6 +23,7 @@ async function checkFreshInstall() {
     const installedFlag = await AsyncStorage.getItem(FIRST_LAUNCH_KEY);
     if (!installedFlag) {
       await AsyncStorage.clear();
+      await clearToken(); // SecureStore (Keychain on iOS) survives AsyncStorage.clear()
       await AsyncStorage.setItem(FIRST_LAUNCH_KEY, "true");
       return true;
     }
@@ -49,7 +50,8 @@ export default function Index() {
         return;
       }
 
-      const t = await AsyncStorage.getItem("driver_token");
+      await migrateTokenIfNeeded();
+      const t = await getToken();
       if (!t) {
         setTarget("/(auth)/login");
       } else {
