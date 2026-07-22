@@ -2,11 +2,12 @@
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
+  Modal, TextInput, KeyboardAvoidingView, Platform,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import EarningsRangeFilter, { EarningsRange } from "@/components/EarningsRangeFilter";
 import { useTranslation } from "react-i18next";
@@ -21,6 +22,10 @@ import { useTranslation } from "react-i18next";
 // eas build (not just eas update) ships with these modules compiled in.
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
+
+const DRIVER_TOPUP_MIN = 50;
+const DRIVER_TOPUP_MAX = 10000;
+const DRIVER_WITHDRAW_MIN = 100;
 
 // Last 6 months, most recent first — { key: "2026-07", label: "Jul 2026" }
 function lastSixMonths() {
@@ -47,6 +52,8 @@ function entryLabel(entry: any, t: (key: string, opts?: any) => string): string 
   if (entry.debit_type === "commission")       return t("profile.ledger.entryLabels.commission");
   if (entry.type === "ride")                   return t("profile.ledger.entryLabels.tripEarnings");
   if (entry.type === "referral")               return t("profile.ledger.entryLabels.referralBonus");
+  if (entry.type === "topup")                  return t("profile.ledger.entryLabels.topup");
+  if (entry.type === "withdrawal")             return t("profile.ledger.entryLabels.withdrawal");
   return entry.description || t("profile.ledger.entryLabels.transaction");
 }
 
@@ -62,6 +69,14 @@ export default function LedgerScreen() {
   const [selectedMonth, setSelectedMonth] = useState(lastSixMonths()[0].key);
   const [downloading,   setDownloading]   = useState(false);
   const router = useRouter();
+
+  const [addMoneyOpen, setAddMoneyOpen] = useState(false);
+  const [addAmount, setAddAmount] = useState("");
+  const [creatingOrder, setCreatingOrder] = useState(false);
+
+  const [withdrawOpen, setWithdrawOpen] = useState(false);
+  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [submittingWithdraw, setSubmittingWithdraw] = useState(false);
 
   const downloadStatement = async (month: string) => {
     setDownloading(true);
@@ -104,11 +119,9 @@ export default function LedgerScreen() {
   const fetchData = useCallback(async (isRefresh = false, forRange: EarningsRange = range) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const headers = { Authorization: `Bearer ${token}` };
       const [walletRes, ledgerRes] = await Promise.allSettled([
-        axios.get(`${API}/gogoo/driver/wallet`, { headers }),
-        axios.get(`${API}/gogoo/driver/ledger`,  { headers, params: { range: forRange } }),
+        api.get(`/gogoo/driver/wallet`),
+        api.get(`/gogoo/driver/ledger`, { params: { range: forRange } }),
       ]);
       if (walletRes.status === "fulfilled") setWallet(walletRes.value.data);
       if (ledgerRes.status === "fulfilled") {
@@ -125,22 +138,103 @@ export default function LedgerScreen() {
     setRange(r);
     setRangeLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/ledger`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { range: r },
-      });
+      const res = await api.get(`/gogoo/driver/ledger`, { params: { range: r } });
       setEntries(res.data?.transactions || []);
       setRangeSummary(res.data || null);
     } catch { /* keep showing previous range on failure */ }
     finally { setRangeLoading(false); }
   };
 
-  const balance       = wallet?.wallet_balance ?? 0;
-  const withdrawable  = Math.round(wallet?.withdrawable_amount ?? 0);
-  const canWithdraw   = wallet?.can_withdraw ?? false;
-  const isBlocked     = wallet?.is_wallet_blocked ?? false;
-  const isLow         = !isBlocked && balance < 0;
+  const balance          = wallet?.wallet_balance ?? 0;
+  const withdrawable     = Math.round(wallet?.withdrawable_amount ?? 0);
+  const canWithdraw      = wallet?.can_withdraw ?? false;
+  const isBlocked        = wallet?.is_wallet_blocked ?? false;
+  const isLow            = !isBlocked && balance < 0;
+  const paymentsAvailable = wallet?.payments_available ?? false;
+  const payoutsAvailable  = wallet?.payouts_available ?? false;
+
+  const handleAddMoneyPress = () => {
+    if (!paymentsAvailable) {
+      Alert.alert(t("profile.ledger.paymentsComingSoonTitle"), t("profile.ledger.paymentsComingSoonSub"));
+      return;
+    }
+    setAddAmount("");
+    setAddMoneyOpen(true);
+  };
+
+  const handleProceedToPay = async () => {
+    const amt = parseFloat(addAmount);
+    if (!amt || amt < DRIVER_TOPUP_MIN || amt > DRIVER_TOPUP_MAX) {
+      Alert.alert(
+        t("common.error"),
+        t("profile.ledger.addMoneyInvalidAmount", { min: DRIVER_TOPUP_MIN, max: DRIVER_TOPUP_MAX })
+      );
+      return;
+    }
+    setCreatingOrder(true);
+    try {
+      await api.post(`/gogoo/driver/wallet/topup/create-order`, { amount: amt });
+      setAddMoneyOpen(false);
+      // The server never trusts a client-side "success" — only the
+      // signature-verified webhook (POST /gogoo/driver/wallet/topup/webhook)
+      // ever credits a top-up. Once react-native-razorpay is wired up here,
+      // this stub is replaced by opening the real checkout with the
+      // returned order_id, same as the rider wallet's TODO(razorpay-integration).
+      Alert.alert(t("profile.ledger.checkoutStubTitle"), t("profile.ledger.checkoutStubMsg"), [
+        { text: t("common.ok"), onPress: () => fetchData() },
+      ]);
+    } catch (e: any) {
+      if (e?.response?.status === 503) {
+        setAddMoneyOpen(false);
+        Alert.alert(t("profile.ledger.paymentsComingSoonTitle"), t("profile.ledger.paymentsComingSoonSub"));
+      } else {
+        Alert.alert(t("common.error"), e?.response?.data?.error || t("profile.ledger.addMoneyOrderFailed"));
+      }
+    } finally {
+      setCreatingOrder(false);
+    }
+  };
+
+  const handleWithdrawPress = () => {
+    if (!payoutsAvailable) {
+      Alert.alert(t("profile.ledger.payoutsComingSoonTitle"), t("profile.ledger.payoutsComingSoonSub"));
+      return;
+    }
+    setWithdrawAmount(withdrawable > 0 ? String(withdrawable) : "");
+    setWithdrawOpen(true);
+  };
+
+  const submitWithdrawal = async () => {
+    const amt = parseFloat(withdrawAmount);
+    if (!amt || amt < DRIVER_WITHDRAW_MIN) {
+      Alert.alert(t("common.error"), t("profile.ledger.withdrawMinAmount", { min: DRIVER_WITHDRAW_MIN }));
+      return;
+    }
+    if (amt > withdrawable) {
+      Alert.alert(t("common.error"), t("profile.ledger.withdrawExceedsBalance", { amount: withdrawable }));
+      return;
+    }
+    setSubmittingWithdraw(true);
+    try {
+      await api.post(`/gogoo/driver/wallet/withdraw`, { amount: amt });
+      setWithdrawOpen(false);
+      Alert.alert(t("profile.ledger.withdrawSubmittedTitle"), t("profile.ledger.withdrawSubmittedSub"));
+      fetchData();
+    } catch (e: any) {
+      const data = e?.response?.data;
+      if (e?.response?.status === 503) {
+        setWithdrawOpen(false);
+        Alert.alert(t("profile.ledger.payoutsComingSoonTitle"), t("profile.ledger.payoutsComingSoonSub"));
+      } else if (data?.missing_payout_details) {
+        setWithdrawOpen(false);
+        Alert.alert(t("profile.ledger.missingPayoutDetailsTitle"), t("profile.ledger.missingPayoutDetailsSub"));
+      } else {
+        Alert.alert(t("common.error"), data?.error || t("profile.ledger.withdrawFailed"));
+      }
+    } finally {
+      setSubmittingWithdraw(false);
+    }
+  };
 
   return (
     <SafeAreaView style={s.safe}>
@@ -201,17 +295,19 @@ export default function LedgerScreen() {
               <TouchableOpacity
                 style={[s.withdrawBtn, !canWithdraw && s.btnDisabled]}
                 disabled={!canWithdraw}
+                onPress={handleWithdrawPress}
               >
                 <Text style={s.withdrawBtnText}>
                   {t("profile.ledger.withdraw", { amount: withdrawable })}
                 </Text>
               </TouchableOpacity>
-              {balance < 0 && (
-                <TouchableOpacity style={s.clearBtn}>
-                  <Text style={s.clearBtnText}>{t("profile.ledger.clearDues")}</Text>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity style={s.clearBtn} onPress={handleAddMoneyPress}>
+                <Text style={s.clearBtnText}>{t("profile.ledger.addMoney")}</Text>
+              </TouchableOpacity>
             </View>
+            {!payoutsAvailable && (
+              <Text style={s.infoText}>{t("profile.ledger.payoutsComingSoonInline")}</Text>
+            )}
             <Text style={s.infoText}>{t("profile.ledger.maintainInfo")}</Text>
           </View>
 
@@ -331,6 +427,86 @@ export default function LedgerScreen() {
           )}
         </ScrollView>
       )}
+
+      <Modal visible={addMoneyOpen} transparent animationType="slide" onRequestClose={() => setAddMoneyOpen(false)}>
+        <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+          <View style={s.modalCard}>
+            <Text style={s.modalTitle}>{t("profile.ledger.addMoneyModalTitle")}</Text>
+            <Text style={s.modalLabel}>{t("profile.ledger.addMoneyAmountLabel")}</Text>
+            <View style={s.amountInputRow}>
+              <Text style={s.amountPrefix}>₹</Text>
+              <TextInput
+                style={s.amountInput}
+                placeholder={t("profile.ledger.addMoneyAmountPlaceholder")}
+                placeholderTextColor={COLORS.textMuted}
+                keyboardType="number-pad"
+                value={addAmount}
+                onChangeText={setAddAmount}
+                autoFocus
+              />
+            </View>
+            <Text style={s.modalHint}>
+              {t("profile.ledger.addMoneyRangeHint", { min: DRIVER_TOPUP_MIN, max: DRIVER_TOPUP_MAX })}
+            </Text>
+            <View style={s.modalBtnRow}>
+              <TouchableOpacity style={s.modalCancelBtn} onPress={() => setAddMoneyOpen(false)} disabled={creatingOrder}>
+                <Text style={s.modalCancelText}>{t("common.cancel", { defaultValue: "Cancel" })}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.modalProceedBtn, creatingOrder && { opacity: 0.7 }]}
+                onPress={handleProceedToPay}
+                disabled={creatingOrder}
+              >
+                {creatingOrder ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={s.modalProceedText}>{t("profile.ledger.addMoneyProceed")}</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      <Modal visible={withdrawOpen} transparent animationType="slide" onRequestClose={() => setWithdrawOpen(false)}>
+        <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+          <View style={s.modalCard}>
+            <Text style={s.modalTitle}>{t("profile.ledger.withdrawModalTitle")}</Text>
+            <Text style={s.modalLabel}>{t("profile.ledger.withdrawAmountLabel")}</Text>
+            <View style={s.amountInputRow}>
+              <Text style={s.amountPrefix}>₹</Text>
+              <TextInput
+                style={s.amountInput}
+                placeholder={t("profile.ledger.withdrawAmountPlaceholder")}
+                placeholderTextColor={COLORS.textMuted}
+                keyboardType="number-pad"
+                value={withdrawAmount}
+                onChangeText={setWithdrawAmount}
+                autoFocus
+              />
+            </View>
+            <Text style={s.modalHint}>
+              {t("profile.ledger.withdrawRangeHint", { min: DRIVER_WITHDRAW_MIN, max: withdrawable })}
+            </Text>
+            <View style={s.modalBtnRow}>
+              <TouchableOpacity style={s.modalCancelBtn} onPress={() => setWithdrawOpen(false)} disabled={submittingWithdraw}>
+                <Text style={s.modalCancelText}>{t("common.cancel", { defaultValue: "Cancel" })}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.modalProceedBtn, submittingWithdraw && { opacity: 0.7 }]}
+                onPress={submitWithdrawal}
+                disabled={submittingWithdraw}
+              >
+                {submittingWithdraw ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={s.modalProceedText}>{t("profile.ledger.withdrawProceed")}</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -387,4 +563,18 @@ const s = StyleSheet.create({
   empty:           { alignItems: "center", paddingTop: 60, gap: 8 },
   emptyTitle:      { color: "#333", fontSize: 16, fontWeight: "700" },
   emptySub:        { color: "#AAA", fontSize: 13 },
+
+  modalBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.45)", justifyContent: "flex-end" },
+  modalCard:     { backgroundColor: COLORS.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 34 },
+  modalTitle:    { fontSize: 18, fontWeight: "900", color: COLORS.textPrimary, marginBottom: 16 },
+  modalLabel:    { fontSize: 13, fontWeight: "700", color: "#374151", marginBottom: 8 },
+  amountInputRow:{ flexDirection: "row", alignItems: "center", backgroundColor: COLORS.bgAlt, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, paddingHorizontal: 16 },
+  amountPrefix:  { fontSize: 22, fontWeight: "800", color: COLORS.textPrimary, marginRight: 6 },
+  amountInput:   { flex: 1, fontSize: 22, fontWeight: "800", color: COLORS.textPrimary, paddingVertical: 14 },
+  modalHint:     { fontSize: 12, color: "#999", marginTop: 8, marginBottom: 20 },
+  modalBtnRow:   { flexDirection: "row", gap: 12 },
+  modalCancelBtn:{ flex: 1, paddingVertical: 16, borderRadius: RADIUS.card, alignItems: "center", backgroundColor: COLORS.bgAlt, borderWidth: 1, borderColor: COLORS.borderSubtle },
+  modalCancelText:{ color: COLORS.textPrimary, fontWeight: "700", fontSize: 15 },
+  modalProceedBtn:{ flex: 1.4, paddingVertical: 16, borderRadius: RADIUS.card, alignItems: "center", backgroundColor: COLORS.primary },
+  modalProceedText:{ color: "#fff", fontWeight: "800", fontSize: 15 },
 });
