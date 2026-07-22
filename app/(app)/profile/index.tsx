@@ -6,12 +6,10 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
 import { clearSession } from "@/services/session";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 export default function DriverProfileScreen() {
   const { t } = useTranslation();
@@ -22,10 +20,7 @@ export default function DriverProfileScreen() {
 
   const fetchUnread = useCallback(async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/support/chat/my-tickets`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/support/chat/my-tickets`);
       const tickets = res.data.tickets || [];
       const total = tickets.reduce((acc: number, t: any) => acc + (t.unread_count || 0), 0);
       setUnreadCount(total);
@@ -40,10 +35,7 @@ export default function DriverProfileScreen() {
 
   const loadProfile = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/profile`);
       setProfile(res.data);
     } catch {}
   };

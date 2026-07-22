@@ -5,7 +5,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import { api } from "@/services/api";
 import * as Location from "expo-location";
 import { Audio } from "expo-av";
 import * as Battery from "expo-battery";
@@ -23,8 +23,6 @@ import * as Notifications from "expo-notifications";
 import { COLORS, RADIUS } from "@/constants/theme";
 
 const RIDE_REQUEST_VIBRATION_PATTERN = [0, 800, 400, 800];
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 const ACTIVE_STATUSES = ["accepted", "arriving", "in_progress"];
 
@@ -164,8 +162,7 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const res = await axios.get(`${API}/gogoo/driver/active-booking`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await api.get(`/gogoo/driver/active-booking`, {
         timeout: 5000,
       });
       if (res.data?.booking_id) {
@@ -180,13 +177,9 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const abRes = await axios.get(`${API}/gogoo/driver/active-booking`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const abRes = await api.get(`/gogoo/driver/active-booking`);
       if (abRes.data?.booking_id) {
-        const fullRes = await axios.get(`${API}/gogoo/bookings/${abRes.data.booking_id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const fullRes = await api.get(`/gogoo/bookings/${abRes.data.booking_id}`);
         setActiveBooking(ACTIVE_STATUSES.includes(fullRes.data?.status) ? fullRes.data : null);
       } else {
         setActiveBooking(null);
@@ -207,9 +200,7 @@ export default function DriverHomeScreen() {
       try {
         const token = await AsyncStorage.getItem("driver_token");
         if (!token) return;
-        const res = await axios.get(`${API}/gogoo/bookings-pending`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await api.get(`/gogoo/bookings-pending`);
         const bookings: any[] = res.data?.bookings || res.data || [];
         if (bookings.length > 0) {
           const newest = bookings[0];
@@ -276,12 +267,7 @@ export default function DriverHomeScreen() {
 
     const responseTimeSecs = Math.round((Date.now() - acceptTimeRef.current) / 1000);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      await axios.post(
-        `${API}/gogoo/bookings/${incomingRide.id}/accept`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post(`/gogoo/bookings/${incomingRide.id}/accept`, {});
       trackRideAccepted({
         bookingId: incomingRide.id,
         service: incomingRide.service_type?.category || "cab",
@@ -318,17 +304,13 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const res = await axios.get(`${API}/gogoo/driver/notifications/unread-count`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/notifications/unread-count`);
       const count = res.data?.count || 0;
       setUnreadCount(count);
       Notifications.setBadgeCountAsync(count).catch(() => {});
 
       if (count > prevCount.current && prevCount.current >= 0) {
-        const notifRes = await axios.get(`${API}/gogoo/driver/notifications`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const notifRes = await api.get(`/gogoo/driver/notifications`);
         const newest = (notifRes.data || []).find((n: any) => !n.is_read);
         if (newest) showToast(newest.title, newest.body);
       }
@@ -340,31 +322,24 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const res = await axios.get(`${API}/gogoo/driver/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/profile`);
       if (res.data?.driver_id)               await AsyncStorage.setItem("driver_id", res.data.driver_id);
       if (res.data?.rating)                  setRating(Number(res.data.rating).toFixed(1));
       if (res.data?.total_rides)             setTotalRides(res.data.total_rides);
       if (res.data?.is_online !== undefined) setIsOnline(res.data.is_online);
       setIsWalletBlocked(!!(res.data?.is_wallet_blocked || res.data?.is_blocked));
       setIsVerified(!!res.data?.is_verified);
-      if (!res.data?.is_verified && res.data?.driver_id) fetchDocSummary(res.data.driver_id, token);
-    } catch (e: any) {
-      if (e?.response?.status === 401) {
-        await clearSession();
-        router.replace("/(auth)/login" as any);
-      }
+      if (!res.data?.is_verified && res.data?.driver_id) fetchDocSummary(res.data.driver_id);
+    } catch {
+      // 401s are handled globally by the shared axios interceptor.
     }
   };
 
   // While unverified, surface exactly what's outstanding so the driver
   // doesn't have to open the Documents tab just to see if anything's stuck.
-  const fetchDocSummary = async (driverId: string, token: string) => {
+  const fetchDocSummary = async (driverId: string) => {
     try {
-      const res = await axios.get(`${API}/gogoo/drivers/${driverId}/documents`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/drivers/${driverId}/documents`);
       const docs: any[] = res.data?.docs || [];
       const pending = docs.filter(d => d.status === "pending" || d.status === "missing").length;
       const rejected = docs.filter(d => d.status === "rejected").length;
@@ -376,9 +351,7 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const res = await axios.get(`${API}/gogoo/driver/reviews`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/reviews`);
       setRecentReviews(res.data || []);
     } catch {}
   };
@@ -387,9 +360,7 @@ export default function DriverHomeScreen() {
     try {
       const token = await AsyncStorage.getItem("driver_token");
       if (!token) return;
-      const res = await axios.get(`${API}/gogoo/driver/bookings`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/bookings`);
       setRecentTrips((res.data || []).slice(0, 10));
     } catch {}
   };
@@ -405,20 +376,22 @@ export default function DriverHomeScreen() {
         router.replace("/(auth)/login" as any);
         return;
       }
-      let lat = 28.6139, lng = 77.2090;
+      let lat: number, lng: number;
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status === "granted") {
-          const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-          lat = loc.coords.latitude;
-          lng = loc.coords.longitude;
+        if (status !== "granted") {
+          Alert.alert(t("home.alerts.locationRequiredTitle"), t("home.alerts.locationRequiredMsg"));
+          return;
         }
-      } catch {}
+        const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+        lat = loc.coords.latitude;
+        lng = loc.coords.longitude;
+      } catch {
+        Alert.alert(t("home.alerts.locationRequiredTitle"), t("home.alerts.locationRequiredMsg"));
+        return;
+      }
       if (driverId) {
-        await axios.patch(`${API}/gogoo/drivers/${driverId}/online`,
-          { is_online: newStatus, lat, lng },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await api.patch(`/gogoo/drivers/${driverId}/online`, { is_online: newStatus, lat, lng });
         if (newStatus) {
           sessionStartRef.current = Date.now();
           sessionRidesRef.current = 0;
@@ -446,10 +419,7 @@ export default function DriverHomeScreen() {
       }
     } catch (e: any) {
       if (e?.response?.status === 401) {
-        await clearSession();
-        Alert.alert(t("home.alerts.sessionExpiredTitle"), t("home.alerts.sessionExpiredMsg"), [
-          { text: t("common.ok"), onPress: () => router.replace("/(auth)/login" as any) },
-        ]);
+        // Handled globally by the shared axios interceptor.
         return;
       }
       if (e?.response?.data?.error === "verification_pending") {

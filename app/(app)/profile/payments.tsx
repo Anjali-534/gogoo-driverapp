@@ -3,14 +3,11 @@ import {
   View, Text, StyleSheet, SafeAreaView, FlatList,
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 function fmtDate(iso: string) {
   if (!iso) return "—";
@@ -29,10 +26,7 @@ export default function PaymentsScreen() {
   const fetchData = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/bookings`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/bookings`);
       setBookings(res.data?.bookings || res.data || []);
     } catch { setBookings([]); }
     finally { setLoading(false); setRefreshing(false); }

@@ -4,14 +4,11 @@ import {
   TouchableOpacity, TextInput, StatusBar, Alert, ActivityIndicator,
   KeyboardAvoidingView, Platform,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 const CATEGORY_META = [
   { key: "riderNoShow",       icon: "🚫" },
@@ -48,16 +45,11 @@ export default function NewDriverSupportChatScreen() {
 
     setSubmitting(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.post(
-        `${API}/gogoo/support/chat/start`,
-        {
-          raised_by: "driver",
-          subject: selectedCategory.subject,
-          first_message: message.trim(),
-        },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const res = await api.post(`/gogoo/support/chat/start`, {
+        raised_by: "driver",
+        subject: selectedCategory.subject,
+        first_message: message.trim(),
+      });
 
       const ticketId = res.data.ticket_id;
       router.replace({ pathname: "/(app)/support/chat" as any, params: { ticket_id: ticketId } });

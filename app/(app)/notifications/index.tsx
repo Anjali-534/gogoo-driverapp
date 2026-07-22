@@ -3,15 +3,12 @@ import {
   View, Text, StyleSheet, SafeAreaView, FlatList,
   TouchableOpacity, ActivityIndicator, RefreshControl, Linking, Image, ScrollView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import * as Notifications from "expo-notifications";
 import { useTranslation } from "react-i18next";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 const CATEGORY_META = [
   { key: "all",        color: COLORS.textSecondary },
@@ -67,10 +64,7 @@ export default function DriverNotificationsScreen() {
     if (isRefresh) setRefreshing(true);
     else setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/notifications`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/notifications`);
       setItems(res.data || []);
     } catch {}
     finally { setLoading(false); setRefreshing(false); }
@@ -85,10 +79,7 @@ export default function DriverNotificationsScreen() {
     if (items.find(n => n.id === id)?.is_read) return;
     setItems(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      await axios.post(`${API}/gogoo/driver/notifications/${id}/read`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.post(`/gogoo/driver/notifications/${id}/read`, {});
     } catch {}
   };
 

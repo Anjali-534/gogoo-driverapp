@@ -3,15 +3,13 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, Image, ActivityIndicator, RefreshControl,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { trackEarningsViewed } from "@/services/analytics";
 import { COLORS, RADIUS } from "@/constants/theme";
 import EarningsRangeFilter, { EarningsRange } from "@/components/EarningsRangeFilter";
 import { useTranslation } from "react-i18next";
 
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
 function getWeekDays() {
@@ -55,11 +53,7 @@ export default function EarningsScreen() {
     setRange(r);
     setRangeLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/ledger`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { range: r },
-      });
+      const res = await api.get(`/gogoo/driver/ledger`, { params: { range: r } });
       setRangeSummary(res.data || null);
     } catch { /* keep showing previous range on failure */ }
     finally { setRangeLoading(false); }
@@ -70,11 +64,9 @@ export default function EarningsScreen() {
   const fetchData = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const headers = { Authorization: `Bearer ${token}` };
       const [bookRes, sumRes] = await Promise.allSettled([
-        axios.get(`${API}/gogoo/driver/bookings`,           { headers }),
-        axios.get(`${API}/gogoo/driver/earnings/summary`,   { headers }),
+        api.get(`/gogoo/driver/bookings`),
+        api.get(`/gogoo/driver/earnings/summary`),
       ]);
       if (bookRes.status === "fulfilled") {
         setBookings(bookRes.value.data?.bookings || bookRes.value.data || []);

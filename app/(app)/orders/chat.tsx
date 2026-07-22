@@ -4,13 +4,11 @@ import {
   TextInput, ScrollView, KeyboardAvoidingView, Platform,
   StatusBar, ActivityIndicator,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import axios from "axios";
+import { api } from "@/services/api";
 import { useTranslation } from "react-i18next";
 import { COLORS } from "@/constants/theme";
 
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 const POLL_MS = 4000;
 const ACTIVE_STATUSES = ["accepted", "arriving", "in_progress"];
 
@@ -41,10 +39,9 @@ export default function DriverRideChatScreen() {
   const fetchMessages = useCallback(async () => {
     if (!id) return;
     try {
-      const token = await AsyncStorage.getItem("driver_token");
       const [msgRes, bookingRes] = await Promise.all([
-        axios.get(`${API}/gogoo/bookings/${id}/messages`, { headers: { Authorization: `Bearer ${token ?? ""}` } }),
-        axios.get(`${API}/gogoo/bookings/${id}`, { headers: { Authorization: `Bearer ${token ?? ""}` } }),
+        api.get(`/gogoo/bookings/${id}/messages`),
+        api.get(`/gogoo/bookings/${id}`),
       ]);
       setMessages(msgRes.data.messages || []);
       setStatus(bookingRes.data.status || "");
@@ -65,12 +62,7 @@ export default function DriverRideChatScreen() {
     setInput("");
     setSending(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      await axios.post(
-        `${API}/gogoo/bookings/${id}/messages`,
-        { message: trimmed },
-        { headers: { Authorization: `Bearer ${token ?? ""}` } },
-      );
+      await api.post(`/gogoo/bookings/${id}/messages`, { message: trimmed });
       await fetchMessages();
     } catch {}
     finally { setSending(false); }

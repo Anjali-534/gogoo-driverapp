@@ -3,16 +3,12 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, ActivityIndicator, RefreshControl, Linking, Alert, StatusBar,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
-import { clearSession } from "@/services/session";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 function fmtDate(iso: string) {
   if (!iso) return "";
@@ -36,22 +32,16 @@ export default function DriverReferScreen() {
     if (isRefresh) setRefreshing(true); else setLoading(true);
     setError(false);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const headers = { Authorization: `Bearer ${token}` };
       const [codeRes, listRes] = await Promise.allSettled([
-        axios.get(`${API}/gogoo/referral/my-code`, { headers }),
-        axios.get(`${API}/gogoo/referral/my-referrals`, { headers }),
+        api.get(`/gogoo/referral/my-code`),
+        api.get(`/gogoo/referral/my-referrals`),
       ]);
       if (codeRes.status === "fulfilled") {
         setInfo(codeRes.value.data);
       } else {
         console.error("referral/my-code failed:", codeRes.reason?.response?.data || codeRes.reason?.message);
-        if (codeRes.reason?.response?.status === 401) {
-          await clearSession();
-          router.replace("/(auth)/login" as any);
-          return;
-        }
-        setError(true);
+        // 401s are handled globally by the shared axios interceptor.
+        if (codeRes.reason?.response?.status !== 401) setError(true);
       }
       if (listRes.status === "fulfilled") {
         setReferrals(listRes.value.data || []);

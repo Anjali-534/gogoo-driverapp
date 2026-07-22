@@ -10,16 +10,14 @@ import * as Location from "expo-location";
 import * as Speech from "expo-speech";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
-import axios from "axios";
+import { api } from "@/services/api";
 import { useTranslation } from "react-i18next";
 import { trackOTPVerified, trackOTPFailed, trackRideCompleted } from "@/services/analytics";
 import { isBatteryTooLow } from "@/services/battery";
 import { olaDirections, decodePolyline as olaDecodePolyline, logMapsProvider } from "@/services/olamaps";
 import { COLORS, RADIUS } from "@/constants/theme";
 import i18n, { getCurrentLanguage, type LanguageCode } from "@/i18n";
-import { clearSession } from "@/services/session";
 
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 const POLL_MS = 4000;
 const GPS_MS  = 5000;
 const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY || "";
@@ -177,18 +175,14 @@ export default function OrdersScreen() {
       let restoredBookingId: string | null = null;
       if (t) {
         try {
-          const abRes = await axios.get(`${API}/gogoo/driver/active-booking`, {
-            headers: { Authorization: `Bearer ${t}` },
-          });
+          const abRes = await api.get(`/gogoo/driver/active-booking`);
           if (abRes.data?.driver_id && !d) {
             d = abRes.data.driver_id;
             await AsyncStorage.setItem("driver_id", d);
           }
           if (abRes.data?.booking_id) {
             restoredBookingId = abRes.data.booking_id;
-            const fullRes = await axios.get(`${API}/gogoo/bookings/${abRes.data.booking_id}`, {
-              headers: { Authorization: `Bearer ${t}` },
-            });
+            const fullRes = await api.get(`/gogoo/bookings/${abRes.data.booking_id}`);
             setActiveBooking(fullRes.data);
             setView("map");
           }
@@ -239,17 +233,13 @@ export default function OrdersScreen() {
       if (!token) return;
       (async () => {
         try {
-          const abRes = await axios.get(`${API}/gogoo/driver/active-booking`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const abRes = await api.get(`/gogoo/driver/active-booking`);
           if (abRes.data?.booking_id) {
             if (abRes.data?.driver_id) {
               authRef.current.driverId = abRes.data.driver_id;
               await AsyncStorage.setItem("driver_id", abRes.data.driver_id);
             }
-            const fullRes = await axios.get(`${API}/gogoo/bookings/${abRes.data.booking_id}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
+            const fullRes = await api.get(`/gogoo/bookings/${abRes.data.booking_id}`);
             setActiveBooking(fullRes.data);
             setView("map");
             startGpsPush(abRes.data.booking_id);
@@ -299,16 +289,11 @@ export default function OrdersScreen() {
     if (!token) return;
     try {
       setLoading(true);
-      const res = await axios.get(`${API}/gogoo/bookings-pending`, {
-        headers: { Authorization: `Bearer ${token}` }, timeout: 8000,
-      });
+      const res = await api.get(`/gogoo/bookings-pending`, { timeout: 8000 });
       setPending(res.data?.bookings || []);
     } catch (e: any) {
-      if (e.response?.status === 401) {
-        setPending([]);
-        await clearSession();
-        router.replace("/(auth)/login" as any);
-      }
+      // 401s are handled globally by the shared axios interceptor.
+      if (e.response?.status === 401) setPending([]);
     } finally {
       setLoading(false);
     }
@@ -355,14 +340,8 @@ export default function OrdersScreen() {
       const { lat, lng, heading } = myPosRef.current;
       if (!token || !driverId || !lat) return;
       try {
-        await axios.post(
-          `${API}/gogoo/drivers/${driverId}/location`,
-          { lat, lng, heading },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const res = await axios.get(`${API}/gogoo/bookings/${bookingId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await api.post(`/gogoo/drivers/${driverId}/location`, { lat, lng, heading });
+        const res = await api.get(`/gogoo/bookings/${bookingId}`);
         setActiveBooking(res.data);
 
         // Proximity voice alerts
@@ -393,14 +372,8 @@ export default function OrdersScreen() {
           if (dropLat && dropLng && getDistanceMeters(lat, lng, dropLat, dropLng) < 100) {
             autoCompletingRef.current = true;
             try {
-              await axios.patch(
-                `${API}/gogoo/bookings/${bookingId}/status`,
-                { status: "completed" },
-                { headers: { Authorization: `Bearer ${token}` } }
-              );
-              const finalRes = await axios.get(`${API}/gogoo/bookings/${bookingId}`, {
-                headers: { Authorization: `Bearer ${token}` },
-              });
+              await api.patch(`/gogoo/bookings/${bookingId}/status`, { status: "completed" });
+              const finalRes = await api.get(`/gogoo/bookings/${bookingId}`);
               triggerCompletion(finalRes.data);
               return;
             } catch { autoCompletingRef.current = false; }
@@ -437,20 +410,14 @@ export default function OrdersScreen() {
       return;
     }
 
-    const { token } = authRef.current;
     setAccepting(bookingId);
     try {
-      const acceptRes = await axios.post(
-        `${API}/gogoo/bookings/${bookingId}/accept`, {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const acceptRes = await api.post(`/gogoo/bookings/${bookingId}/accept`, {});
       if (acceptRes.data?.driver_id) {
         authRef.current.driverId = acceptRes.data.driver_id;
         await AsyncStorage.setItem("driver_id", acceptRes.data.driver_id);
       }
-      const res = await axios.get(`${API}/gogoo/bookings/${bookingId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/bookings/${bookingId}`);
       setActiveBooking(res.data);
       lastRouteKeyRef.current = "";
       setRouteCoords([]);
@@ -474,19 +441,12 @@ export default function OrdersScreen() {
   // ── Update trip status ───────────────────────────────────────────────────
   const updateStatus = async (status: string) => {
     if (!activeBooking) return;
-    const { token } = authRef.current;
     setUpdatingStatus(true);
     try {
-      await axios.patch(
-        `${API}/gogoo/bookings/${activeBooking?.id}/status`,
-        { status },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.patch(`/gogoo/bookings/${activeBooking?.id}/status`, { status });
       if (status === "completed") {
         try {
-          const finalRes = await axios.get(`${API}/gogoo/bookings/${activeBooking?.id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const finalRes = await api.get(`/gogoo/bookings/${activeBooking?.id}`);
           triggerCompletion(finalRes.data);
         } catch { triggerCompletion(activeBooking); }
       } else {
@@ -504,14 +464,11 @@ export default function OrdersScreen() {
       [
         { text: t("orders.alerts.keepRide"), style: "cancel" },
         { text: t("orders.alerts.yesCancel"), style: "destructive", onPress: async () => {
-          const { token } = authRef.current;
           setCancelling(true);
           try {
-            await axios.patch(
-              `${API}/gogoo/bookings/${activeBooking?.id}/status`,
-              { status: "cancelled", cancelled_by: "driver", cancel_reason: "Cancelled by driver" },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await api.patch(`/gogoo/bookings/${activeBooking?.id}/status`, {
+              status: "cancelled", cancelled_by: "driver", cancel_reason: "Cancelled by driver",
+            });
             if (gpsRef.current) { clearInterval(gpsRef.current); gpsRef.current = null; }
             setActiveBooking(null);
             setView("list");
@@ -567,12 +524,7 @@ export default function OrdersScreen() {
     if (otpInput.length !== 4) { setOtpError(t("orders.otp.errors.enterOtp")); return; }
     setOtpLoading(true);
     try {
-      const { token } = authRef.current;
-      await axios.post(
-        `${API}/gogoo/bookings/${activeBooking.id}/verify-otp`,
-        { otp: otpInput },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post(`/gogoo/bookings/${activeBooking.id}/verify-otp`, { otp: otpInput });
       otpInputRef.current?.blur();
       setShowOtpModal(false);
       rideStartTimeRef.current = new Date().toISOString();

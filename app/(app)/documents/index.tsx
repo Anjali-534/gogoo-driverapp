@@ -5,11 +5,9 @@ import {
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import { api, API_URL } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 type DocStatus = "approved" | "rejected" | "pending" | "missing";
 
@@ -62,17 +60,13 @@ export default function DocumentsScreen() {
       setToken(t);
       let did = storedDriverID;
       if (!did) {
-        const profileRes = await axios.get(`${API}/gogoo/driver/profile`, {
-          headers: { Authorization: `Bearer ${t}` },
-        });
+        const profileRes = await api.get(`/gogoo/driver/profile`);
         did = profileRes.data.driver_id;
         if (did) await AsyncStorage.setItem("driver_id", did);
       }
       setDriverID(did);
       if (did) {
-        const docsRes = await axios.get(`${API}/gogoo/drivers/${did}/documents`, {
-          headers: { Authorization: `Bearer ${t}` },
-        });
+        const docsRes = await api.get(`/gogoo/drivers/${did}/documents`);
         setDocs(docsRes.data.docs || []);
       }
     } catch (e: any) {
@@ -104,8 +98,8 @@ export default function DocumentsScreen() {
       const formData = new FormData();
       formData.append("doc_type", docType);
       formData.append("file", { uri: asset.uri, name: asset.name, type: asset.mimeType || "application/octet-stream" } as any);
-      await axios.post(`${API}/gogoo/drivers/${driverID}/documents`, formData, {
-        headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
+      await api.post(`/gogoo/drivers/${driverID}/documents`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
       Alert.alert(t("documents.alerts.uploadedTitle"), t("documents.alerts.uploadedMsg", { label: docLabel }));
       loadData();
@@ -119,16 +113,14 @@ export default function DocumentsScreen() {
       { text: t("common.cancel"), style: "cancel" },
       { text: t("common.delete"), style: "destructive", onPress: async () => {
         try {
-          await axios.delete(`${API}/gogoo/drivers/${driverID}/documents/${docType}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          await api.delete(`/gogoo/drivers/${driverID}/documents/${docType}`);
           loadData();
         } catch { Alert.alert(t("documents.alerts.loadErrorTitle"), t("documents.alerts.deleteErrorMsg")); }
       }},
     ]);
   };
 
-  const openFile = (fileURL: string) => Linking.openURL(`${API}${fileURL}`);
+  const openFile = (fileURL: string) => Linking.openURL(`${API_URL}${fileURL}`);
 
   const approved    = docs.filter(d => d.status === "approved").length;
   const total       = docs.length;

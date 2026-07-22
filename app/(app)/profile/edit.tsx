@@ -7,11 +7,10 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
 
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 const LANGUAGES = ["English", "Hindi", "Telugu", "Tamil", "Bengali", "Marathi"];
 
 export default function EditProfileScreen() {
@@ -27,10 +26,7 @@ export default function EditProfileScreen() {
 
   const loadProfile = async () => {
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/driver/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/driver/profile`);
       setProfile(res.data);
       setHomeAddress(res.data.home_address || "");
     } catch {
@@ -58,10 +54,7 @@ export default function EditProfileScreen() {
   const save = async () => {
     setSaving(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      await axios.patch(`${API}/gogoo/driver/profile`, { home_address: homeAddress }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await api.patch(`/gogoo/driver/profile`, { home_address: homeAddress });
       Alert.alert(t("profile.edit.savedTitle"), t("profile.edit.savedMsg"));
     } catch {
       Alert.alert(t("profile.edit.savedLocallyTitle"), t("profile.edit.savedLocallyMsg"));

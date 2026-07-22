@@ -7,11 +7,9 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import axios from "axios";
+import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
-
-const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
 interface Message {
   id: string;
@@ -61,10 +59,7 @@ export default function DriverSupportChatScreen() {
   const fetchMessages = useCallback(async () => {
     if (!ticket_id) return;
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      const res = await axios.get(`${API}/gogoo/support/chat/${ticket_id}/messages`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await api.get(`/gogoo/support/chat/${ticket_id}/messages`);
       setTicket(res.data.ticket || null);
       setMessages(res.data.messages || []);
       setTimeout(() => scrollRef.current?.scrollToEnd({ animated: false }), 100);
@@ -86,12 +81,9 @@ export default function DriverSupportChatScreen() {
     setInput("");
     setSending(true);
     try {
-      const token = await AsyncStorage.getItem("driver_token");
-      await axios.post(
-        `${API}/gogoo/support/chat/${ticket_id}/messages`,
-        { message: text, sender_type: "driver", sender_name: driverName },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      await api.post(`/gogoo/support/chat/${ticket_id}/messages`, {
+        message: text, sender_type: "driver", sender_name: driverName,
+      });
       await fetchMessages();
     } catch {
     } finally {
