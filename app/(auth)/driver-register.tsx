@@ -130,7 +130,13 @@ export default function DriverRegisterScreen() {
     });
   }, []);
 
-  const docKey = vehicleTypeSlug.startsWith("truck_city") ? "truck_city"
+  useEffect(() => {
+    if (vehicleTypeSlug === "truck_city_eloader") setFuelType("Electric");
+  }, [vehicleTypeSlug]);
+
+  const docKey = vehicleTypeSlug === "parcel_2w" ? "two_wheeler"
+    : vehicleTypeSlug === "truck_city_eloader" ? "two_wheeler"
+    : vehicleTypeSlug.startsWith("truck_city") ? "truck_city"
     : vehicleTypeSlug.startsWith("truck_os") ? "truck_outstation"
     : vehicleTypeSlug.startsWith("ambulance") ? "ambulance"
     : vehicleTypeSlug === "cab_2w" ? "two_wheeler"
@@ -208,6 +214,8 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
   vehicle_type: savedData.vehicle_type || "cab_4w",
   vehicle_category: savedData.category || "cab",
   vehicle_number: vehicleNumber, vehicle_model: vehicleModel, vehicle_color: vehicleColor,
+  payload_capacity: payload.trim() || undefined,
+  fuel_type: fuelType,
   gst_number: gstNumber, bank_account_holder: accountHolder,
   bank_account_number: accountNumber, bank_ifsc: ifscCode, bank_name: bankName, upi_id: upiId,
   referred_by_code: savedData.referred_by_code || undefined,
@@ -296,13 +304,13 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
               <F label={tr("vehicle.model")} value={vehicleModel} onChangeText={setVehicleModel} placeholder={tr("vehicle.modelPh")} />
               <F label={tr("vehicle.color")} value={vehicleColor} onChangeText={setVehicleColor} placeholder={tr("vehicle.colorPh")} />
             </>}
-            {vehicleTypeSlug.startsWith("truck_") && <>
+            {(vehicleTypeSlug.startsWith("truck_") || vehicleTypeSlug === "parcel_2w") && <>
               <F label={tr("vehicle.payload")} value={payload} onChangeText={setPayload} placeholder={tr("vehicle.payloadPh")} keyboardType="decimal-pad" />
               <Text style={s.label}>{tr("vehicle.fuelType")}</Text>
               <View style={s.chipRow}>
-                {["Petrol","Diesel","CNG","LPG","Electric"].map(ft => (
-                  <TouchableOpacity key={ft} onPress={() => setFuelType(ft)}
-                    style={[s.chip, fuelType === ft && { borderColor: accentColor, backgroundColor: `${accentColor}20` }]}>
+                {(vehicleTypeSlug === "truck_city_eloader" ? ["Electric"] : ["Petrol","Diesel","CNG","LPG","Electric"]).map(ft => (
+                  <TouchableOpacity key={ft} disabled={vehicleTypeSlug === "truck_city_eloader"} onPress={() => setFuelType(ft)}
+                    style={[s.chip, fuelType === ft && { borderColor: accentColor, backgroundColor: `${accentColor}20` }, vehicleTypeSlug === "truck_city_eloader" && s.chipLocked]}>
                     <Text style={[s.chipText, fuelType === ft && { color: accentColor, fontWeight: "700" }]}>{ft}</Text>
                   </TouchableOpacity>
                 ))}
@@ -465,6 +473,7 @@ const s = StyleSheet.create({
   infoText: { color: "#10B981", fontSize: 13, fontWeight: "600" },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8, marginBottom: 16 },
   chip: { paddingHorizontal: 14, paddingVertical: 9, borderRadius: 10, borderWidth: 1, borderColor: "#EAEAEA", backgroundColor: "#F7F7F7" },
+  chipLocked: { opacity: 0.9 },
   chipText: { color: "#777", fontSize: 13, fontWeight: "600" },
   toggleRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", backgroundColor: "#FFFFFF", borderRadius: 12, borderWidth: 1, borderColor: "#EFEFEF", paddingHorizontal: 16, paddingVertical: 14, marginBottom: 10 },
   toggleLabel: { color: "#333", fontSize: 14, flex: 1 },

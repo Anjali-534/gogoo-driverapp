@@ -128,6 +128,10 @@
         "truck_os_20ft": "20 फीट ट्रक (आउटस्टेशन)",
         "truck_os_container": "कंटेनर (आउटस्टेशन)",
         "truck_os_trailer": "ट्रेलर (आउटस्टेशन)",
+        "truck_city_eloader": "ई-लोडर (शहर)",
+        "truck_city_eeco": "ईको वैन (शहर)",
+        "truck_city_pickup8ft": "8 फीट पिकअप ट्रक (शहर)",
+        "parcel_2w": "2 व्हीलर पार्सल डिलीवरी",
         "ambulance_bls": "बेसिक लाइफ सपोर्ट (BLS)",
         "ambulance_als": "एडवांस्ड लाइफ सपोर्ट (ALS)",
         "ambulance_transport": "मरीज़ परिवहन"

@@ -8,7 +8,13 @@ import { useTranslation } from "react-i18next";
 // ---- New 3-category taxonomy ----
 const VEHICLE_SLUGS = {
   cab: ["cab_2w", "cab_3w", "cab_4w", "cab_4w_suv"],
-  truck: ["truck_city_tata_ace", "truck_city_14ft", "truck_city_open", "truck_city_container", "truck_os_14ft", "truck_os_20ft", "truck_os_container", "truck_os_trailer"],
+  truck: [
+    "truck_city_tata_ace", "truck_city_14ft", "truck_city_open",
+    "truck_city_container", "truck_os_14ft", "truck_os_20ft",
+    "truck_os_container", "truck_os_trailer",
+    "truck_city_eloader", "truck_city_eeco", "truck_city_pickup8ft",
+    "parcel_2w",
+  ],
   ambulance: ["ambulance_bls", "ambulance_als", "ambulance_transport"],
 };
 const CATEGORY_ICONS: Record<string, string> = { cab: "🚗", truck: "🚛", ambulance: "🚑" };
