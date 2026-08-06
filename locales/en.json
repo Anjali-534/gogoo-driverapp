@@ -113,6 +113,11 @@
           "title": "Ambulance",
           "subtitle": "BLS / ALS / Patient Transport",
           "desc": "Medical emergency and patient transport services"
+        },
+        "parcel": {
+          "title": "Parcel",
+          "subtitle": "2-Wheeler Delivery",
+          "desc": "Small package and parcel delivery"
         }
       },
       "options": {

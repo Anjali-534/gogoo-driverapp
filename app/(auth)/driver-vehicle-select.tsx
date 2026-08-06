@@ -5,7 +5,8 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
 
-// ---- New 3-category taxonomy ----
+// ---- 4-category taxonomy (parcel added — migration 056, folded into
+// truck-panel operationally, but a real top-level category here) ----
 const VEHICLE_SLUGS = {
   cab: ["cab_2w", "cab_3w", "cab_4w", "cab_4w_suv"],
   truck: [
@@ -13,12 +14,12 @@ const VEHICLE_SLUGS = {
     "truck_city_container", "truck_os_14ft", "truck_os_20ft",
     "truck_os_container", "truck_os_trailer",
     "truck_city_eloader", "truck_city_eeco", "truck_city_pickup8ft",
-    "parcel_2w",
   ],
   ambulance: ["ambulance_bls", "ambulance_als", "ambulance_transport"],
+  parcel: ["parcel_2w"],
 };
-const CATEGORY_ICONS: Record<string, string> = { cab: "🚗", truck: "🚛", ambulance: "🚑" };
-const CATEGORY_COLORS: Record<string, string> = { cab: "#3B82F6", truck: "#FF6B2B", ambulance: "#EF4444" };
+const CATEGORY_ICONS: Record<string, string> = { cab: "🚗", truck: "🚛", ambulance: "🚑", parcel: "📦" };
+const CATEGORY_COLORS: Record<string, string> = { cab: "#3B82F6", truck: "#FF6B2B", ambulance: "#EF4444", parcel: "#F59E0B" };
 
 export default function VehicleSelectScreen() {
   const router = useRouter();

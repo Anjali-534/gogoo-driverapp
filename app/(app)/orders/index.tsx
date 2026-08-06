@@ -85,10 +85,11 @@ function speak(msg: string) {
 
 // ── Vehicle marker ─────────────────────────────────────────────────────────
 function VehicleMarker({ category }: { category?: string }) {
-  const isAmb   = category === "ambulance";
-  const isTruck = category === "truck";
-  const emoji   = isTruck ? "🚛" : isAmb ? "🚑" : "🚗";
-  const border  = isAmb ? COLORS.danger : COLORS.primary;
+  const isAmb    = category === "ambulance";
+  const isTruck  = category === "truck";
+  const isParcel = category === "parcel";
+  const emoji    = isTruck ? "🚛" : isAmb ? "🚑" : isParcel ? "📦" : "🚗";
+  const border   = isAmb ? COLORS.danger : isParcel ? COLORS.warning : COLORS.primary;
   return (
     <View style={{ width:46, height:46, borderRadius:23, backgroundColor:"#fff", alignItems:"center", justifyContent:"center", borderWidth:2.5, borderColor:border, elevation:6 }}>
       <Text style={{ fontSize:22 }}>{emoji}</Text>
