@@ -259,7 +259,7 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
     } finally { setLoading(false); }
   };
 
-  const categoryColors: Record<string, string> = { cab: "#FF6B2B", truck: "#FF6B2B", ambulance: "#EF4444", packers: "#10B981" };
+  const categoryColors: Record<string, string> = { cab: "#FF6B2B", truck: "#FF6B2B", ambulance: "#EF4444", packers: "#10B981", parcel: "#F59E0B" };
   const accentColor = categoryColors[category] ?? "#FF6B2B";
   const displayVehicleLabel = vehicleTypeSlug ? t(`auth.vehicleSelect.options.${vehicleTypeSlug}`, { defaultValue: vehicleTypeLabel }) : vehicleTypeLabel;
 
