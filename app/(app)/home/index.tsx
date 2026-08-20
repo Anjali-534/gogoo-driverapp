@@ -4,6 +4,7 @@ import {
   ScrollView, Alert, Animated, Image, Modal, Vibration,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "@/services/api";
 import * as Location from "expo-location";
@@ -468,57 +469,68 @@ export default function DriverHomeScreen() {
 
       <ScrollView style={s.scroll} showsVerticalScrollIndicator={false}>
 
-        <View style={s.logoBar}>
-          <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-        </View>
-
-        {/* Header */}
-        <View style={s.header}>
-          <View>
-            <Text style={s.name}>{t("home.greeting", { name: firstName })}</Text>
-            <Text style={s.subName}>{t("home.subGreeting")}</Text>
-          </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <TouchableOpacity
-              style={s.bellBtn}
-              onPress={() => { setUnreadCount(0); router.push("/(app)/notifications"); }}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-            >
-              <Ionicons name="notifications-outline" size={22} color="#555" />
-              {unreadCount > 0 && (
-                <View style={s.badge}>
-                  <Text style={s.badgeText}>{unreadCount > 9 ? "9+" : unreadCount}</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-            <View style={s.avatar}>
-              <Text style={s.avatarText}>{firstName[0]}</Text>
+        {/* Hero — full-bleed gradient, same technique as user-app's home hero */}
+        <LinearGradient
+          colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
+          locations={[0, 0.6, 1]}
+          style={s.hero}
+        >
+          <View style={s.logoBar}>
+            <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <TouchableOpacity
+                style={s.bellBtn}
+                onPress={() => { setUnreadCount(0); router.push("/(app)/notifications"); }}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
+                <Ionicons name="notifications-outline" size={22} color="#555" />
+                {unreadCount > 0 && (
+                  <View style={s.badge}>
+                    <Text style={s.badgeText}>{unreadCount > 9 ? "9+" : unreadCount}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <View style={s.avatar}>
+                <Text style={s.avatarText}>{firstName[0]}</Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Battery status — always visible, not just when it blocks ride-accept */}
-        {batteryLevel !== null && (
-          <View
-            style={[
-              s.batteryPill,
-              batteryLevel < 0.15 && !batteryCharging && s.batteryPillUrgent,
-            ]}
-          >
-            <Text style={s.batteryPillIcon}>
-              {batteryCharging ? "⚡" : "🔋"}
-            </Text>
-            <Text
-              style={[
-                s.batteryPillText,
-                batteryLevel < 0.15 && !batteryCharging && s.batteryPillTextUrgent,
-                batteryLevel >= 0.15 && batteryLevel < 0.5 && !batteryCharging && s.batteryPillTextMedium,
-              ]}
-            >
-              {Math.round(batteryLevel * 100)}%
-            </Text>
+          <Image
+            source={require("../../../assets/illustrations/hero-truck.png")}
+            style={s.heroTruckImg}
+            resizeMode="contain"
+          />
+          <View style={s.heroTextCol}>
+            <Text style={s.greeting}>{t("home.greeting", { name: firstName })}</Text>
+            <Text style={s.subGreeting}>{t("home.subGreeting")}</Text>
+
+            {/* Battery status — always visible, not just when it blocks ride-accept */}
+            {batteryLevel !== null && (
+              <View
+                style={[
+                  s.batteryPill,
+                  batteryLevel < 0.15 && !batteryCharging && s.batteryPillUrgent,
+                ]}
+              >
+                <Text style={s.batteryPillIcon}>
+                  {batteryCharging ? "⚡" : "🔋"}
+                </Text>
+                <Text
+                  style={[
+                    s.batteryPillText,
+                    batteryLevel < 0.15 && !batteryCharging && s.batteryPillTextUrgent,
+                    batteryLevel >= 0.15 && batteryLevel < 0.5 && !batteryCharging && s.batteryPillTextMedium,
+                  ]}
+                >
+                  {Math.round(batteryLevel * 100)}%
+                </Text>
+              </View>
+            )}
           </View>
-        )}
+        </LinearGradient>
+
+        <View style={s.contentPad}>
 
         {/* Online toggle */}
         <View style={[s.toggleCard, isOnline && s.toggleCardActive]}>
@@ -589,12 +601,16 @@ export default function DriverHomeScreen() {
         <Text style={s.sectionTitle}>{t("home.stats.title")}</Text>
         <View style={s.statsGrid}>
           <View style={s.statCard}>
-            <Text style={s.statIcon}>⭐</Text>
+            <View style={s.statIconWrap}>
+              <Ionicons name="star" size={18} color={COLORS.primary} />
+            </View>
             <Text style={s.statValue}>{rating}</Text>
             <Text style={s.statLabel}>{t("home.stats.rating")}</Text>
           </View>
           <View style={[s.statCard, { marginRight: 0 }]}>
-            <Text style={s.statIcon}>🗺</Text>
+            <View style={s.statIconWrap}>
+              <Ionicons name="flag" size={18} color={COLORS.primary} />
+            </View>
             <Text style={s.statValue}>{totalRides}</Text>
             <Text style={s.statLabel}>{t("home.stats.totalRides")}</Text>
           </View>
@@ -603,8 +619,16 @@ export default function DriverHomeScreen() {
         {/* Recent Trips */}
         {recentTrips.length > 0 && (
           <View style={{ marginBottom: 24 }}>
-            <Text style={s.sectionTitle}>{t("home.recentTrips.title")}</Text>
-            {recentTrips.map((trip: any, i: number) => {
+            <View style={s.sectionHeaderRow}>
+              <Text style={[s.sectionTitle, { marginBottom: 0 }]}>{t("home.recentTrips.title")}</Text>
+              <TouchableOpacity
+                onPress={() => router.push("/(app)/earnings" as any)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={s.viewAllLink}>{t("home.recentTrips.viewAll")}</Text>
+              </TouchableOpacity>
+            </View>
+            {recentTrips.slice(0, 3).map((trip: any, i: number) => {
               const dotColor = STATUS_COLOR[trip.status] || "#999";
               const dateStr = trip.created_at
                 ? new Date(trip.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })
@@ -614,38 +638,41 @@ export default function DriverHomeScreen() {
                 : "";
               return (
                 <View key={trip.id || i} style={s.tripCard}>
-                  <View style={s.tripTop}>
-                    <View style={s.tripBadgeWrap}>
-                      <View style={[s.tripDot, { backgroundColor: dotColor }]} />
-                      <Text style={[s.tripStatus, { color: dotColor }]}>
-                        {trip.status.replace(/_/g, " ").toUpperCase()}
-                      </Text>
+                  <View style={{ flex: 1 }}>
+                    <View style={s.tripTop}>
+                      <View style={[s.tripStatusPill, { backgroundColor: dotColor + "1A" }]}>
+                        <View style={[s.tripDot, { backgroundColor: dotColor }]} />
+                        <Text style={[s.tripStatus, { color: dotColor }]}>
+                          {trip.status.replace(/_/g, " ").toUpperCase()}
+                        </Text>
+                      </View>
+                      <View style={s.tripRight}>
+                        <Text style={s.tripFare}>
+                          {trip.fare > 0 ? `₹${Math.round(trip.fare)}` : "—"}
+                        </Text>
+                        <Text style={s.tripDate}>{dateStr}  {timeStr}</Text>
+                      </View>
                     </View>
-                    <View style={s.tripRight}>
-                      <Text style={s.tripFare}>
-                        {trip.fare > 0 ? `₹${Math.round(trip.fare)}` : "—"}
-                      </Text>
-                      <Text style={s.tripDate}>{dateStr}  {timeStr}</Text>
+                    <View style={s.tripRoute}>
+                      <View style={s.tripRouteRow}>
+                        <View style={[s.routeDot, { backgroundColor: COLORS.success }]} />
+                        <Text style={s.tripAddr} numberOfLines={1}>{trip.pickup_address || t("common.pickupFallback")}</Text>
+                      </View>
+                      <View style={s.routeLine} />
+                      <View style={s.tripRouteRow}>
+                        <View style={[s.routeDot, { backgroundColor: COLORS.primary }]} />
+                        <Text style={s.tripAddr} numberOfLines={1}>{trip.drop_address || t("common.dropFallback")}</Text>
+                      </View>
+                    </View>
+                    <View style={s.tripMeta}>
+                      {trip.distance_km > 0 && (
+                        <Text style={s.tripMetaText}>📍 {Number(trip.distance_km).toFixed(1)} km</Text>
+                      )}
+                      {trip.rider_name ? <Text style={s.tripMetaText}>👤 {trip.rider_name}</Text> : null}
+                      {trip.service_name ? <Text style={s.tripMetaText}>🚗 {trip.service_name}</Text> : null}
                     </View>
                   </View>
-                  <View style={s.tripRoute}>
-                    <View style={s.tripRouteRow}>
-                      <View style={[s.routeDot, { backgroundColor: COLORS.success }]} />
-                      <Text style={s.tripAddr} numberOfLines={1}>{trip.pickup_address || t("common.pickupFallback")}</Text>
-                    </View>
-                    <View style={s.routeLine} />
-                    <View style={s.tripRouteRow}>
-                      <View style={[s.routeDot, { backgroundColor: COLORS.primary }]} />
-                      <Text style={s.tripAddr} numberOfLines={1}>{trip.drop_address || t("common.dropFallback")}</Text>
-                    </View>
-                  </View>
-                  <View style={s.tripMeta}>
-                    {trip.distance_km > 0 && (
-                      <Text style={s.tripMetaText}>📍 {Number(trip.distance_km).toFixed(1)} km</Text>
-                    )}
-                    {trip.rider_name ? <Text style={s.tripMetaText}>👤 {trip.rider_name}</Text> : null}
-                    {trip.service_name ? <Text style={s.tripMetaText}>🚗 {trip.service_name}</Text> : null}
-                  </View>
+                  <Ionicons name="chevron-forward" size={18} color={COLORS.textFaint} style={{ marginLeft: 8 }} />
                 </View>
               );
             })}
@@ -690,6 +717,7 @@ export default function DriverHomeScreen() {
         )}
 
         <View style={{ height: 32 }} />
+        </View>
       </ScrollView>
 
       {/* Incoming ride request popup */}
@@ -778,12 +806,18 @@ export default function DriverHomeScreen() {
 
 const s = StyleSheet.create({
   safe:             { flex: 1, backgroundColor: COLORS.bg },
-  logoBar:          { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 44, paddingBottom: 4 },
+  scroll:           { flex: 1, paddingBottom: 80 },
+  contentPad:       { paddingHorizontal: 20 },
+
+  // Hero — full-bleed gradient, same technique as user-app's home hero.
+  hero:             { paddingHorizontal: 20, paddingBottom: 28, minHeight: 210 },
+  logoBar:          { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 52, paddingBottom: 8 },
   logo:             { width: 180, height: 64, marginLeft: -38 },
-  scroll:           { flex: 1, paddingHorizontal: 20, paddingBottom: 80 },
-  header:           { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 16, paddingBottom: 16 },
-  name:             { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },
-  subName:          { color: "#777", fontSize: 13, marginTop: 2 },
+  heroTruckImg:     { position: "absolute", right: -20, bottom: -14, width: 250, height: 156 },
+  heroTextCol:      { maxWidth: "58%", marginTop: 8 },
+  greeting:         { color: COLORS.textPrimary, fontSize: 20, fontWeight: "800" },
+  subGreeting:      { color: COLORS.textSecondary, fontSize: 13, marginTop: 4 },
+
   avatar:           { width: 42, height: 42, borderRadius: 21, backgroundColor: COLORS.primary, alignItems: "center", justifyContent: "center" },
   avatarText:       { color: "#fff", fontWeight: "900", fontSize: 18 },
 
@@ -793,7 +827,7 @@ const s = StyleSheet.create({
   toastTitle:       { color: COLORS.textPrimary, fontWeight: "800", fontSize: 13 },
   toastBody:        { color: "#666", fontSize: 12, marginTop: 2, lineHeight: 16 },
 
-  batteryPill:      { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", gap: 5, backgroundColor: "#F0FDF4", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginBottom: 14 },
+  batteryPill:      { flexDirection: "row", alignItems: "center", alignSelf: "flex-start", gap: 5, backgroundColor: "#F0FDF4", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginTop: 10 },
   batteryPillUrgent:{ backgroundColor: "#FEF2F2" },
   batteryPillIcon:  { fontSize: 13 },
   batteryPillText:  { fontSize: 13, fontWeight: "700", color: COLORS.success },
@@ -807,16 +841,18 @@ const s = StyleSheet.create({
   toggleSub:        { color: "#777", fontSize: 12, marginTop: 2 },
 
   sectionTitle:     { color: COLORS.textPrimary, fontWeight: "800", fontSize: 16, marginBottom: 12 },
+  sectionHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
+  viewAllLink:      { color: COLORS.primary, fontWeight: "700", fontSize: 13 },
 
   statsGrid:        { flexDirection: "row", marginBottom: 20 },
   statCard:         { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.input, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, alignItems: "center", marginRight: 10 },
-  statIcon:         { fontSize: 20, marginBottom: 6 },
+  statIconWrap:     { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 6 },
   statValue:        { color: COLORS.textPrimary, fontWeight: "800", fontSize: 22 },
   statLabel:        { color: "#999", fontSize: 11, marginTop: 2 },
 
-  tripCard:         { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, marginBottom: 10 },
+  tripCard:         { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, marginBottom: 10 },
   tripTop:          { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 },
-  tripBadgeWrap:    { flexDirection: "row", alignItems: "center", gap: 6 },
+  tripStatusPill:   { flexDirection: "row", alignItems: "center", gap: 6, borderRadius: RADIUS.chip, paddingHorizontal: 8, paddingVertical: 4 },
   tripDot:          { width: 8, height: 8, borderRadius: 4 },
   tripStatus:       { fontSize: 11, fontWeight: "800", letterSpacing: 0.5 },
   tripRight:        { alignItems: "flex-end" },

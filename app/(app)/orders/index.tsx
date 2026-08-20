@@ -3,6 +3,8 @@ import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
   ActivityIndicator, Alert, Platform, Linking, Image, Modal, TextInput,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import BottomSheet, { BottomSheetHandle } from "../../../components/BottomSheet";
 import SOSButton from "../../../components/SOSButton";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
@@ -168,6 +170,27 @@ export default function OrdersScreen() {
     else if (s === "completed")   speak(t("orders.voice.completed"));
   }, [activeBooking?.status]);
 
+  // Requests foreground location permission and, once granted, starts the GPS
+  // watch that drives myLat/myLng/myHeading. Extracted out of the boot effect
+  // below (unchanged behavior) so the "Enable" location banner can invoke the
+  // exact same flow on demand instead of duplicating it.
+  const requestLocationAccess = useCallback(async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status === "granted") {
+      locSubRef.current?.remove();
+      locSubRef.current = await Location.watchPositionAsync(
+        { accuracy: Location.Accuracy.Balanced, timeInterval: 3000, distanceInterval: 10 },
+        loc => {
+          const heading = loc.coords.heading ?? 0;
+          myPosRef.current = { lat: loc.coords.latitude, lng: loc.coords.longitude, heading };
+          setMyLat(loc.coords.latitude);
+          setMyLng(loc.coords.longitude);
+          setMyHeading(heading);
+        }
+      );
+    }
+  }, []);
+
   // ── Boot: load auth + start GPS + polling ─────────────────────────────
   useEffect(() => {
     (async () => {
@@ -193,19 +216,7 @@ export default function OrdersScreen() {
 
       authRef.current = { token: t, driverId: d };
 
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === "granted") {
-        locSubRef.current = await Location.watchPositionAsync(
-          { accuracy: Location.Accuracy.Balanced, timeInterval: 3000, distanceInterval: 10 },
-          loc => {
-            const heading = loc.coords.heading ?? 0;
-            myPosRef.current = { lat: loc.coords.latitude, lng: loc.coords.longitude, heading };
-            setMyLat(loc.coords.latitude);
-            setMyLng(loc.coords.longitude);
-            setMyHeading(heading);
-          }
-        );
-      }
+      await requestLocationAccess();
 
       if (restoredBookingId) startGpsPush(restoredBookingId);
       setReady(true);
@@ -783,13 +794,28 @@ export default function OrdersScreen() {
 
   return (
     <SafeAreaView style={s.safe}>
-      {/* Header */}
-      <View style={s.logoBar}>
-        <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-      </View>
-      <View style={s.listHeader}>
-        <View>
-          <Text style={s.title}>{activeBooking ? t("orders.title.current") : t("orders.title.requests")}</Text>
+      {/* Hero — full-bleed gradient, same technique as driver-app's home hero */}
+      <LinearGradient
+        colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
+        locations={[0, 0.6, 1]}
+        style={s.hero}
+      >
+        <View style={s.logoBar}>
+          <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
+          {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
+        </View>
+
+        <Image
+          source={require("../../../assets/illustrations/hero-truck.png")}
+          style={s.heroTruckImg}
+          resizeMode="contain"
+        />
+        <View style={s.heroTextCol}>
+          <Text style={s.title}>
+            {activeBooking
+              ? t("orders.title.current")
+              : <>{t("orders.title.requestsPrefix")}<Text style={{ color: COLORS.primary }}>{t("orders.title.requestsHighlight")}</Text></>}
+          </Text>
           <Text style={s.subtitle}>
             {!ready
               ? t("orders.subtitle.loading")
@@ -800,10 +826,25 @@ export default function OrdersScreen() {
                   : t("orders.subtitle.enableLocation")}
           </Text>
         </View>
-        {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
-      </View>
+      </LinearGradient>
 
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+
+        {/* ── Turn on location banner ──────────────────────── */}
+        {ready && !myLat && !activeBooking && (
+          <View style={s.locationBanner}>
+            <View style={s.locationBannerIconWrap}>
+              <Ionicons name="location-outline" size={22} color={COLORS.primary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.locationBannerTitle}>{t("orders.locationBanner.title")}</Text>
+              <Text style={s.locationBannerSub}>{t("orders.locationBanner.subtitle")}</Text>
+            </View>
+            <TouchableOpacity style={s.locationBannerBtn} onPress={requestLocationAccess}>
+              <Text style={s.locationBannerBtnTxt}>{t("orders.locationBanner.enable")}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* ── CURRENT RIDE CARD (tap anywhere to open map) ──── */}
         {activeBooking && (
@@ -926,11 +967,33 @@ export default function OrdersScreen() {
               <Text style={s.emptyTitle}>{t("orders.empty.looking")}</Text>
             </View>
           ) : pending.length === 0 ? (
-            <View style={s.emptyState}>
-              <Text style={s.emptyIcon}>{activeBooking ? "👀" : "🕐"}</Text>
-              <Text style={s.emptyTitle}>{activeBooking ? t("orders.empty.noRequestsActive") : t("orders.empty.noRequestsIdle")}</Text>
-              <Text style={s.emptySub}>{activeBooking ? t("orders.empty.subActive") : t("orders.empty.subIdle")}</Text>
-            </View>
+            activeBooking ? (
+              <View style={s.emptyState}>
+                <Text style={s.emptyIcon}>👀</Text>
+                <Text style={s.emptyTitle}>{t("orders.empty.noRequestsActive")}</Text>
+                <Text style={s.emptySub}>{t("orders.empty.subActive")}</Text>
+              </View>
+            ) : (
+              <View style={s.emptyCard}>
+                <View style={s.emptyCardIconWrap}>
+                  <View style={[s.emptyCardDot, { top: 6, right: 14 }]} />
+                  <View style={[s.emptyCardDot, { bottom: 10, left: 8, width: 6, height: 6, borderRadius: 3 }]} />
+                  <Ionicons name="time-outline" size={40} color={COLORS.primary} />
+                </View>
+                <Text style={s.emptyCardTitle}>{t("orders.empty.noRequestsIdle")}</Text>
+                <View style={s.emptyCardDivider} />
+                <Text style={s.emptyCardSub}>{t("orders.empty.subIdle", { sec: POLL_MS / 1000 })}</Text>
+
+                {/* Decorative skyline + plants */}
+                <View style={s.emptyCardSkyline}>
+                  <Ionicons name="leaf-outline" size={16} color={COLORS.borderStrong} />
+                  <Ionicons name="business-outline" size={22} color={COLORS.borderStrong} />
+                  <Ionicons name="business-outline" size={30} color={COLORS.borderStrong} style={{ marginHorizontal: -4 }} />
+                  <Ionicons name="business-outline" size={22} color={COLORS.borderStrong} />
+                  <Ionicons name="leaf-outline" size={16} color={COLORS.borderStrong} />
+                </View>
+              </View>
+            )
           ) : (
             pending.map(order => {
               const dist = myLat > 0 && order.pickup?.lat ? haversineKm(myLat, myLng, order.pickup.lat, order.pickup.lng) : null;
@@ -1047,16 +1110,19 @@ export default function OrdersScreen() {
 const s = StyleSheet.create({
   fill:       { flex:1, backgroundColor:"#fff" },
   safe:       { flex:1, backgroundColor:"#FAFAFA" },
-  logoBar:    { flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingHorizontal:20, paddingTop:44, paddingBottom:4 },
-  logo:       { width:180, height:64, marginLeft:-38 },
   dot:        { width:8, height:8, borderRadius:4, flexShrink:0 },
   miniRow:    { flexDirection:"row", alignItems:"flex-start", gap:10 },
   miniAddr:   { flex:1, color:"#444", fontSize:12 },
   busyBtn:    { opacity:0.6 },
 
-  listHeader: { flexDirection:"row", justifyContent:"space-between", alignItems:"flex-start", paddingHorizontal:20, paddingTop:16, paddingBottom:16 },
-  title:      { color:"#111", fontSize:22, fontWeight:"800" },
-  subtitle:   { color:"#777", fontSize:12, marginTop:2 },
+  // ── Hero — full-bleed gradient, same technique as driver-app's home hero ──
+  hero:         { paddingHorizontal:20, paddingBottom:28, minHeight:190 },
+  logoBar:      { flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingTop:52, paddingBottom:8 },
+  logo:         { width:180, height:64, marginLeft:-38 },
+  heroTruckImg: { position:"absolute", right:-20, bottom:-14, width:250, height:156 },
+  heroTextCol:  { maxWidth:"58%", marginTop:8 },
+  title:        { color:"#111", fontSize:22, fontWeight:"800" },
+  subtitle:     { color:"#777", fontSize:12, marginTop:4 },
 
   // ── Current ride ─────────────────────────────────────────────────────────
   currentSection: { marginHorizontal:20, borderRadius:20, overflow:"hidden", borderWidth:1.5, borderColor:"#E5E7EB", backgroundColor:"#fff", elevation:3 },
@@ -1094,6 +1160,38 @@ const s = StyleSheet.create({
   emptyIcon:  { fontSize:36 },
   emptyTitle: { color:"#333", fontWeight:"700", fontSize:15 },
   emptySub:   { color:"#999", fontSize:12, textAlign:"center", paddingHorizontal:20 },
+
+  // ── Empty state card (idle, no active booking) ─────────────────────────
+  emptyCard: {
+    marginHorizontal:20, marginTop:20, backgroundColor:"#fff", borderRadius:RADIUS.card,
+    borderWidth:1, borderColor:"#EFEFEF", paddingTop:32, paddingBottom:20, paddingHorizontal:20,
+    alignItems:"center", elevation:2,
+  },
+  emptyCardIconWrap: {
+    width:76, height:76, borderRadius:38, backgroundColor:COLORS.primaryTint,
+    borderWidth:2, borderColor:COLORS.primaryBorder, alignItems:"center", justifyContent:"center",
+    marginBottom:16,
+  },
+  emptyCardDot: { position:"absolute", width:8, height:8, borderRadius:4, backgroundColor:COLORS.primaryBorder },
+  emptyCardTitle: { color:"#222", fontWeight:"800", fontSize:16, textAlign:"center" },
+  emptyCardDivider: { width:36, height:2, backgroundColor:COLORS.primaryBorder, borderRadius:1, marginVertical:12 },
+  emptyCardSub: { color:"#999", fontSize:12, textAlign:"center", paddingHorizontal:12, lineHeight:17 },
+  emptyCardSkyline: { flexDirection:"row", alignItems:"flex-end", gap:2, marginTop:24 },
+
+  // ── Turn on location banner ─────────────────────────────────────────────
+  locationBanner: {
+    flexDirection:"row", alignItems:"center", gap:12,
+    marginHorizontal:20, marginTop:16, backgroundColor:COLORS.primaryTint2,
+    borderRadius:RADIUS.input, borderWidth:1, borderColor:COLORS.primaryBorder, padding:14,
+  },
+  locationBannerIconWrap: {
+    width:40, height:40, borderRadius:20, backgroundColor:COLORS.primaryTint,
+    alignItems:"center", justifyContent:"center", flexShrink:0,
+  },
+  locationBannerTitle: { color:"#222", fontWeight:"700", fontSize:14 },
+  locationBannerSub:   { color:"#777", fontSize:11, marginTop:2, lineHeight:15 },
+  locationBannerBtn:   { backgroundColor:COLORS.primary, borderRadius:RADIUS.input, paddingHorizontal:16, paddingVertical:9, flexShrink:0 },
+  locationBannerBtnTxt:{ color:"#fff", fontWeight:"800", fontSize:12 },
 
   orderCard:       { backgroundColor:"#fff", borderRadius:RADIUS.card, borderWidth:1, borderColor:"#EFEFEF", padding:16, marginBottom:12, gap:10, elevation:2 },
   orderCardLocked: { borderColor:"#E5E7EB", opacity:0.85 },

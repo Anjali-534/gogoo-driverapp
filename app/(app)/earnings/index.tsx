@@ -4,6 +4,7 @@ import {
   TouchableOpacity, Image, ActivityIndicator, RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 import { api } from "@/services/api";
 import { trackEarningsViewed } from "@/services/analytics";
 import { COLORS, RADIUS } from "@/constants/theme";
@@ -118,10 +119,24 @@ export default function EarningsScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={COLORS.primary} />}
       >
-        <View style={s.logoBar}>
-          <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-        </View>
-        <Text style={s.pageTitle}>{t("earnings.pageTitle")}</Text>
+        {/* Hero — full-bleed gradient, same technique as home/orders */}
+        <LinearGradient
+          colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
+          locations={[0, 0.6, 1]}
+          style={s.hero}
+        >
+          <View style={s.logoBar}>
+            <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
+          </View>
+          <Image
+            source={require("../../../assets/illustrations/hero-truck.png")}
+            style={s.heroTruckImg}
+            resizeMode="contain"
+          />
+          <View style={s.heroTextCol}>
+            <Text style={s.pageTitle}>{t("earnings.pageTitle")}</Text>
+          </View>
+        </LinearGradient>
 
         {loading ? (
           <View style={s.loadingWrap}><ActivityIndicator color={COLORS.primary} size="large" /></View>
@@ -133,25 +148,38 @@ export default function EarningsScreen() {
             <View style={s.rangeCard}>
               <Text style={s.sectionLabel}>{t("earnings.filterByPeriod")}</Text>
               <EarningsRangeFilter selected={range} onSelect={changeRange} rangeLabel={rangeSummary?.range_label} />
+
               {rangeLoading ? (
                 <View style={{ paddingVertical: 16 }}><ActivityIndicator color={COLORS.primary} /></View>
               ) : rangeSummary && (
-                <View style={s.rangeStatsRow}>
-                  <View style={s.rangeStatItem}>
-                    <Text style={[s.rangeStatValue, { color: COLORS.success }]}>₹{Math.round(rangeSummary.total_earned ?? 0)}</Text>
-                    <Text style={s.rangeStatLabel}>{t("earnings.earned")}</Text>
-                  </View>
-                  <View style={s.statDivider} />
-                  <View style={s.rangeStatItem}>
-                    <Text style={[s.rangeStatValue, { color: COLORS.danger }]}>₹{Math.round(rangeSummary.total_debited ?? 0)}</Text>
-                    <Text style={s.rangeStatLabel}>{t("earnings.debited")}</Text>
-                  </View>
-                  <View style={s.statDivider} />
-                  <View style={s.rangeStatItem}>
-                    <Text style={[s.rangeStatValue, { color: (rangeSummary.net ?? 0) >= 0 ? COLORS.success : COLORS.danger }]}>
-                      {(rangeSummary.net ?? 0) >= 0 ? "+" : ""}₹{Math.round(rangeSummary.net ?? 0)}
-                    </Text>
-                    <Text style={s.rangeStatLabel}>{t("earnings.net")}</Text>
+                <View style={s.cardRow}>
+                  <Image source={require("../../../assets/illustrations/wallet.png")} style={s.cardIllustration} resizeMode="contain" />
+                  <View style={[s.rangeStatsRow, { flex: 1 }]}>
+                    <View style={s.rangeStatItem}>
+                      <Text style={[s.rangeStatValue, { color: COLORS.success }]}>₹{Math.round(rangeSummary.total_earned ?? 0)}</Text>
+                      <Text style={s.rangeStatLabel}>{t("earnings.earned")}</Text>
+                      <View style={[s.statBadge, { backgroundColor: COLORS.successTint }]}>
+                        <Ionicons name="arrow-up-outline" size={14} color={COLORS.success} />
+                      </View>
+                    </View>
+                    <View style={s.statDivider} />
+                    <View style={s.rangeStatItem}>
+                      <Text style={[s.rangeStatValue, { color: COLORS.danger }]}>₹{Math.round(rangeSummary.total_debited ?? 0)}</Text>
+                      <Text style={s.rangeStatLabel}>{t("earnings.debited")}</Text>
+                      <View style={[s.statBadge, { backgroundColor: COLORS.dangerTint }]}>
+                        <Ionicons name="arrow-down-outline" size={14} color={COLORS.danger} />
+                      </View>
+                    </View>
+                    <View style={s.statDivider} />
+                    <View style={s.rangeStatItem}>
+                      <Text style={[s.rangeStatValue, { color: (rangeSummary.net ?? 0) >= 0 ? COLORS.success : COLORS.danger }]}>
+                        {(rangeSummary.net ?? 0) >= 0 ? "+" : ""}₹{Math.round(rangeSummary.net ?? 0)}
+                      </Text>
+                      <Text style={s.rangeStatLabel}>{t("earnings.net")}</Text>
+                      <View style={[s.statBadge, { backgroundColor: COLORS.primaryTint }]}>
+                        <Ionicons name="wallet-outline" size={14} color={COLORS.primary} />
+                      </View>
+                    </View>
                   </View>
                 </View>
               )}
@@ -160,20 +188,33 @@ export default function EarningsScreen() {
             {/* Weekly Summary */}
             <View style={s.weekCard}>
               <Text style={s.weekLabel}>{t("earnings.thisWeek")}</Text>
-              <View style={s.statsRow}>
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>₹{weekEarnings}</Text>
-                  <Text style={s.statLabel}>{t("earnings.earningsLabel")}</Text>
-                </View>
-                <View style={s.statDivider} />
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>{Math.floor(weekMinutes / 60)}h {weekMinutes % 60}m</Text>
-                  <Text style={s.statLabel}>{t("earnings.timeSpent")}</Text>
-                </View>
-                <View style={s.statDivider} />
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>{weekTripCount}</Text>
-                  <Text style={s.statLabel}>{t("earnings.tripsTaken")}</Text>
+
+              <View style={s.cardRow}>
+                <Image source={require("../../../assets/illustrations/task.png")} style={s.cardIllustration} resizeMode="contain" />
+                <View style={[s.statsRow, { flex: 1 }]}>
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>₹{weekEarnings}</Text>
+                    <Text style={s.statLabel}>{t("earnings.earningsLabel")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.successTint }]}>
+                      <Ionicons name="cash-outline" size={14} color={COLORS.success} />
+                    </View>
+                  </View>
+                  <View style={s.statDivider} />
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>{Math.floor(weekMinutes / 60)}h {weekMinutes % 60}m</Text>
+                    <Text style={s.statLabel}>{t("earnings.timeSpent")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.infoTint }]}>
+                      <Ionicons name="time-outline" size={14} color={COLORS.info} />
+                    </View>
+                  </View>
+                  <View style={s.statDivider} />
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>{weekTripCount}</Text>
+                    <Text style={s.statLabel}>{t("earnings.tripsTaken")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.primaryTint }]}>
+                      <Ionicons name="car-outline" size={14} color={COLORS.primary} />
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
@@ -209,20 +250,33 @@ export default function EarningsScreen() {
             {/* Day Summary */}
             <View style={s.weekCard}>
               <Text style={s.weekLabel}>{dayLabel}</Text>
-              <View style={s.statsRow}>
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>₹{dayEarnings}</Text>
-                  <Text style={s.statLabel}>{t("earnings.earningsLabel")}</Text>
-                </View>
-                <View style={s.statDivider} />
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>{Math.floor(dayMinutes / 60)}h {dayMinutes % 60}m</Text>
-                  <Text style={s.statLabel}>{t("earnings.timeSpent")}</Text>
-                </View>
-                <View style={s.statDivider} />
-                <View style={s.statItem}>
-                  <Text style={s.statValue}>{dayTrips.length}</Text>
-                  <Text style={s.statLabel}>{t("earnings.tripsTaken")}</Text>
+
+              <View style={s.cardRow}>
+                <Image source={require("../../../assets/illustrations/money.png")} style={s.cardIllustration} resizeMode="contain" />
+                <View style={[s.statsRow, { flex: 1 }]}>
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>₹{dayEarnings}</Text>
+                    <Text style={s.statLabel}>{t("earnings.earningsLabel")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.successTint }]}>
+                      <Ionicons name="cash-outline" size={14} color={COLORS.success} />
+                    </View>
+                  </View>
+                  <View style={s.statDivider} />
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>{Math.floor(dayMinutes / 60)}h {dayMinutes % 60}m</Text>
+                    <Text style={s.statLabel}>{t("earnings.timeSpent")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.infoTint }]}>
+                      <Ionicons name="time-outline" size={14} color={COLORS.info} />
+                    </View>
+                  </View>
+                  <View style={s.statDivider} />
+                  <View style={s.statItem}>
+                    <Text style={s.statValue}>{dayTrips.length}</Text>
+                    <Text style={s.statLabel}>{t("earnings.tripsTaken")}</Text>
+                    <View style={[s.statBadge, { backgroundColor: COLORS.primaryTint }]}>
+                      <Ionicons name="car-outline" size={14} color={COLORS.primary} />
+                    </View>
+                  </View>
                 </View>
               </View>
             </View>
@@ -256,20 +310,29 @@ export default function EarningsScreen() {
 
 const s = StyleSheet.create({
   safe:               { flex: 1, backgroundColor: COLORS.bgAlt },
-  logoBar:            { flexDirection: "row", alignItems: "center", paddingTop: 44, paddingBottom: 4, paddingHorizontal: 20 },
+
+  // ── Hero — full-bleed gradient, same technique as home/orders ──────────
+  hero:               { paddingHorizontal: 20, paddingBottom: 24, minHeight: 170 },
+  logoBar:            { flexDirection: "row", alignItems: "center", paddingTop: 52, paddingBottom: 8 },
   logo:               { width: 180, height: 64, marginLeft: -38 },
-  pageTitle:          { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800", paddingHorizontal: 20, paddingTop: 16, marginBottom: 16 },
+  heroTruckImg:       { position: "absolute", right: -20, bottom: -14, width: 250, height: 156 },
+  heroTextCol:        { maxWidth: "58%", marginTop: 8 },
+  pageTitle:          { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },
+
   loadingWrap:        { paddingTop: 60, alignItems: "center" },
+  cardRow:            { flexDirection: "row", alignItems: "center", gap: 14, marginTop: 12 },
+  cardIllustration:   { width: 64, height: 64, flexShrink: 0 },
+  statBadge:          { width: 26, height: 26, borderRadius: 13, alignItems: "center", justifyContent: "center", marginTop: 6 },
   rangeCard:          { backgroundColor: COLORS.white, borderRadius: RADIUS.card, padding: 16, marginHorizontal: 16, marginBottom: 16, shadowColor: "#000", shadowOpacity: 0.06, elevation: 3 },
-  rangeStatsRow:      { flexDirection: "row", alignItems: "center", marginTop: 12 },
+  rangeStatsRow:      { flexDirection: "row", alignItems: "flex-start" },
   rangeStatItem:      { flex: 1, alignItems: "center" },
   rangeStatValue:     { fontSize: 16, fontWeight: "800" },
   rangeStatLabel:     { fontSize: 11, color: COLORS.textSecondary, marginTop: 2 },
   weekCard:           { backgroundColor: COLORS.white, borderRadius: RADIUS.card, padding: 20, marginHorizontal: 16, marginBottom: 16, shadowColor: "#000", shadowOpacity: 0.06, elevation: 3 },
   weekLabel:          { fontSize: 11, fontWeight: "700", color: COLORS.primary, marginBottom: 16, letterSpacing: 1 },
-  statsRow:           { flexDirection: "row", alignItems: "center" },
+  statsRow:           { flexDirection: "row", alignItems: "flex-start" },
   statItem:           { flex: 1, alignItems: "center" },
-  statDivider:        { width: 1, height: 36, backgroundColor: COLORS.border },
+  statDivider:        { width: 1, height: 64, backgroundColor: COLORS.border },
   statValue:          { fontSize: 20, fontWeight: "800", color: COLORS.textStrong },
   statLabel:          { fontSize: 11, color: COLORS.textSecondary, marginTop: 2, textAlign: "center" },
   daySelectorWrap:    { paddingHorizontal: 16, paddingVertical: 8, marginBottom: 8 },

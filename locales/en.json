@@ -437,7 +437,8 @@
       "totalRides": "Total Rides"
     },
     "recentTrips": {
-      "title": "Recent Trips"
+      "title": "Recent Trips",
+      "viewAll": "View All"
     },
     "reviews": {
       "title": "Recent Reviews"
@@ -480,7 +481,14 @@
   "orders": {
     "title": {
       "current": "Current Ride",
-      "requests": "Ride Requests"
+      "requests": "Ride Requests",
+      "requestsPrefix": "Ride ",
+      "requestsHighlight": "Requests"
+    },
+    "locationBanner": {
+      "title": "Turn on location",
+      "subtitle": "Enable location access to start seeing nearby ride requests",
+      "enable": "Enable"
     },
     "subtitle": {
       "loading": "Loading...",
@@ -540,7 +548,7 @@
       "noRequestsActive": "No new requests right now",
       "noRequestsIdle": "No ride requests right now",
       "subActive": "New requests will appear here while you complete the current ride",
-      "subIdle": "New requests appear automatically every 4 seconds"
+      "subIdle": "New requests appear automatically every {{sec}} seconds"
     },
     "otp": {
       "title": "Enter Ride OTP",
