@@ -512,6 +512,7 @@
       "back": "← वापस",
       "pickupDistPrefix": "📍 राइडर {{dist}}",
       "dropDistPrefix": "🏁 ड्रॉप {{dist}}",
+      "speedKmh": "{{speed}} किमी/घं",
       "markerYou": "आप",
       "markerPickup": "पिकअप",
       "markerDrop": "ड्रॉप"
@@ -538,7 +539,9 @@
       "tripDistance": "{{km}} किमी की ट्रिप",
       "lockedNotice": "🔒 स्वीकार करने के लिए मौजूदा राइड पूरी करें",
       "reject": "✕ रिजेक्ट करें",
-      "accept": "✓ स्वीकार करें"
+      "accept": "✓ स्वीकार करें",
+      "paymentCash": "नकद",
+      "paymentWallet": "वॉलेट"
     },
     "pending": {
       "title": "आने वाली रिक्वेस्ट्स"
@@ -920,9 +923,9 @@
       "heroTitle": "एक ड्राइवर को रेफर करें, ₹50 कमाएं!",
       "heroSub": "जब वे अपनी पहली ट्रिप पूरी करेंगे तो आपको ₹50 मिलेंगे। और अगर वे किसी और को रेफर करते हैं, तो ₹25 और मिलेंगे!",
       "yourCode": "आपका रेफ़रल कोड",
-      "copy": "📋 कॉपी करें",
-      "shareWhatsApp": "💬 WhatsApp पर शेयर करें",
-      "copyLink": "🔗 लिंक कॉपी करें",
+      "copy": "कॉपी करें",
+      "shareWhatsApp": "WhatsApp पर शेयर करें",
+      "copyLink": "लिंक कॉपी करें",
       "driversJoined": "जुड़े ड्राइवर",
       "earned": "कमाई",
       "pending": "बकाया",

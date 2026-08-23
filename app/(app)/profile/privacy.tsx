@@ -27,7 +27,7 @@ export default function DriverPrivacyScreen() {
 
         <Text style={s.meta}>Privacy Policy — bogie</Text>
         <Text style={s.meta}>Effective: June 1, 2026 | Updated: June 18, 2026</Text>
-        <Text style={s.meta}>Aggarwal Publicity and Marketing Pvt. Ltd.</Text>
+        <Text style={s.meta}>Bogie AI Technologies Pvt Ltd</Text>
         <Text style={s.meta}>New Delhi, Delhi – 110001 | privacy@bogie.in</Text>
 
         <Text style={s.sectionHeader}>1. What We Collect</Text>
@@ -173,7 +173,7 @@ export default function DriverPrivacyScreen() {
           {[
             "Name: Anjali Aggarwal",
             "Designation: Data Protection Officer",
-            "Company: Aggarwal Publicity and Marketing Pvt. Ltd.",
+            "Company: Bogie AI Technologies Pvt Ltd",
             "Address: New Delhi, Delhi – 110001, India",
             "Email: privacy@bogie.in",
             "Response: Within 7 working days",
@@ -200,7 +200,7 @@ export default function DriverPrivacyScreen() {
 
         <Text style={s.footer}>
           © 2026 bogie Logistics{"\n"}
-          Aggarwal Publicity and Marketing Pvt. Ltd.{"\n"}
+          Bogie AI Technologies Pvt Ltd{"\n"}
           All rights reserved.
         </Text>
         <View style={{ height: 40 }} />

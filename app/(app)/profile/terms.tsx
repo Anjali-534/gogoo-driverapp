@@ -22,7 +22,7 @@ export default function DriverTermsScreen() {
       </View>
       <ScrollView style={s.scroll} showsVerticalScrollIndicator={false}>
         <Text style={s.meta}>Effective Date: June 1, 2026</Text>
-        <Text style={s.meta}>Aggarwal Publicity and Marketing Pvt. Ltd., New Delhi, India</Text>
+        <Text style={s.meta}>Bogie AI Technologies Pvt Ltd, New Delhi, India</Text>
 
         <Text style={s.sectionHeader}>AGREEMENT TO TERMS</Text>
         <Text style={s.body}>
@@ -74,7 +74,7 @@ export default function DriverTermsScreen() {
         ))}
 
         <Text style={s.footer}>
-          © 2026 bogie Logistics · Aggarwal Publicity and Marketing Pvt. Ltd.
+          © 2026 bogie Logistics · Bogie AI Technologies Pvt Ltd
         </Text>
         <View style={{ height: 40 }} />
       </ScrollView>

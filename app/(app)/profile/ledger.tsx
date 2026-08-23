@@ -1,10 +1,11 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
   Modal, TextInput, KeyboardAvoidingView, Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { getToken } from "@/services/session";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
@@ -239,12 +240,13 @@ export default function LedgerScreen() {
   return (
     <SafeAreaView style={s.safe}>
       <StatusBar barStyle="dark-content" />
-      <View style={s.header}>
+      <LinearGradient colors={["#FFE8D9", "#FFF6F0", COLORS.bgAlt]} locations={[0, 0.6, 1]} style={s.header}>
         <TouchableOpacity onPress={() => router.back()} style={s.back} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
           <Ionicons name="arrow-back" size={20} color={COLORS.textPrimary} />
         </TouchableOpacity>
         <Text style={s.headerTitle}>{t("profile.ledger.title")}</Text>
-      </View>
+        <Image source={require("../../../assets/illustrations/wallet.png")} style={s.headerIllustration} resizeMode="contain" />
+      </LinearGradient>
 
       {loading ? (
         <View style={s.center}><ActivityIndicator color={COLORS.primary} size="large" /></View>
@@ -297,27 +299,41 @@ export default function LedgerScreen() {
                 disabled={!canWithdraw}
                 onPress={handleWithdrawPress}
               >
+                <Ionicons name="cloud-upload-outline" size={16} color="#fff" />
                 <Text style={s.withdrawBtnText}>
                   {t("profile.ledger.withdraw", { amount: withdrawable })}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={s.clearBtn} onPress={handleAddMoneyPress}>
+                <Ionicons name="add-circle-outline" size={16} color={COLORS.info} />
                 <Text style={s.clearBtnText}>{t("profile.ledger.addMoney")}</Text>
               </TouchableOpacity>
             </View>
-            {!payoutsAvailable && (
-              <Text style={s.infoText}>{t("profile.ledger.payoutsComingSoonInline")}</Text>
-            )}
-            <Text style={s.infoText}>{t("profile.ledger.maintainInfo")}</Text>
+
+            <View style={s.infoBanner}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.successStrong} />
+              <View style={{ flex: 1 }}>
+                {!payoutsAvailable && (
+                  <Text style={s.infoText}>{t("profile.ledger.payoutsComingSoonInline")}</Text>
+                )}
+                <Text style={s.infoTextBold}>{t("profile.ledger.maintainInfo")}</Text>
+              </View>
+            </View>
           </View>
 
           {wallet && (
             <View style={s.statsRow}>
               <View style={s.statChip}>
+                <View style={[s.statIconWrap, { backgroundColor: "#FFEEE0" }]}>
+                  <Ionicons name="bag-handle-outline" size={18} color={COLORS.primary} />
+                </View>
                 <Text style={s.statChipLabel}>{t("profile.ledger.totalEarnings")}</Text>
                 <Text style={s.statChipValue}>₹{Math.round(wallet.total_earnings ?? 0)}</Text>
               </View>
               <View style={s.statChip}>
+                <View style={[s.statIconWrap, { backgroundColor: COLORS.infoTint }]}>
+                  <Ionicons name="car-outline" size={18} color={COLORS.info} />
+                </View>
                 <Text style={s.statChipLabel}>{t("profile.ledger.totalRides")}</Text>
                 <Text style={s.statChipValue}>{wallet.total_rides ?? 0}</Text>
               </View>
@@ -348,7 +364,19 @@ export default function LedgerScreen() {
               style={[s.downloadBtn, downloading && s.btnDisabled]}
               disabled={downloading}
               onPress={() => downloadStatement(selectedMonth)}
+              activeOpacity={0.85}
             >
+              <LinearGradient
+                colors={[COLORS.primary, "#FF8A50"]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={StyleSheet.absoluteFill}
+              />
+              <Image
+                source={require("../../../assets/illustrations/task.png")}
+                style={s.downloadIllustration}
+                resizeMode="contain"
+              />
               {downloading ? (
                 <ActivityIndicator color={COLORS.white} size="small" />
               ) : (
@@ -514,6 +542,7 @@ export default function LedgerScreen() {
 const s = StyleSheet.create({
   safe:            { flex: 1, backgroundColor: COLORS.bgAlt },
   header:          { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 52, paddingBottom: 12 },
+  headerIllustration: { width: 60, height: 52 },
   back:            { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   headerTitle:     { color: COLORS.textPrimary, fontSize: 20, fontWeight: "900", flex: 1 },
   center:          { flex: 1, alignItems: "center", justifyContent: "center" },
@@ -530,14 +559,17 @@ const s = StyleSheet.create({
   minBalanceText:  { color: COLORS.textMuted, fontSize: 11 },
   minBalanceValue: { color: COLORS.textPrimary, fontSize: 13, fontWeight: "700" },
   btnRow:          { flexDirection: "row", gap: 10, marginBottom: 12 },
-  withdrawBtn:     { flex: 1, backgroundColor: COLORS.warning, borderRadius: RADIUS.input, paddingVertical: 12, alignItems: "center" },
+  withdrawBtn:     { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingVertical: 12 },
   btnDisabled:     { opacity: 0.4 },
-  withdrawBtnText: { color: COLORS.textPrimary, fontSize: 14, fontWeight: "700" },
-  clearBtn:        { flex: 1, borderWidth: 1.5, borderColor: COLORS.info, borderRadius: RADIUS.input, paddingVertical: 12, alignItems: "center" },
+  withdrawBtnText: { color: "#fff", fontSize: 14, fontWeight: "700" },
+  clearBtn:        { flex: 1, flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6, backgroundColor: COLORS.white, borderWidth: 1.5, borderColor: COLORS.info, borderRadius: RADIUS.input, paddingVertical: 12 },
   clearBtnText:    { color: COLORS.info, fontSize: 14, fontWeight: "700" },
-  infoText:        { color: COLORS.textMuted, fontSize: 11, textAlign: "center" },
+  infoBanner:      { flexDirection: "row", alignItems: "flex-start", gap: 8, backgroundColor: "rgba(255,255,255,0.6)", borderRadius: RADIUS.input, padding: 10 },
+  infoText:        { color: COLORS.textSecondary, fontSize: 11, lineHeight: 15, marginBottom: 4 },
+  infoTextBold:    { color: COLORS.successStrong, fontSize: 11, fontWeight: "700" },
   statsRow:        { flexDirection: "row", gap: 10, marginBottom: 16 },
   statChip:        { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.input, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, alignItems: "center" },
+  statIconWrap:    { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center", marginBottom: 8 },
   statChipLabel:   { fontSize: 11, color: COLORS.textMuted, fontWeight: "600", marginBottom: 4 },
   statChipValue:   { fontSize: 18, fontWeight: "800", color: COLORS.textPrimary },
   statementCard:   { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 16, marginBottom: 16 },
@@ -546,7 +578,8 @@ const s = StyleSheet.create({
   monthChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
   monthChipText:       { color: COLORS.textSecondary, fontSize: 12, fontWeight: "600" },
   monthChipTextActive: { color: "#FFF" },
-  downloadBtn:     { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingVertical: 12 },
+  downloadBtn:     { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: RADIUS.input, paddingVertical: 14, overflow: "hidden", position: "relative" },
+  downloadIllustration: { position: "absolute", right: -10, bottom: -14, width: 72, height: 60, opacity: 0.5 },
   downloadBtnText: { color: "#fff", fontSize: 14, fontWeight: "700" },
   sectionLabel:    { fontSize: 11, fontWeight: "700", letterSpacing: 1, color: COLORS.textMuted, textTransform: "uppercase", marginBottom: 10 },
   rangeSummaryRow:   { flexDirection: "row", gap: 10, marginTop: 12, marginBottom: 4 },

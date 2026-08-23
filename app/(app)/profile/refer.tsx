@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, ActivityIndicator, RefreshControl, Linking, Alert, StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -84,6 +84,7 @@ export default function DriverReferScreen() {
           <Ionicons name="arrow-back" size={20} color={COLORS.textPrimary} />
         </TouchableOpacity>
         <Text style={s.headerTitle}>{t("profile.refer.title")}</Text>
+        <Image source={require("../../../assets/illustrations/money.png")} style={s.headerIllustration} resizeMode="contain" />
       </View>
 
       {loading ? (
@@ -102,10 +103,15 @@ export default function DriverReferScreen() {
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={COLORS.primary} />}
         >
           <View style={s.heroCard}>
-            <Text style={s.heroTitle}>{t("profile.refer.heroTitle")}</Text>
-            <Text style={s.heroSub}>
-              {t("profile.refer.heroSub")}
-            </Text>
+            <View style={s.heroIconWrap}>
+              <Ionicons name="gift" size={22} color="#FFF" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.heroTitle}>{t("profile.refer.heroTitle")}</Text>
+              <Text style={s.heroSub}>
+                {t("profile.refer.heroSub")}
+              </Text>
+            </View>
           </View>
 
           <View style={s.codeCard}>
@@ -119,22 +125,33 @@ export default function DriverReferScreen() {
           </View>
 
           <TouchableOpacity style={s.waBtn} onPress={shareWhatsApp} activeOpacity={0.85}>
+            <Ionicons name="logo-whatsapp" size={18} color="#FFF" />
             <Text style={s.waBtnText}>{t("profile.refer.shareWhatsApp")}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={s.linkBtn} onPress={copyLink} activeOpacity={0.85}>
+            <Ionicons name="link-outline" size={16} color={COLORS.textPrimary} />
             <Text style={s.linkBtnText}>{t("profile.refer.copyLink")}</Text>
           </TouchableOpacity>
 
           <View style={s.statsRow}>
             <View style={s.statChip}>
+              <View style={[s.statIcon, { backgroundColor: COLORS.infoTint }]}>
+                <Ionicons name="people" size={18} color={COLORS.info} />
+              </View>
               <Text style={s.statValue}>{info?.total_referred ?? 0}</Text>
               <Text style={s.statLabel}>{t("profile.refer.driversJoined")}</Text>
             </View>
             <View style={s.statChip}>
+              <View style={[s.statIcon, { backgroundColor: "#ECFDF5" }]}>
+                <Ionicons name="wallet" size={18} color={COLORS.success} />
+              </View>
               <Text style={s.statValue}>₹{Math.round(info?.total_earned ?? 0)}</Text>
               <Text style={s.statLabel}>{t("profile.refer.earned")}</Text>
             </View>
             <View style={s.statChip}>
+              <View style={[s.statIcon, { backgroundColor: COLORS.warningTint }]}>
+                <Ionicons name="hourglass" size={18} color={COLORS.warning} />
+              </View>
               <Text style={s.statValue}>₹{Math.round(info?.pending_rewards ?? 0)}</Text>
               <Text style={s.statLabel}>{t("profile.refer.pending")}</Text>
             </View>
@@ -143,7 +160,9 @@ export default function DriverReferScreen() {
           <Text style={s.sectionTitle}>{t("profile.refer.myReferrals")}</Text>
           {referrals.length === 0 ? (
             <View style={s.emptyCard}>
-              <Text style={s.emptyIcon}>🎁</Text>
+              <View style={s.emptyIconWrap}>
+                <Ionicons name="gift-outline" size={32} color={COLORS.primary} />
+              </View>
               <Text style={s.emptyTitle}>{t("profile.refer.noReferralsYet")}</Text>
               <Text style={s.emptySub}>{t("profile.refer.noReferralsSub")}</Text>
             </View>
@@ -176,13 +195,15 @@ const s = StyleSheet.create({
   header:       { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 52, paddingBottom: 12 },
   back:         { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   headerTitle:  { color: COLORS.textPrimary, fontSize: 20, fontWeight: "900", flex: 1 },
+  headerIllustration: { width: 56, height: 48 },
   center:       { flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 32, gap: 14 },
   errorText:    { color: COLORS.textSecondary, fontSize: 14, textAlign: "center" },
   retryBtn:     { backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingHorizontal: 24, paddingVertical: 12 },
   retryBtnText: { color: COLORS.white, fontWeight: "800", fontSize: 14 },
   scroll:       { paddingHorizontal: 20, paddingTop: 8, paddingBottom: 100 },
 
-  heroCard:     { backgroundColor: COLORS.primary, borderRadius: RADIUS.sheet, padding: 22, marginBottom: 16 },
+  heroCard:     { flexDirection: "row", alignItems: "flex-start", gap: 14, backgroundColor: COLORS.primary, borderRadius: RADIUS.sheet, padding: 22, marginBottom: 16 },
+  heroIconWrap: { width: 44, height: 44, borderRadius: 22, backgroundColor: "rgba(255,255,255,0.2)", alignItems: "center", justifyContent: "center" },
   heroTitle:    { color: COLORS.white, fontSize: 20, fontWeight: "900", marginBottom: 8 },
   heroSub:      { color: "rgba(255,255,255,0.9)", fontSize: 13, lineHeight: 19 },
 
@@ -193,19 +214,20 @@ const s = StyleSheet.create({
   copyBtn:      { backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingHorizontal: 16, paddingVertical: 10 },
   copyBtnText:  { color: COLORS.white, fontWeight: "800", fontSize: 13 },
 
-  waBtn:        { backgroundColor: "#25D366", borderRadius: RADIUS.card, paddingVertical: 16, alignItems: "center", marginBottom: 10 },
+  waBtn:        { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: "#25D366", borderRadius: RADIUS.card, paddingVertical: 16, marginBottom: 10 },
   waBtnText:    { color: COLORS.white, fontWeight: "800", fontSize: 15 },
-  linkBtn:      { backgroundColor: COLORS.white, borderWidth: 1.5, borderColor: COLORS.borderSubtle, borderRadius: RADIUS.card, paddingVertical: 14, alignItems: "center", marginBottom: 20 },
+  linkBtn:      { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, backgroundColor: COLORS.white, borderWidth: 1.5, borderColor: COLORS.borderSubtle, borderRadius: RADIUS.card, paddingVertical: 14, marginBottom: 20 },
   linkBtnText:  { color: COLORS.textPrimary, fontWeight: "700", fontSize: 14 },
 
   statsRow:     { flexDirection: "row", gap: 10, marginBottom: 24 },
-  statChip:     { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, alignItems: "center" },
+  statChip:     { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, alignItems: "center", gap: 6 },
+  statIcon:     { width: 34, height: 34, borderRadius: 17, alignItems: "center", justifyContent: "center" },
   statValue:    { color: COLORS.textPrimary, fontSize: 18, fontWeight: "900" },
   statLabel:    { color: COLORS.textFaint, fontSize: 11, marginTop: 4, textAlign: "center" },
 
   sectionTitle: { color: COLORS.textPrimary, fontSize: 14, fontWeight: "800", marginBottom: 12 },
   emptyCard:    { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 32, alignItems: "center", gap: 8, marginBottom: 20 },
-  emptyIcon:    { fontSize: 36 },
+  emptyIconWrap:{ width: 64, height: 64, borderRadius: 32, backgroundColor: COLORS.primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 4 },
   emptyTitle:   { color: COLORS.textPrimary, fontWeight: "800", fontSize: 15 },
   emptySub:     { color: COLORS.textFaint, fontSize: 13, textAlign: "center" },
 

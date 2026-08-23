@@ -1,21 +1,36 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, Alert, StatusBar,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
 import { clearSession } from "@/services/session";
 
+// Category illustrations already blend a city-skyline backdrop with the
+// vehicle render (see assets/illustrations/*.png) — reused as-is rather
+// than compositing a separate skyline asset + icon, since no dedicated
+// 3-wheeler/etc. asset exists; cab.png (a sedan render) stands in for all
+// cab subtypes (2w/3w/4w/suv), same generic-fallback approach the trip-map
+// screen's vehicle-icon lookup already uses.
+const HERO_ILLUSTRATIONS: Record<string, any> = {
+  cab:       require("../../../assets/illustrations/cab.png"),
+  truck:     require("../../../assets/illustrations/truck.png"),
+  ambulance: require("../../../assets/illustrations/ambulance.png"),
+  parcel:    require("../../../assets/illustrations/parcel.png"),
+};
+
 export default function DriverProfileScreen() {
   const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [notifUnreadCount, setNotifUnreadCount] = useState(0);
   const router = useRouter();
 
   const fetchUnread = useCallback(async () => {
@@ -27,10 +42,20 @@ export default function DriverProfileScreen() {
     } catch {}
   }, []);
 
+  // Same endpoint/pattern already used for the bell+badge on the Home
+  // screen (home/index.tsx) — reused here rather than inventing new data.
+  const fetchNotifUnread = useCallback(async () => {
+    try {
+      const res = await api.get(`/gogoo/driver/notifications/unread-count`);
+      setNotifUnreadCount(res.data?.count || 0);
+    } catch {}
+  }, []);
+
   useEffect(() => {
     AsyncStorage.getItem("driver_user").then(u => u && setUser(JSON.parse(u)));
     loadProfile();
     fetchUnread();
+    fetchNotifUnread();
   }, []);
 
   const loadProfile = async () => {
@@ -58,12 +83,15 @@ export default function DriverProfileScreen() {
   const rating = profile?.rating != null ? Number(profile.rating).toFixed(1) : "5.0";
   const vehicleType = profile?.vehicle_type || profile?.vehicle?.type || "";
   const vehicleNumber = profile?.vehicle_number || profile?.vehicle?.number || "";
+  const isOnline = !!profile?.is_online;
+  const heroCategory = (vehicleType.split("_")[0] || "cab") as keyof typeof HERO_ILLUSTRATIONS;
+  const heroIllustration = HERO_ILLUSTRATIONS[heroCategory] || HERO_ILLUSTRATIONS.cab;
 
   const quickActions = [
-    { label: t("earnings.pageTitle"),     onPress: () => router.push("/(app)/earnings" as any) },
-    { label: t("profile.ledger.title"),   onPress: () => router.push("/(app)/profile/ledger" as any) },
-    { label: t("profile.payments.title"), onPress: () => router.push("/(app)/profile/payments" as any) },
-    { label: t("profile.training.title"), onPress: () => router.push("/(app)/profile/training" as any) },
+    { label: t("earnings.pageTitle"),     icon: "wallet-outline",  color: COLORS.success,   bg: "#ECFDF5",         onPress: () => router.push("/(app)/earnings" as any) },
+    { label: t("profile.ledger.title"),   icon: "book-outline",    color: COLORS.purpleAlt, bg: "#F5F3FF",         onPress: () => router.push("/(app)/profile/ledger" as any) },
+    { label: t("profile.payments.title"), icon: "card-outline",    color: COLORS.warning,   bg: COLORS.warningTint, onPress: () => router.push("/(app)/profile/payments" as any) },
+    { label: t("profile.training.title"), icon: "school-outline",  color: COLORS.info,      bg: COLORS.infoTint,   onPress: () => router.push("/(app)/profile/training" as any) },
   ];
 
   const menuItems = [
@@ -84,16 +112,39 @@ export default function DriverProfileScreen() {
       <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
 
-        {/* Hero Card */}
-        <View style={s.heroCard}>
+        {/* Hero — soft orange wash, same gradient tokens Home/Orders use for
+            their hero sections this session, just contained/rounded here
+            rather than full-bleed since it sits inside the scroll padding */}
+        <LinearGradient
+          colors={["#FFE8D9", "#FFF6F0", COLORS.bgAlt]}
+          locations={[0, 0.6, 1]}
+          style={s.heroCard}
+        >
+          <Image source={heroIllustration} style={s.heroIllustration} resizeMode="cover" />
+
           <View style={s.heroTop}>
             <View style={s.avatarWrap}>
               <Text style={s.avatarText}>{initial}</Text>
+              <View style={[s.onlineDot, { backgroundColor: isOnline ? "#22C55E" : "#9CA3AF" }]} />
             </View>
-            <TouchableOpacity style={s.editBtn} onPress={() => router.push("/(app)/profile/edit" as any)}>
-              <Ionicons name="pencil-outline" size={13} color={COLORS.white} />
-              <Text style={s.editBtnText}>{t("profile.edit.title")}</Text>
-            </TouchableOpacity>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+              <TouchableOpacity
+                style={s.bellBtn}
+                onPress={() => { setNotifUnreadCount(0); router.push("/(app)/notifications" as any); }}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
+                <Ionicons name="notifications-outline" size={18} color="#555" />
+                {notifUnreadCount > 0 && (
+                  <View style={s.bellBadge}>
+                    <Text style={s.bellBadgeText}>{notifUnreadCount > 9 ? "9+" : notifUnreadCount}</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+              <TouchableOpacity style={s.editBtn} onPress={() => router.push("/(app)/profile/edit" as any)}>
+                <Ionicons name="pencil-outline" size={13} color={COLORS.white} />
+                <Text style={s.editBtnText}>{t("profile.edit.title")}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <Text style={s.heroName}>{name}</Text>
           {(vehicleType || vehicleNumber) && (
@@ -102,7 +153,7 @@ export default function DriverProfileScreen() {
           <View style={s.ratingPill}>
             <Text style={s.ratingText}>⭐ {rating}</Text>
           </View>
-        </View>
+        </LinearGradient>
 
         {/* Chat with Support */}
         <TouchableOpacity style={s.supportCard} onPress={handleSupportChat} activeOpacity={0.8}>
@@ -126,6 +177,9 @@ export default function DriverProfileScreen() {
           <View style={s.grid}>
             {quickActions.map(a => (
               <TouchableOpacity key={a.label} style={s.gridItem} onPress={a.onPress} activeOpacity={0.75}>
+                <View style={[s.gridIcon, { backgroundColor: a.bg }]}>
+                  <Ionicons name={a.icon as any} size={20} color={a.color} />
+                </View>
                 <Text style={s.gridLabel}>{a.label}</Text>
               </TouchableOpacity>
             ))}
@@ -164,21 +218,31 @@ export default function DriverProfileScreen() {
 
 const s = StyleSheet.create({
   safe:          { flex: 1, backgroundColor: COLORS.bgAlt },
-  scroll:        { paddingTop: 20, paddingHorizontal: 20, paddingBottom: 100 },
-  heroCard:      { backgroundColor: COLORS.primary, borderRadius: RADIUS.sheet, padding: 24, marginTop: 8, marginBottom: 20 },
+  // paddingTop:52 matches the header clearance already used on Home/Orders
+  // this session (their logoBar/hero use the same value inside SafeAreaView).
+  scroll:        { paddingTop: 52, paddingHorizontal: 20, paddingBottom: 100 },
+  // No card: this wraps just the illustration + header content for layout/
+  // clipping purposes — no backgroundColor, so it sits on the plain page bg.
+  heroCard:      { borderRadius: RADIUS.sheet, overflow: "hidden", padding: 24, marginBottom: 20, position: "relative" },
+  heroIllustration: { ...StyleSheet.absoluteFillObject, opacity: 0.35 },
   heroTop:       { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
-  avatarWrap:    { width: 80, height: 80, borderRadius: 40, backgroundColor: "#FFF", borderWidth: 3, borderColor: "rgba(255,255,255,0.6)", alignItems: "center", justifyContent: "center" },
-  avatarText:    { color: COLORS.primary, fontSize: 32, fontWeight: "900" },
-  editBtn:       { flexDirection: "row", alignItems: "center", gap: 5, borderWidth: 1.5, borderColor: "rgba(255,255,255,0.6)", borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7 },
+  avatarWrap:    { width: 80, height: 80, borderRadius: 40, backgroundColor: COLORS.primary, alignItems: "center", justifyContent: "center" },
+  avatarText:    { color: "#FFF", fontSize: 32, fontWeight: "900" },
+  onlineDot:     { position: "absolute", bottom: 2, right: 2, width: 16, height: 16, borderRadius: 8, borderWidth: 2, borderColor: COLORS.bgAlt },
+  bellBtn:       { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.bgFaint, alignItems: "center", justifyContent: "center" },
+  bellBadge:     { position: "absolute", top: 1, right: 1, minWidth: 16, height: 16, borderRadius: 8, backgroundColor: COLORS.danger, alignItems: "center", justifyContent: "center", paddingHorizontal: 3, borderWidth: 1.5, borderColor: COLORS.bgFaint },
+  bellBadgeText: { color: "#fff", fontSize: 9, fontWeight: "900" },
+  editBtn:       { flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: COLORS.primary, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7 },
   editBtnText:   { color: "#FFF", fontSize: 13, fontWeight: "700" },
-  heroName:      { color: "#FFF", fontSize: 22, fontWeight: "800", marginBottom: 4 },
-  heroVehicle:   { color: "rgba(255,255,255,0.75)", fontSize: 13, marginBottom: 10 },
-  ratingPill:    { alignSelf: "flex-start", backgroundColor: "rgba(255,255,255,0.2)", borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 },
-  ratingText:    { color: "#FFF", fontSize: 14, fontWeight: "700" },
+  heroName:      { color: COLORS.textStrong, fontSize: 22, fontWeight: "800", marginBottom: 4 },
+  heroVehicle:   { color: COLORS.textSecondary, fontSize: 13, marginBottom: 10 },
+  ratingPill:    { alignSelf: "flex-start", backgroundColor: COLORS.primaryTint, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 5 },
+  ratingText:    { color: COLORS.primary, fontSize: 14, fontWeight: "700" },
   gridWrap:      { marginBottom: 8 },
   grid:          { flexDirection: "row", flexWrap: "wrap", gap: 12 },
-  gridItem:      { width: "47%", backgroundColor: COLORS.white, borderRadius: RADIUS.card, padding: 20, alignItems: "center", justifyContent: "center", shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, elevation: 2, minHeight: 80 },
-  gridLabel:     { fontSize: 15, fontWeight: "700", color: COLORS.textStrong, textAlign: "center" },
+  gridItem:      { width: "47%", backgroundColor: COLORS.white, borderRadius: RADIUS.card, padding: 16, alignItems: "center", justifyContent: "center", shadowColor: "#000", shadowOpacity: 0.05, shadowRadius: 8, elevation: 2, minHeight: 92, gap: 8 },
+  gridIcon:      { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
+  gridLabel:     { fontSize: 14, fontWeight: "700", color: COLORS.textStrong, textAlign: "center" },
   menuCard:      { backgroundColor: COLORS.white, borderRadius: RADIUS.card, overflow: "hidden", marginBottom: 16, marginTop: 8 },
   menuItem:      { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 16, gap: 12 },
   menuDivider:   { borderBottomWidth: 1, borderBottomColor: "#F2F2F2" },

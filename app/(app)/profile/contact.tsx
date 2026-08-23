@@ -37,7 +37,7 @@ export default function ContactScreen() {
     {
       icon: "business-outline" as const, color: COLORS.warning, bg: COLORS.warningTint,
       title: t("profile.contact.office.title"),
-      line1: "Aggarwal Publicity and Marketing Pvt. Ltd.",
+      line1: "Bogie AI Technologies Pvt Ltd",
       line2: "New Delhi, Delhi - 110001",
       onPress: null,
     },

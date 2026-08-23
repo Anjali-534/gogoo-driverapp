@@ -4,11 +4,45 @@ import {
   TouchableOpacity, Alert, ActivityIndicator, Linking, Image,
 } from "react-native";
 import * as DocumentPicker from "expo-document-picker";
+import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api, API_URL } from "@/services/api";
 import { getToken } from "@/services/session";
 import { COLORS, RADIUS } from "@/constants/theme";
 import { useTranslation } from "react-i18next";
+
+// Per-doc-type icon + color badge — no such mapping existed before; covers
+// every doc_type key the backend's requiredDocs/docLabels maps can send
+// (documents.go), with a generic fallback for anything not listed here.
+const DOC_ICON: Record<string, { icon: string; color: string; bg: string }> = {
+  passport_photo:        { icon: "camera-outline",            color: COLORS.purpleAlt, bg: "#F5F3FF" },
+  aadhaar:                { icon: "card-outline",               color: COLORS.info,      bg: COLORS.infoTint },
+  aadhaar_front:          { icon: "card-outline",               color: COLORS.info,      bg: COLORS.infoTint },
+  aadhaar_back:           { icon: "card-outline",               color: COLORS.info,      bg: COLORS.infoTint },
+  pan_card:               { icon: "document-text-outline",      color: COLORS.primary,   bg: COLORS.primaryTint },
+  driving_license:        { icon: "id-card-outline",            color: COLORS.success,   bg: "#ECFDF5" },
+  driving_license_front:  { icon: "id-card-outline",            color: COLORS.success,   bg: "#ECFDF5" },
+  driving_license_back:   { icon: "id-card-outline",            color: COLORS.success,   bg: "#ECFDF5" },
+  bank_passbook:          { icon: "wallet-outline",             color: COLORS.purpleAlt, bg: "#F5F3FF" },
+  police_clearance:       { icon: "shield-checkmark-outline",   color: COLORS.danger,    bg: "#FFF1F2" },
+  rc:                     { icon: "car-outline",                color: COLORS.info,      bg: COLORS.infoTint },
+  rc_front:               { icon: "car-outline",                color: COLORS.info,      bg: COLORS.infoTint },
+  rc_back:                { icon: "car-outline",                color: COLORS.info,      bg: COLORS.infoTint },
+  insurance:              { icon: "shield-outline",             color: COLORS.warning,   bg: COLORS.warningTint },
+  puc:                    { icon: "leaf-outline",                color: COLORS.success,   bg: "#ECFDF5" },
+  pollution_cert:         { icon: "leaf-outline",                color: COLORS.success,   bg: "#ECFDF5" },
+  fitness:                { icon: "checkmark-done-outline",     color: COLORS.success,   bg: "#ECFDF5" },
+  fitness_cert:           { icon: "checkmark-done-outline",     color: COLORS.success,   bg: "#ECFDF5" },
+  permit:                 { icon: "clipboard-outline",          color: COLORS.primary,   bg: COLORS.primaryTint },
+  national_permit:        { icon: "clipboard-outline",          color: COLORS.primary,   bg: COLORS.primaryTint },
+  gst_cert:               { icon: "business-outline",           color: COLORS.info,      bg: COLORS.infoTint },
+  emt_cert:                { icon: "medkit-outline",             color: COLORS.danger,    bg: "#FFF1F2" },
+  goods_insurance:        { icon: "shield-outline",             color: COLORS.warning,   bg: COLORS.warningTint },
+  vehicle_photo:          { icon: "camera-outline",             color: COLORS.purpleAlt, bg: "#F5F3FF" },
+  vehicle_photo_front:    { icon: "camera-outline",             color: COLORS.purpleAlt, bg: "#F5F3FF" },
+  vehicle_photo_side:     { icon: "camera-outline",             color: COLORS.purpleAlt, bg: "#F5F3FF" },
+};
+const DOC_ICON_DEFAULT = { icon: "document-outline", color: "#999", bg: "#F2F2F2" };
 
 type DocStatus = "approved" | "rejected" | "pending" | "missing";
 
@@ -131,6 +165,7 @@ export default function DocumentsScreen() {
     <SafeAreaView style={s.safe}>
       <View style={s.logoBar}>
         <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
+        <Image source={require("../../../assets/illustrations/task.png")} style={s.taskIllustration} resizeMode="contain" />
       </View>
       <View style={s.header}>
         <Text style={s.title}>{t("documents.title")}</Text>
@@ -165,19 +200,25 @@ export default function DocumentsScreen() {
         <ScrollView style={s.scroll} showsVerticalScrollIndicator={false}>
           {docs.map((doc) => {
             const cfg         = STATUS_CONFIG[doc.status] || STATUS_CONFIG.missing;
+            const iconCfg     = DOC_ICON[doc.doc_type] || DOC_ICON_DEFAULT;
             const isUploading = uploading === doc.doc_type;
             const isPDF       = doc.mime_type === "application/pdf";
 
             return (
               <View key={doc.doc_type} style={s.docCard}>
                 <View style={s.docHeaderRow}>
+                  <View style={[s.docIconBadge, { backgroundColor: iconCfg.bg }]}>
+                    <Ionicons name={iconCfg.icon as any} size={20} color={iconCfg.color} />
+                  </View>
                   <View style={s.docTitleWrap}>
                     <Text style={s.docTitle}>{doc.label}</Text>
-                    <View style={[s.statusBadge, { backgroundColor: cfg.bg }]}>
-                      <Text style={[s.statusText, { color: cfg.text }]}>{cfg.icon} {cfg.label}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+                      {doc.required && <Text style={s.requiredTag}>{t("documents.required")}</Text>}
+                      <View style={[s.statusBadge, { backgroundColor: cfg.bg }]}>
+                        <Text style={[s.statusText, { color: cfg.text }]}>{cfg.icon} {cfg.label}</Text>
+                      </View>
                     </View>
                   </View>
-                  {doc.required && <Text style={s.requiredTag}>{t("documents.required")}</Text>}
                 </View>
 
                 {doc.reject_reason && (
@@ -207,27 +248,48 @@ export default function DocumentsScreen() {
                   </View>
                 )}
 
-                <View style={s.actionsRow}>
-                  {doc.status !== "approved" && (
-                    <TouchableOpacity
-                      style={[s.uploadBtn, isUploading && s.uploadBtnDisabled]}
-                      onPress={() => handleUpload(doc.doc_type, doc.label)}
-                      disabled={!!uploading}
-                    >
-                      {isUploading
-                        ? <ActivityIndicator color={COLORS.primary} size="small" />
-                        : <Text style={s.uploadBtnText}>{doc.uploaded ? t("documents.reupload") : t("documents.uploadFile")}</Text>}
-                    </TouchableOpacity>
-                  )}
-                  {doc.uploaded && doc.status !== "approved" && (
-                    <TouchableOpacity style={s.deleteBtn} onPress={() => handleDelete(doc.doc_type, doc.label)}>
-                      <Text style={s.deleteBtnText}>🗑</Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
+                {!doc.uploaded && doc.status !== "approved" ? (
+                  // Empty state — dashed dropzone, matching the reference.
+                  <TouchableOpacity
+                    style={[s.dropzone, isUploading && s.uploadBtnDisabled]}
+                    onPress={() => handleUpload(doc.doc_type, doc.label)}
+                    disabled={!!uploading}
+                  >
+                    {isUploading ? (
+                      <ActivityIndicator color={COLORS.primary} size="small" />
+                    ) : (
+                      <>
+                        <Ionicons name="cloud-upload-outline" size={26} color={COLORS.primary} />
+                        <Text style={s.dropzoneText}>{t("documents.uploadFile")}</Text>
+                        <Text style={s.dropzoneNote}>{t("documents.formatNote")}</Text>
+                      </>
+                    )}
+                  </TouchableOpacity>
+                ) : (
+                  <>
+                    <View style={s.actionsRow}>
+                      {doc.status !== "approved" && (
+                        <TouchableOpacity
+                          style={[s.uploadBtn, isUploading && s.uploadBtnDisabled]}
+                          onPress={() => handleUpload(doc.doc_type, doc.label)}
+                          disabled={!!uploading}
+                        >
+                          {isUploading
+                            ? <ActivityIndicator color={COLORS.primary} size="small" />
+                            : <Text style={s.uploadBtnText}>{t("documents.reupload")}</Text>}
+                        </TouchableOpacity>
+                      )}
+                      {doc.uploaded && doc.status !== "approved" && (
+                        <TouchableOpacity style={s.deleteBtn} onPress={() => handleDelete(doc.doc_type, doc.label)}>
+                          <Text style={s.deleteBtnText}>🗑</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
 
-                {doc.status !== "approved" && (
-                  <Text style={s.formatNote}>{t("documents.formatNote")}</Text>
+                    {doc.status !== "approved" && (
+                      <Text style={s.formatNote}>{t("documents.formatNote")}</Text>
+                    )}
+                  </>
                 )}
               </View>
             );
@@ -243,6 +305,7 @@ const s = StyleSheet.create({
   safe:    { flex: 1, backgroundColor: COLORS.bg },
   logoBar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 44, paddingBottom: 4 },
   logo:    { width: 180, height: 64, marginLeft: -38 },
+  taskIllustration: { width: 64, height: 56 },
   header:  { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
   title: { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },
   subtitle: { color: COLORS.primary, fontSize: 13, fontWeight: "700" },
@@ -255,12 +318,13 @@ const s = StyleSheet.create({
   emptyEmoji: { fontSize: 48 },
   centerText: { color: "#777", fontSize: 15 },
   docCard: { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 16, marginBottom: 12 },
-  docHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 },
+  docHeaderRow: { flexDirection: "row", alignItems: "flex-start", gap: 12, marginBottom: 10 },
+  docIconBadge: { width: 40, height: 40, borderRadius: 20, alignItems: "center", justifyContent: "center" },
   docTitleWrap: { flex: 1, gap: 6 },
   docTitle: { color: COLORS.textPrimary, fontSize: 15, fontWeight: "700" },
   statusBadge: { alignSelf: "flex-start", paddingHorizontal: 10, paddingVertical: 4, borderRadius: RADIUS.chip },
   statusText: { fontSize: 12, fontWeight: "600" },
-  requiredTag: { color: COLORS.danger, fontSize: 11, fontWeight: "600", backgroundColor: "#FFECEC", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, marginLeft: 8, flexShrink: 0 },
+  requiredTag: { color: COLORS.danger, fontSize: 11, fontWeight: "600", backgroundColor: "#FFECEC", paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6, flexShrink: 0 },
   rejectBox: { backgroundColor: "#FFECEC", borderRadius: 10, padding: 10, marginBottom: 10, borderWidth: 1, borderColor: "#FFD5D5" },
   rejectText: { color: COLORS.danger, fontSize: 12, lineHeight: 18 },
   helperBox: { backgroundColor: COLORS.primaryTint2, borderRadius: 10, padding: 10, marginBottom: 10, borderWidth: 1, borderColor: COLORS.primaryBorder },
@@ -276,6 +340,9 @@ const s = StyleSheet.create({
   uploadBtn: { flex: 1, backgroundColor: COLORS.primaryTint, borderRadius: RADIUS.input, borderWidth: 1.5, borderColor: COLORS.primary, paddingVertical: 12, alignItems: "center" },
   uploadBtnDisabled: { opacity: 0.5 },
   uploadBtnText: { color: COLORS.primary, fontSize: 14, fontWeight: "700" },
+  dropzone: { borderWidth: 1.5, borderStyle: "dashed", borderColor: COLORS.primaryBorder, borderRadius: RADIUS.input, backgroundColor: COLORS.primaryTint2, paddingVertical: 20, alignItems: "center", justifyContent: "center", gap: 4 },
+  dropzoneText: { color: COLORS.primary, fontSize: 14, fontWeight: "700", marginTop: 2 },
+  dropzoneNote: { color: "#AEAEAE", fontSize: 11 },
   deleteBtn: { width: 44, height: 44, borderRadius: RADIUS.input, backgroundColor: "#FFECEC", borderWidth: 1, borderColor: "#FFD5D5", alignItems: "center", justifyContent: "center" },
   deleteBtnText: { fontSize: 18 },
   formatNote: { color: "#AEAEAE", fontSize: 11, marginTop: 8 },

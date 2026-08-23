@@ -512,6 +512,7 @@
       "back": "← ପଛକୁ",
       "pickupDistPrefix": "📍 ରାଇଡର୍ {{dist}}",
       "dropDistPrefix": "🏁 ଡ୍ରପ୍ {{dist}}",
+      "speedKmh": "{{speed}} କିମି/ଘ",
       "markerYou": "ଆପଣ",
       "markerPickup": "ପିକଅପ୍",
       "markerDrop": "ଡ୍ରପ୍"
@@ -538,7 +539,9 @@
       "tripDistance": "{{km}} କିମିର ଯାତ୍ରା",
       "lockedNotice": "🔒 ଗ୍ରହଣ କରିବାକୁ ମୌଜୁଦା ରାଇଡ୍ ସମାପ୍ତ କରନ୍ତୁ",
       "reject": "✕ ପ୍ରତ୍ୟାଖ୍ୟାନ କରନ୍ତୁ",
-      "accept": "✓ ଗ୍ରହଣ କରନ୍ତୁ"
+      "accept": "✓ ଗ୍ରହଣ କରନ୍ତୁ",
+      "paymentCash": "ନଗଦ",
+      "paymentWallet": "ୱାଲେଟ୍"
     },
     "pending": {
       "title": "ଆସୁଥିବା ରିକୱେଷ୍ଟ"
@@ -920,9 +923,9 @@
       "heroTitle": "ଏକ ଡ୍ରାଇଭରକୁ ରେଫର୍ କରନ୍ତୁ, ₹50 ରୋଜଗାର କରନ୍ତୁ!",
       "heroSub": "ସେମାନେ ପ୍ରଥମ ଟ୍ରିପ୍ ସମ୍ପୂର୍ଣ୍ଣ କଲେ ଆପଣ ₹50 ପାଇବେ। ଆଉ ସେମାନେ ଅନ୍ୟ ଡ୍ରାଇଭରକୁ ରେଫର୍ କଲେ ₹25 ମଧ୍ୟ ମିଳିବ!",
       "yourCode": "ଆପଣଙ୍କର ରେଫରାଲ୍ କୋଡ୍",
-      "copy": "📋 କପି କରନ୍ତୁ",
-      "shareWhatsApp": "💬 WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
-      "copyLink": "🔗 ଲିଙ୍କ୍ କପି କରନ୍ତୁ",
+      "copy": "କପି କରନ୍ତୁ",
+      "shareWhatsApp": "WhatsApp ରେ ସେୟାର୍ କରନ୍ତୁ",
+      "copyLink": "ଲିଙ୍କ୍ କପି କରନ୍ତୁ",
       "driversJoined": "ଯୋଗଦେଇଥିବା ଡ୍ରାଇଭର୍",
       "earned": "ରୋଜଗାର",
       "pending": "ବକେୟା",

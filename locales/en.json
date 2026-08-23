@@ -512,6 +512,7 @@
       "back": "← Back",
       "pickupDistPrefix": "📍 Rider {{dist}}",
       "dropDistPrefix": "🏁 Drop {{dist}}",
+      "speedKmh": "{{speed}} km/h",
       "markerYou": "You",
       "markerPickup": "Pickup",
       "markerDrop": "Drop"
@@ -538,7 +539,9 @@
       "tripDistance": "{{km}} km trip",
       "lockedNotice": "🔒 Complete current ride to accept",
       "reject": "✕ Reject",
-      "accept": "✓ Accept"
+      "accept": "✓ Accept",
+      "paymentCash": "Cash",
+      "paymentWallet": "Wallet"
     },
     "pending": {
       "title": "Incoming Requests"
@@ -920,9 +923,9 @@
       "heroTitle": "Refer a driver, earn ₹50!",
       "heroSub": "You get ₹50 when they complete their first trip. Plus ₹25 when THEY refer another driver too!",
       "yourCode": "YOUR REFERRAL CODE",
-      "copy": "📋 Copy",
-      "shareWhatsApp": "💬 Share on WhatsApp",
-      "copyLink": "🔗 Copy Link",
+      "copy": "Copy",
+      "shareWhatsApp": "Share on WhatsApp",
+      "copyLink": "Copy Link",
       "driversJoined": "Drivers Joined",
       "earned": "Earned",
       "pending": "Pending",

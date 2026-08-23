@@ -391,7 +391,7 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
               <Text style={s.termsTitle}>{tr("bank.termsTitle")}</Text>
               <ScrollView style={s.termsScroll} nestedScrollEnabled>
                 <Text style={s.termsText}>
-                  {"1. Valid driving license required for your vehicle type.\n\n2. All vehicle documents must be valid at all times.\n\n3. bogie Logistics charges a 20% platform commission.\n\n4. Earnings transferred weekly to your bank account.\n\n5. Do not cancel more than 10% of accepted bookings.\n\n6. Ratings below 4.0 may result in account suspension.\n\n7. You are an independent contractor, not an employee of bogie Logistics.\n\n8. bogie Logistics is a unit of Aggarwal Publicity & Marketing Pvt. Ltd."}
+                  {"1. Valid driving license required for your vehicle type.\n\n2. All vehicle documents must be valid at all times.\n\n3. bogie Logistics charges a 20% platform commission.\n\n4. Earnings transferred weekly to your bank account.\n\n5. Do not cancel more than 10% of accepted bookings.\n\n6. Ratings below 4.0 may result in account suspension.\n\n7. You are an independent contractor, not an employee of bogie Logistics.\n\n8. bogie Logistics is a unit of Bogie AI Technologies Pvt Ltd."}
                 </Text>
               </ScrollView>
               <TouchableOpacity style={s.agreeRow} onPress={() => setAgreedTerms(!agreedTerms)}>

@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import BottomSheet, { BottomSheetHandle } from "../../../components/BottomSheet";
 import SOSButton from "../../../components/SOSButton";
+import { PickupMarker, DropMarker } from "../../../components/VehicleMarkers";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
 import * as Speech from "expo-speech";
@@ -86,16 +87,24 @@ function speak(msg: string) {
 }
 
 // ── Vehicle marker ─────────────────────────────────────────────────────────
+// Same category → asset mapping as user-app's tracking screen
+// (SEARCH_VEHICLE_ICONS), so the driver's own vehicle icon on the map
+// matches the icon riders see for this booking's service category.
+const VEHICLE_ICONS: Record<string, any> = {
+  truck:     require("../../../assets/icons/services/truck.png"),
+  cab:       require("../../../assets/icons/services/cab.png"),
+  parcel:    require("../../../assets/icons/services/parcel.png"),
+  ambulance: require("../../../assets/icons/services/ambulance.png"),
+};
+const DRIVER_ICON_PX = 42;
+
 function VehicleMarker({ category }: { category?: string }) {
-  const isAmb    = category === "ambulance";
-  const isTruck  = category === "truck";
-  const isParcel = category === "parcel";
-  const emoji    = isTruck ? "🚛" : isAmb ? "🚑" : isParcel ? "📦" : "🚗";
-  const border   = isAmb ? COLORS.danger : isParcel ? COLORS.warning : COLORS.primary;
   return (
-    <View style={{ width:46, height:46, borderRadius:23, backgroundColor:"#fff", alignItems:"center", justifyContent:"center", borderWidth:2.5, borderColor:border, elevation:6 }}>
-      <Text style={{ fontSize:22 }}>{emoji}</Text>
-    </View>
+    <Image
+      source={VEHICLE_ICONS[category || "cab"] || VEHICLE_ICONS.cab}
+      style={{ width: DRIVER_ICON_PX, height: DRIVER_ICON_PX }}
+      resizeMode="contain"
+    />
   );
 }
 
@@ -107,7 +116,7 @@ export default function OrdersScreen() {
   const pollRef           = useRef<ReturnType<typeof setInterval> | null>(null);
   const gpsRef            = useRef<ReturnType<typeof setInterval> | null>(null);
   const locSubRef         = useRef<Location.LocationSubscription | null>(null);
-  const myPosRef          = useRef({ lat: 0, lng: 0, heading: 0 });
+  const myPosRef          = useRef({ lat: 0, lng: 0, heading: 0, speedKmh: 0 });
   const readyRef          = useRef(false);
   const activeBookingRef  = useRef<any>(null);
   const autoCompletingRef = useRef(false);
@@ -123,6 +132,7 @@ export default function OrdersScreen() {
   const [myLat,          setMyLat]          = useState(0);
   const [myLng,          setMyLng]          = useState(0);
   const [myHeading,      setMyHeading]      = useState(0);
+  const [mySpeedKmh,     setMySpeedKmh]     = useState(0);
   const [pending,        setPending]        = useState<any[]>([]);
   const [activeBooking,  setActiveBooking]  = useState<any>(null);
   const [loading,        setLoading]        = useState(false);
@@ -182,10 +192,15 @@ export default function OrdersScreen() {
         { accuracy: Location.Accuracy.Balanced, timeInterval: 3000, distanceInterval: 10 },
         loc => {
           const heading = loc.coords.heading ?? 0;
-          myPosRef.current = { lat: loc.coords.latitude, lng: loc.coords.longitude, heading };
+          // loc.coords.speed is in m/s (native GPS field); some platforms
+          // report -1 when speed is unavailable rather than null.
+          const speedMs = loc.coords.speed ?? 0;
+          const speedKmh = speedMs > 0 ? speedMs * 3.6 : 0;
+          myPosRef.current = { lat: loc.coords.latitude, lng: loc.coords.longitude, heading, speedKmh };
           setMyLat(loc.coords.latitude);
           setMyLng(loc.coords.longitude);
           setMyHeading(heading);
+          setMySpeedKmh(speedKmh);
         }
       );
     }
@@ -274,17 +289,32 @@ export default function OrdersScreen() {
     if (key === lastRouteKeyRef.current) return;
     lastRouteKeyRef.current = key;
 
-    fetchDirectionsRoute({ lat: myLat, lng: myLng }, { lat: destLat, lng: destLng }).then(result => {
-      if (result) {
-        setRouteCoords(result.coords);
-        setRouteDistText(result.distanceText);
-        setRouteDurText(result.durationText);
-      } else {
+    fetchDirectionsRoute({ lat: myLat, lng: myLng }, { lat: destLat, lng: destLng })
+      .then(result => {
+        // A newer fetch may have started (and possibly already resolved) while
+        // this one was in flight — key no longer matching means this result is
+        // stale, so drop it rather than clobbering the current route.
+        if (key !== lastRouteKeyRef.current) return;
+        if (result) {
+          setRouteCoords(result.coords);
+          setRouteDistText(result.distanceText);
+          setRouteDurText(result.durationText);
+        } else {
+          setRouteCoords([{ latitude: myLat, longitude: myLng }, { latitude: destLat, longitude: destLng }]);
+          setRouteDistText("");
+          setRouteDurText("");
+        }
+      })
+      .catch(() => {
+        // Both providers threw rather than cleanly returning null — without
+        // this, routeCoords stays at its previous value (or []), so the
+        // Polyline silently never renders. Fall back to the same straight
+        // line the null-result branch above already uses.
+        if (key !== lastRouteKeyRef.current) return;
         setRouteCoords([{ latitude: myLat, longitude: myLng }, { latitude: destLat, longitude: destLng }]);
         setRouteDistText("");
         setRouteDurText("");
-      }
-    });
+      });
   }, [myLat, myLng, activeBooking?.status, view]);
 
   // ── Polling ───────────────────────────────────────────────────────────────
@@ -350,10 +380,10 @@ export default function OrdersScreen() {
     if (gpsRef.current) clearInterval(gpsRef.current);
     gpsRef.current = setInterval(async () => {
       const { token, driverId } = authRef.current;
-      const { lat, lng, heading } = myPosRef.current;
+      const { lat, lng, heading, speedKmh } = myPosRef.current;
       if (!token || !driverId || !lat) return;
       try {
-        await api.post(`/gogoo/drivers/${driverId}/location`, { lat, lng, heading });
+        await api.post(`/gogoo/drivers/${driverId}/location`, { lat, lng, heading, speed: speedKmh });
         const res = await api.get(`/gogoo/bookings/${bookingId}`);
         setActiveBooking(res.data);
 
@@ -597,10 +627,18 @@ export default function OrdersScreen() {
               <VehicleMarker category={category} />
             </Marker>
           )}
-          {activeBooking?.pickup?.lat && activeBooking?.pickup?.lng && <Marker coordinate={{ latitude:activeBooking.pickup.lat, longitude:activeBooking.pickup.lng }} title={t("orders.map.markerPickup")} pinColor={COLORS.success} />}
-          {activeBooking?.drop?.lat   && activeBooking?.drop?.lng   && <Marker coordinate={{ latitude:activeBooking.drop.lat,   longitude:activeBooking.drop.lng   }} title={t("orders.map.markerDrop")}   pinColor={COLORS.primary} />}
+          {activeBooking?.pickup?.lat && activeBooking?.pickup?.lng && (
+            <Marker coordinate={{ latitude:activeBooking.pickup.lat, longitude:activeBooking.pickup.lng }} title={t("orders.map.markerPickup")} anchor={{ x:0.5, y:1 }}>
+              <PickupMarker />
+            </Marker>
+          )}
+          {activeBooking?.drop?.lat && activeBooking?.drop?.lng && (
+            <Marker coordinate={{ latitude:activeBooking.drop.lat, longitude:activeBooking.drop.lng }} title={t("orders.map.markerDrop")} anchor={{ x:0.5, y:1 }}>
+              <DropMarker />
+            </Marker>
+          )}
           {routeCoords.length >= 2 && (
-            <Polyline coordinates={routeCoords} strokeColor={accent} strokeWidth={4} lineDashPattern={beforePickup ? [8,4] : undefined} />
+            <Polyline coordinates={routeCoords} strokeColor={accent} strokeWidth={4} />
           )}
         </MapView>
 
@@ -617,6 +655,11 @@ export default function OrdersScreen() {
             </Text>
           </View>
         ) : null}
+
+        {/* Speed pill — driver's own live GPS speed */}
+        <View style={s.speedPill}>
+          <Text style={s.speedPillTxt}>{t("orders.map.speedKmh", { speed: Math.round(mySpeedKmh) })}</Text>
+        </View>
 
         {/* SOS — always visible above the sheet, independent of its position */}
         <SOSButton
@@ -637,31 +680,40 @@ export default function OrdersScreen() {
                 <Text style={s.riderName}>{activeBooking.rider_name || t("common.riderFallback")}</Text>
                 <Text style={s.riderMeta}>{activeBooking.service_name || t("common.bookingFallback")}{distLabel ? `  ·  ${distLabel}` : ""}</Text>
               </View>
-              <Text style={s.fareAmt}>{t("common.fareAmount", { amount: Math.round(activeBooking.estimated_fare||0) })}</Text>
+              <View style={{ alignItems:"flex-end", gap:6 }}>
+                <Text style={s.fareAmt}>{t("common.fareAmount", { amount: Math.round(activeBooking.estimated_fare||0) })}</Text>
+                <View style={s.paymentPill}>
+                  <Text style={s.paymentPillTxt}>{activeBooking.payment_method === "wallet" ? t("orders.card.paymentWallet") : t("orders.card.paymentCash")}</Text>
+                </View>
+              </View>
             </View>
 
+            <View style={s.dashedDivider} />
+
             <View style={s.routeMini}>
-              <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.success}]} /><Text style={s.miniAddr} numberOfLines={1}>{activeBooking.pickup?.address||t("common.pickupFallback")}</Text></View>
-              <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.primary}]} /><Text style={s.miniAddr} numberOfLines={1}>{activeBooking.drop?.address||t("common.dropFallback")}</Text></View>
+              <View style={s.addrBlock}>
+                <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.success}]} /><Text style={s.miniAddr}>{activeBooking.pickup?.address||t("common.pickupFallback")}</Text></View>
+                <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.primary}]} /><Text style={s.miniAddr}>{activeBooking.drop?.address||t("common.dropFallback")}</Text></View>
+              </View>
+              {!!tLat && !!tLng && (
+                <TouchableOpacity style={s.navCircleBtn} onPress={() => openNav(tLat, tLng)}>
+                  <Ionicons name="navigate" size={20} color={COLORS.info} />
+                </TouchableOpacity>
+              )}
             </View>
 
             <View style={s.mapBtns}>
-              {!!tLat && !!tLng && (
-                <TouchableOpacity style={s.navBtn} onPress={() => openNav(tLat, tLng)}>
-                  <Text style={s.navBtnTxt}>{t("orders.card.navigate")}</Text>
-                </TouchableOpacity>
-              )}
               {["accepted","arriving","in_progress"].includes(activeBooking.status) && !!activeBooking?.rider_phone && (
-                <TouchableOpacity style={s.callRiderBtn} onPress={callRider}>
-                  <Text style={s.callRiderTxt}>{t("orders.card.call")}</Text>
+                <TouchableOpacity style={s.sheetCallBtn} onPress={callRider}>
+                  <Ionicons name="call" size={20} color={COLORS.success} />
                 </TouchableOpacity>
               )}
               {["accepted","arriving","in_progress"].includes(activeBooking.status) && (
                 <TouchableOpacity
-                  style={s.chatBtn}
+                  style={s.sheetChatBtn}
                   onPress={() => router.push({ pathname:"/(app)/orders/chat", params:{ id: activeBooking.id, riderName: activeBooking.rider_name || t("common.riderFallback"), status: activeBooking.status } } as any)}
                 >
-                  <Text style={{ fontSize:20 }}>💬</Text>
+                  <Ionicons name="chatbubble-ellipses" size={20} color={COLORS.info} />
                   {activeBooking.unread_message_count > 0 ? (
                     <View style={s.chatBadge}><Text style={s.chatBadgeTxt}>{activeBooking.unread_message_count > 9 ? "9+" : activeBooking.unread_message_count}</Text></View>
                   ) : null}
@@ -669,11 +721,16 @@ export default function OrdersScreen() {
               )}
               {nextStatusMap && (
                 <TouchableOpacity
-                  style={[s.statusBtn, { backgroundColor: accent }, updatingStatus && s.busyBtn]}
+                  style={[s.sheetStatusBtn, { backgroundColor: accent }, updatingStatus && s.busyBtn]}
                   onPress={() => nextStatusMap === "in_progress" ? handleStartRide() : updateStatus(nextStatusMap)}
                   disabled={updatingStatus}
                 >
-                  {updatingStatus ? <ActivityIndicator color="#fff" /> : <Text style={s.statusBtnTxt}>{nextLabelMap}</Text>}
+                  {updatingStatus ? <ActivityIndicator color="#fff" /> : (
+                    <>
+                      <Text style={s.sheetStatusBtnTxt} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>{nextLabelMap}</Text>
+                      <Ionicons name="arrow-forward" size={15} color="#fff" />
+                    </>
+                  )}
                 </TouchableOpacity>
               )}
             </View>
@@ -1112,7 +1169,7 @@ const s = StyleSheet.create({
   safe:       { flex:1, backgroundColor:"#FAFAFA" },
   dot:        { width:8, height:8, borderRadius:4, flexShrink:0 },
   miniRow:    { flexDirection:"row", alignItems:"flex-start", gap:10 },
-  miniAddr:   { flex:1, color:"#444", fontSize:12 },
+  miniAddr:   { flex:1, color:"#444", fontSize:12, lineHeight:16 },
   busyBtn:    { opacity:0.6 },
 
   // ── Hero — full-bleed gradient, same technique as driver-app's home hero ──
@@ -1216,8 +1273,10 @@ const s = StyleSheet.create({
   // ── Map view ──────────────────────────────────────────────────────────────
   mapBack:    { position:"absolute", top:Platform.OS==="ios"?56:40, left:16, backgroundColor:"#fff", borderRadius:RADIUS.input, paddingHorizontal:14, paddingVertical:10, elevation:4 },
   mapBackTxt: { color:"#111", fontWeight:"700", fontSize:14 },
-  distPill:   { position:"absolute", top:Platform.OS==="ios"?56:40, alignSelf:"center", paddingHorizontal:16, paddingVertical:8, borderRadius:20, elevation:4 },
+  distPill:   { position:"absolute", top:Platform.OS==="ios"?56:40, alignSelf:"center", paddingHorizontal:16, paddingVertical:8, borderRadius:20, elevation:5 },
   distPillTxt:{ color:"#fff", fontWeight:"800", fontSize:13 },
+  speedPill:    { position:"absolute", top:Platform.OS==="ios"?56:40, right:16, backgroundColor:"#fff", paddingHorizontal:12, paddingVertical:8, borderRadius:20, elevation:5 },
+  speedPillTxt: { color:"#111", fontWeight:"800", fontSize:13 },
 
   restorePillWrap: { position:"absolute", bottom:40, left:0, right:0, alignItems:"center" },
   restorePill:      { paddingHorizontal:20, paddingVertical:12, borderRadius:24, elevation:10, shadowColor:"#000", shadowOffset:{width:0,height:4}, shadowOpacity:0.3, shadowRadius:8 },
@@ -1227,8 +1286,16 @@ const s = StyleSheet.create({
   expandedContent:{ flex:1, paddingHorizontal:20 },
 
   fareAmt:    { color:"#111", fontWeight:"900", fontSize:22 },
-  routeMini:  { gap:8, paddingVertical:10, borderTopWidth:1, borderBottomWidth:1, borderColor:"#EFEFEF" },
-  mapBtns:    { flexDirection:"row", gap:10 },
+  dashedDivider: { borderTopWidth:1, borderStyle:"dashed", borderColor:"#DDD" },
+  routeMini:  { flexDirection:"row", alignItems:"center", gap:12, paddingVertical:10 },
+  addrBlock:  { flex:1, gap:10 },
+  // Circular Navigate button next to the collapsed-sheet address block.
+  navCircleBtn: { width:44, height:44, borderRadius:22, backgroundColor:"#fff", alignItems:"center", justifyContent:"center", elevation:4, shadowColor:"#000", shadowOffset:{width:0,height:2}, shadowOpacity:0.15, shadowRadius:4 },
+  paymentPill:    { backgroundColor:"#F1F1F1", borderRadius:8, paddingHorizontal:8, paddingVertical:3 },
+  paymentPillTxt: { color:"#555", fontWeight:"700", fontSize:10 },
+  mapBtns:    { flexDirection:"row", gap:10, alignItems:"center" },
+  // Original 4-button-row styles — still used by the list view's "current
+  // ride" card (currentBtns section below), left unchanged.
   navBtn:     { flex:1, backgroundColor:"#F0F4FF", borderRadius:14, paddingVertical:14, alignItems:"center", borderWidth:1, borderColor:"#DBEAFE" },
   navBtnTxt:  { color:COLORS.info, fontWeight:"800", fontSize:14 },
   statusBtn:  { flex:2, borderRadius:14, paddingVertical:14, alignItems:"center" },
@@ -1240,6 +1307,14 @@ const s = StyleSheet.create({
   chatBtn:      { width:44, height:44, borderRadius:14, backgroundColor:COLORS.info, alignItems:"center", justifyContent:"center" },
   chatBadge:    { position:"absolute", top:-4, right:-4, minWidth:18, height:18, borderRadius:9, backgroundColor:COLORS.danger, alignItems:"center", justifyContent:"center", paddingHorizontal:3, borderWidth:1.5, borderColor:"#fff" },
   chatBadgeTxt: { color:"#fff", fontSize:10, fontWeight:"800" },
+  // Collapsed-sheet button row — Call/Message/Complete-Trip (Navigate moved
+  // to the circular button beside the addresses, so this row is 3-wide).
+  // Distinct from the list-view card's styles above so that card stays
+  // visually untouched.
+  sheetCallBtn:     { width:54, height:54, borderRadius:14, backgroundColor:COLORS.successTint, alignItems:"center", justifyContent:"center" },
+  sheetChatBtn:     { width:54, height:54, borderRadius:14, backgroundColor:COLORS.infoTint, alignItems:"center", justifyContent:"center" },
+  sheetStatusBtn:   { flex:1, flexDirection:"row", alignItems:"center", justifyContent:"center", gap:6, borderRadius:14, paddingVertical:14, paddingHorizontal:8 },
+  sheetStatusBtnTxt:{ color:"#fff", fontWeight:"800", fontSize:14, flexShrink:1, textAlign:"center" },
 
   expandHint:     { alignItems:"center", paddingVertical:8 },
   expandHintTxt:  { color:"#BBB", fontSize:12, fontWeight:"600" },
