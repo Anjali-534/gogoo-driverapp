@@ -185,6 +185,39 @@ export default function EarningsScreen() {
               )}
             </View>
 
+            {/* Lifetime Earnings — all-time total from summary.total, not
+                scoped to any date range like the week/day cards below.
+                Only rendered once summary.total is actually present (the
+                surrounding loading gate already prevents a ₹0 flash; this
+                guard additionally covers the summary-fetch-failed case,
+                same idiom as rangeCard's `rangeSummary &&` above). */}
+            {summary?.total && (
+              <View style={s.weekCard}>
+                <Text style={s.weekLabel}>{t("earnings.lifetimeEarnings")}</Text>
+
+                <View style={s.cardRow}>
+                  <Image source={require("../../../assets/illustrations/money.png")} style={s.cardIllustration} resizeMode="contain" />
+                  <View style={[s.statsRow, { flex: 1 }]}>
+                    <View style={s.statItem}>
+                      <Text style={s.statValue}>₹{Math.round(summary.total.earnings || 0)}</Text>
+                      <Text style={s.statLabel}>{t("earnings.earningsLabel")}</Text>
+                      <View style={[s.statBadge, { backgroundColor: COLORS.successTint }]}>
+                        <Ionicons name="cash-outline" size={14} color={COLORS.success} />
+                      </View>
+                    </View>
+                    <View style={s.statDivider} />
+                    <View style={s.statItem}>
+                      <Text style={s.statValue}>{summary.total.trips || 0}</Text>
+                      <Text style={s.statLabel}>{t("earnings.tripsTaken")}</Text>
+                      <View style={[s.statBadge, { backgroundColor: COLORS.primaryTint }]}>
+                        <Ionicons name="car-outline" size={14} color={COLORS.primary} />
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              </View>
+            )}
+
             {/* Weekly Summary */}
             <View style={s.weekCard}>
               <Text style={s.weekLabel}>{t("earnings.thisWeek")}</Text>

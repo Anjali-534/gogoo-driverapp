@@ -4,6 +4,7 @@ import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   useScreenTimeTracker,
   startDriverSession,
@@ -15,6 +16,9 @@ import {
 export default function AppLayout() {
   const { t } = useTranslation();
   useScreenTimeTracker(); // automatic screen time + view tracking on every navigation
+  const insets = useSafeAreaInsets();
+  const BASE_TAB_BAR_HEIGHT = 62;
+  const BASE_TAB_BAR_PADDING_BOTTOM = 8;
 
   useEffect(() => {
     const init = async () => {
@@ -44,13 +48,23 @@ export default function AppLayout() {
   }, []);
 
   return (
-    <Tabs screenOptions={{
-      headerShown: false,
-      tabBarStyle: { backgroundColor: "#FFFFFF", borderTopColor: "#EFEFEF", borderTopWidth: 1, height: 62, paddingBottom: 8, paddingTop: 6 },
-      tabBarActiveTintColor: "#FF6B2B",
-      tabBarInactiveTintColor: "#AEAEAE",
-      tabBarLabelStyle: { fontSize: 10, fontWeight: "700" },
-    }}>
+    <Tabs
+      backBehavior="history"
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: {
+          backgroundColor: "#FFFFFF",
+          borderTopColor: "#EFEFEF",
+          borderTopWidth: 1,
+          height: BASE_TAB_BAR_HEIGHT + insets.bottom,
+          paddingBottom: BASE_TAB_BAR_PADDING_BOTTOM + insets.bottom,
+          paddingTop: 6,
+        },
+        tabBarActiveTintColor: "#FF6B2B",
+        tabBarInactiveTintColor: "#AEAEAE",
+        tabBarLabelStyle: { fontSize: 10, fontWeight: "700" },
+      }}
+    >
       <Tabs.Screen name="home/index"       options={{ title: t("common.tabs.home"),     tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "home"          : "home-outline"}          size={size ?? 22} color={color} /> }} />
       <Tabs.Screen name="orders/index"     options={{ title: t("common.tabs.orders"),   tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "list"          : "list-outline"}          size={size ?? 22} color={color} /> }} />
       <Tabs.Screen name="earnings/index"   options={{ title: t("common.tabs.earnings"), tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? "wallet"        : "wallet-outline"}        size={size ?? 22} color={color} /> }} />
@@ -62,8 +76,10 @@ export default function AppLayout() {
       <Tabs.Screen name="profile/ledger"      options={{ href: null }} />
       <Tabs.Screen name="profile/refer"       options={{ href: null }} />
       <Tabs.Screen name="profile/payments"    options={{ href: null }} />
-      <Tabs.Screen name="profile/edit"        options={{ href: null }} />
+      <Tabs.Screen name="profile/edit"        options={{ href: null, tabBarStyle: { display: "none" } }} />
       <Tabs.Screen name="profile/settings"    options={{ href: null }} />
+      <Tabs.Screen name="profile/change-password" options={{ href: null, tabBarStyle: { display: "none" } }} />
+      <Tabs.Screen name="profile/delete-account" options={{ href: null, tabBarStyle: { display: "none" } }} />
       <Tabs.Screen name="profile/training"    options={{ href: null }} />
       <Tabs.Screen name="profile/privacy"     options={{ href: null }} />
       <Tabs.Screen name="profile/terms"       options={{ href: null }} />

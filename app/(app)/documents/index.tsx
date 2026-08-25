@@ -84,11 +84,13 @@ export default function DocumentsScreen() {
   const [docs,      setDocs]      = useState<Doc[]>([]);
   const [driverID,  setDriverID]  = useState<string | null>(null);
   const [loading,   setLoading]   = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [uploading, setUploading] = useState<string | null>(null);
   const [token,     setToken]     = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const t = await getToken();
       const storedDriverID = await AsyncStorage.getItem("driver_id");
@@ -105,7 +107,12 @@ export default function DocumentsScreen() {
         setDocs(docsRes.data.docs || []);
       }
     } catch (e: any) {
-      Alert.alert(t("documents.alerts.loadErrorTitle"), e.response?.data?.error || t("documents.alerts.loadErrorMsg"));
+      const msg = e.response?.data?.error || t("documents.alerts.loadErrorMsg");
+      // A failed fetch must never look like "zero documents required" —
+      // loadError drives a distinct retry view instead of falling through
+      // to the docs.length===0 empty state.
+      setLoadError(msg);
+      Alert.alert(t("documents.alerts.loadErrorTitle"), msg);
     } finally {
       setLoading(false);
     }
@@ -185,6 +192,14 @@ export default function DocumentsScreen() {
         <View style={s.center}>
           <ActivityIndicator color={COLORS.primary} size="large" />
           <Text style={s.centerText}>{t("documents.loading")}</Text>
+        </View>
+      ) : loadError ? (
+        <View style={s.center}>
+          <Text style={s.emptyEmoji}>⚠️</Text>
+          <Text style={s.centerText}>{t("documents.couldntLoad")}</Text>
+          <TouchableOpacity style={s.retryBtn} onPress={loadData}>
+            <Text style={s.retryBtnText}>{t("common.retry")}</Text>
+          </TouchableOpacity>
         </View>
       ) : !driverID ? (
         <View style={s.center}>
@@ -315,6 +330,8 @@ const s = StyleSheet.create({
   progressText: { color: "#999", fontSize: 12 },
   scroll: { flex: 1, paddingHorizontal: 20 },
   center: { flex: 1, justifyContent: "center", alignItems: "center", gap: 12 },
+  retryBtn: { backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingHorizontal: 24, paddingVertical: 12 },
+  retryBtnText: { color: COLORS.white, fontWeight: "800", fontSize: 14 },
   emptyEmoji: { fontSize: 48 },
   centerText: { color: "#777", fontSize: 15 },
   docCard: { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 16, marginBottom: 12 },

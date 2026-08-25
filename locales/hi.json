@@ -643,6 +643,7 @@
     "debited": "डेबिट हुआ",
     "net": "नेट",
     "thisWeek": "इस हफ्ते",
+    "lifetimeEarnings": "कुल कमाई",
     "earningsLabel": "कमाई",
     "timeSpent": "बिताया समय",
     "tripsTaken": "पूरी की गई ट्रिप",
@@ -664,6 +665,7 @@
     "loading": "दस्तावेज़ लोड हो रहे हैं...",
     "completeRegistrationFirst": "पहले अपना पंजीकरण पूरा करें",
     "noDocsRequired": "अभी कोई दस्तावेज़ आवश्यक नहीं है",
+    "couldntLoad": "आपके दस्तावेज़ लोड नहीं हो सके",
     "required": "आवश्यक",
     "policeClearanceHelp": "अपना PCC अपने स्थानीय पुलिस स्टेशन से या अपने राज्य के पुलिस ऑनलाइन पोर्टल से प्राप्त करें (दिल्ली: Delhi Police Citizen Services)। सर्टिफिकेट का PDF/फोटो यहां अपलोड करें।",
     "pdf": "PDF",
@@ -724,8 +726,48 @@
     },
     "settings": {
       "title": "सेटिंग्स",
+      "account": "खाता",
       "language": "भाषा",
-      "languageSub": "अपनी पसंदीदा भाषा चुनें"
+      "languageSub": "अपनी पसंदीदा भाषा चुनें",
+      "changePassword": "पासवर्ड बदलें",
+      "changePasswordSub": "अपना अकाउंट पासवर्ड अपडेट करें",
+      "deleteAccount": "खाता हटाएं",
+      "deleteAccountSub": "अपना खाता स्थायी रूप से हटाएं"
+    },
+    "changePassword": {
+      "title": "पासवर्ड बदलें",
+      "currentPasswordLabel": "वर्तमान पासवर्ड",
+      "currentPasswordPlaceholder": "वर्तमान पासवर्ड दर्ज करें",
+      "newPasswordLabel": "नया पासवर्ड",
+      "newPasswordPlaceholder": "नया पासवर्ड दर्ज करें",
+      "newPasswordHint": "कम से कम 8 अक्षर होने चाहिए",
+      "confirmPasswordLabel": "नए पासवर्ड की पुष्टि करें",
+      "confirmPasswordPlaceholder": "नया पासवर्ड फिर से दर्ज करें",
+      "submitBtn": "पासवर्ड अपडेट करें",
+      "successTitle": "पासवर्ड बदल गया",
+      "successMsg": "आपका पासवर्ड सफलतापूर्वक अपडेट कर दिया गया है।",
+      "errors": {
+        "fillAllFields": "कृपया सभी फ़ील्ड भरें",
+        "passwordMin8": "नया पासवर्ड कम से कम 8 अक्षर का होना चाहिए",
+        "passwordMismatch": "नया पासवर्ड और पुष्टिकरण पासवर्ड मेल नहीं खाते",
+        "genericError": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+      }
+    },
+    "deleteAccount": {
+      "title": "खाता हटाएं",
+      "warning": "आपका खाता हटाना स्थायी है। आपको तुरंत साइन आउट कर दिया जाएगा और आपका डेटा वापस नहीं लाया जा सकता। हम पहले जांच करेंगे कि आपका खाता हटाने के योग्य है या नहीं।",
+      "finalWarning": "यह रद्द करने का आपका आखिरी मौका है। अपना खाता स्थायी रूप से हटाने के लिए नीचे DELETE टाइप करें।",
+      "passwordLabel": "अपने पासवर्ड की पुष्टि करें",
+      "passwordPlaceholder": "अपना पासवर्ड दर्ज करें",
+      "blockedTitle": "आपका खाता अभी हटाया नहीं जा सकता",
+      "typeDeleteLabel": "पुष्टि के लिए DELETE टाइप करें",
+      "continueBtn": "जारी रखें",
+      "confirmBtn": "खाता स्थायी रूप से हटाएं",
+      "errors": {
+        "passwordRequired": "कृपया अपना पासवर्ड दर्ज करें",
+        "typeDeleteExact": "पुष्टि के लिए कृपया ठीक से DELETE टाइप करें",
+        "genericError": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
+      }
     },
     "ledger": {
       "title": "लेजर",
