@@ -8,7 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "@/services/api";
 import * as Location from "expo-location";
-import { Audio } from "expo-av";
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import * as Battery from "expo-battery";
 import { useRouter, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
@@ -73,7 +73,7 @@ export default function DriverHomeScreen() {
   const prevBookingIdRef = useRef<string | null>(null);
   const countdownRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const router           = useRouter();
-  const ringtoneRef       = useRef<Audio.Sound | null>(null);
+  const ringtoneRef       = useRef<AudioPlayer | null>(null);
   const ringtoneStopRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stopRingtone = useCallback(async () => {
@@ -81,8 +81,8 @@ export default function DriverHomeScreen() {
     Vibration.cancel();
     try {
       if (ringtoneRef.current) {
-        await ringtoneRef.current.stopAsync();
-        await ringtoneRef.current.unloadAsync();
+        ringtoneRef.current.pause();
+        ringtoneRef.current.remove();
         ringtoneRef.current = null;
       }
     } catch {}
@@ -92,12 +92,11 @@ export default function DriverHomeScreen() {
     try {
       await stopRingtone();
       Vibration.vibrate(RIDE_REQUEST_VIBRATION_PATTERN, true);
-      const { sound } = await Audio.Sound.createAsync(
-        require("../../../assets/sounds/ride_request.wav"),
-        { isLooping: true, volume: 1.0 }
-      );
-      ringtoneRef.current = sound;
-      await sound.playAsync();
+      const player = createAudioPlayer(require("../../../assets/sounds/ride_request.wav"));
+      player.loop = true;
+      player.volume = 1.0;
+      ringtoneRef.current = player;
+      player.play();
       // Auto-stop after 30s in case dismissPopup's stopRingtone is missed.
       ringtoneStopRef.current = setTimeout(stopRingtone, 30000);
     } catch {
@@ -106,10 +105,10 @@ export default function DriverHomeScreen() {
   }, [stopRingtone]);
 
   useEffect(() => {
-    Audio.setAudioModeAsync({
-      playsInSilentModeIOS: true,
-      staysActiveInBackground: true,
-      shouldDuckAndroid: false,
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
     }).catch(() => {});
     return () => { stopRingtone(); };
   }, [stopRingtone]);

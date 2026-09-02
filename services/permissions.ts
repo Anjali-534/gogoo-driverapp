@@ -1,7 +1,7 @@
 import * as Location from "expo-location";
 import * as Contacts from "expo-contacts";
 import { Camera } from "expo-camera";
-import { Audio } from "expo-av";
+import { requestRecordingPermissionsAsync } from "expo-audio";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PERMISSIONS_REQUESTED_KEY = "permissions_requested";
@@ -13,7 +13,7 @@ async function requestAllPermissions() {
   try { await Location.requestForegroundPermissionsAsync(); } catch {}
   try { await Contacts.requestPermissionsAsync(); } catch {}
   try { await Camera.requestCameraPermissionsAsync(); } catch {}
-  try { await Audio.requestPermissionsAsync(); } catch {}
+  try { await requestRecordingPermissionsAsync(); } catch {}
 }
 
 export async function requestPermissionsOnce() {

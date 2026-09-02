@@ -12,7 +12,8 @@ const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.u
 // of the polling-driven in-app popup.
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),

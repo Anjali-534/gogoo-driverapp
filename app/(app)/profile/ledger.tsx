@@ -86,7 +86,9 @@ export default function LedgerScreen() {
       // Lazy require — see import-site comment. If the native module isn't
       // compiled into this build yet, this throws here (caught below) and
       // only this button is affected, not the whole screen.
-      FileSystem = require("expo-file-system");
+      // expo-file-system SDK 54: documentDirectory/downloadAsync moved to
+      // the /legacy entry; the new File/Directory API is the package root.
+      FileSystem = require("expo-file-system/legacy");
       Sharing = require("expo-sharing");
     } catch {
       Alert.alert(

@@ -55,9 +55,23 @@ module.exports = ({ config }) => ({
     "@react-native-firebase/perf/app.plugin.js",
     "./plugins/withDisableAndroidBackup.js",
     "expo-secure-store",
+    // expo-audio (ride-request ringtone + first-launch mic permission).
+    // Keeps the same NSMicrophoneUsageDescription string already used below.
+    [
+      "expo-audio",
+      {
+        microphonePermission:
+          "bogie Driver uses your microphone for in-app voice notes during support chats.",
+      },
+    ],
     // Bundles ride_request.wav as a native notification sound (Android raw
     // resource / iOS bundle resource). Guarded on the file existing so a
     // missing sound file can't break `expo prebuild` / EAS builds.
     ...(hasRingtone ? [["expo-notifications", { sounds: ["./assets/sounds/ride_request.wav"] }]] : []),
+    // Strips the FOREGROUND_SERVICE / FOREGROUND_SERVICE_MEDIA_PLAYBACK
+    // permissions and services expo-audio bundles unconditionally for its
+    // lock-screen-controls and background-recording features, neither of
+    // which this app uses. See plugin file for details.
+    "./plugins/withStripUnusedAudioForegroundServices.js",
   ],
 });
