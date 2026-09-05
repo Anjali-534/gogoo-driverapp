@@ -9,7 +9,7 @@ import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useTranslation } from "react-i18next";
-import { setToken } from "@/services/session";
+import { setToken, getToken } from "@/services/session";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
 
@@ -116,6 +116,12 @@ export default function DriverRegisterScreen() {
   const [upiId, setUpiId] = useState("");
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [agreedMvag, setAgreedMvag] = useState(false);
+  // True when this driver already has an account + JWT from Google Sign-In
+  // (DriverGoogleLogin) and is only here to finish vehicle/bank/MVAG
+  // details — no password to collect, and submission goes to
+  // /gogoo/driver/complete-profile (an UPDATE) instead of
+  // /gogoo/driver/signup (an INSERT that would 409 on their existing email).
+  const [googleFlow, setGoogleFlow] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem("driver_signup_data").then(d => {
@@ -126,6 +132,7 @@ export default function DriverRegisterScreen() {
         setCategory(data.category || data.vehicle_category || "cab");
         setVehicleTypeLabel(data.vehicle_type_label || "");
         setVehicleTypeSlug(data.vehicle_type || "");
+        setGoogleFlow(!!data.google_flow);
       }
     });
   }, []);
@@ -176,7 +183,7 @@ export default function DriverRegisterScreen() {
   };
 
   const validateStep = () => {
-    if (step === 0 && (!name || !email || !phone || !password)) { Alert.alert(tr("alerts.fillPersonal")); return false; }
+    if (step === 0 && (!name || !email || !phone || (!googleFlow && !password))) { Alert.alert(tr("alerts.fillPersonal")); return false; }
     if (step === 0 && dob.trim() && !parseDDMMYYYY(dob)) { Alert.alert(tr("alerts.invalidDobTitle"), tr("alerts.invalidDobMsg")); return false; }
     if (step === 1) {
       if (category !== "packers" && category !== "ambulance" && (!vehicleNumber || !vehicleModel)) { Alert.alert(tr("alerts.fillVehicle")); return false; }
@@ -209,25 +216,49 @@ export default function DriverRegisterScreen() {
     setLoading(true);
     try {
       const savedData = JSON.parse(await AsyncStorage.getItem("driver_signup_data") || "{}");
-const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
-  name, email, password, phone,
-  vehicle_type: savedData.vehicle_type || "cab_4w",
-  vehicle_category: savedData.category || "cab",
-  vehicle_number: vehicleNumber, vehicle_model: vehicleModel, vehicle_color: vehicleColor,
-  payload_capacity: payload.trim() || undefined,
-  fuel_type: fuelType,
-  gst_number: gstNumber, bank_account_holder: accountHolder,
-  bank_account_number: accountNumber, bank_ifsc: ifscCode, bank_name: bankName, upi_id: upiId,
-  referred_by_code: savedData.referred_by_code || undefined,
-  mvag_declaration_accepted: agreedMvag,
-  date_of_birth: dob.trim() ? parseDDMMYYYY(dob) || undefined : undefined,
-  address: address.trim() || undefined,
-});
-      const driverId = signupRes.data?.driver_id;
-      const res = await axios.post(`${API}/auth/login`, { email, password });
-      const token = res.data.access_token;
-      await setToken(token);
-      await AsyncStorage.setItem("driver_user", JSON.stringify(res.data.user));
+
+      let driverId: string | undefined;
+      let token: string;
+
+      if (googleFlow) {
+        // Already have an account + JWT from DriverGoogleLogin — this only
+        // fills in the real vehicle/bank/MVAG data via UPDATE, not INSERT.
+        token = (await getToken()) || "";
+        const completeRes = await axios.post(`${API}/gogoo/driver/complete-profile`, {
+          phone,
+          vehicle_type: savedData.vehicle_type || "cab_4w",
+          vehicle_category: savedData.category || "cab",
+          vehicle_number: vehicleNumber, vehicle_model: vehicleModel, vehicle_color: vehicleColor,
+          gst_number: gstNumber, bank_account_holder: accountHolder,
+          bank_account_number: accountNumber, bank_ifsc: ifscCode, bank_name: bankName, upi_id: upiId,
+          referred_by_code: savedData.referred_by_code || undefined,
+          mvag_declaration_accepted: agreedMvag,
+          date_of_birth: dob.trim() ? parseDDMMYYYY(dob) || undefined : undefined,
+          address: address.trim() || undefined,
+        }, { headers: { Authorization: `Bearer ${token}` } });
+        driverId = completeRes.data?.driver_id;
+      } else {
+        const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
+          name, email, password, phone,
+          vehicle_type: savedData.vehicle_type || "cab_4w",
+          vehicle_category: savedData.category || "cab",
+          vehicle_number: vehicleNumber, vehicle_model: vehicleModel, vehicle_color: vehicleColor,
+          payload_capacity: payload.trim() || undefined,
+          fuel_type: fuelType,
+          gst_number: gstNumber, bank_account_holder: accountHolder,
+          bank_account_number: accountNumber, bank_ifsc: ifscCode, bank_name: bankName, upi_id: upiId,
+          referred_by_code: savedData.referred_by_code || undefined,
+          mvag_declaration_accepted: agreedMvag,
+          date_of_birth: dob.trim() ? parseDDMMYYYY(dob) || undefined : undefined,
+          address: address.trim() || undefined,
+        });
+        driverId = signupRes.data?.driver_id;
+        const res = await axios.post(`${API}/auth/login`, { email, password });
+        token = res.data.access_token;
+        await setToken(token);
+        await AsyncStorage.setItem("driver_user", JSON.stringify(res.data.user));
+      }
+
       if (driverId) await AsyncStorage.setItem("driver_id", driverId);
       await AsyncStorage.removeItem("pending_referral_code");
 
@@ -286,8 +317,10 @@ const signupRes = await axios.post(`${API}/gogoo/driver/signup`, {
             <Text style={s.sectionTitle}>{tr("personal.sectionTitle")}</Text>
             <F label={tr("personal.fullName")} value={name} onChangeText={setName} placeholder={tr("personal.fullNamePh")} />
             <F label={tr("personal.mobile")} value={phone} onChangeText={setPhone} placeholder={tr("personal.mobilePh")} keyboardType="phone-pad" />
-            <F label={tr("personal.email")} value={email} onChangeText={setEmail} placeholder={tr("personal.emailPh")} keyboardType="email-address" autoCapitalize="none" />
-            <F label={tr("personal.password")} value={password} onChangeText={setPassword} placeholder={tr("personal.passwordPh")} secureTextEntry />
+            <F label={tr("personal.email")} value={email} onChangeText={setEmail} placeholder={tr("personal.emailPh")} keyboardType="email-address" autoCapitalize="none" editable={!googleFlow} />
+            {!googleFlow && (
+              <F label={tr("personal.password")} value={password} onChangeText={setPassword} placeholder={tr("personal.passwordPh")} secureTextEntry />
+            )}
             <F label={tr("personal.dob")} value={dob} onChangeText={setDob} placeholder={tr("personal.dobPh")} keyboardType="numeric" maxLength={10} />
             <F label={tr("personal.address")} value={address} onChangeText={setAddress} placeholder={tr("personal.addressPh")} multiline />
             <View style={s.infoBox}>

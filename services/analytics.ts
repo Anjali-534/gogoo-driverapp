@@ -351,9 +351,9 @@ export const setDriverProperties = (driver: {
     await crashlytics().setAttributes({ name: driver.name || "unknown", vehicle: driver.vehicleType || "unknown", type: "driver" });
   });
 
-export const trackDriverLogin = (params: { driverId: string; vehicleType: string }) =>
+export const trackDriverLogin = (params: { driverId: string; vehicleType: string; method?: "phone_otp" | "google" }) =>
   safe(async () => {
-    await analytics().logLogin({ method: "phone_otp" });
+    await analytics().logLogin({ method: params.method || "phone_otp" });
     await analytics().setUserId(params.driverId);
     await analytics().setUserProperties({ vehicle_type: params.vehicleType, user_type: "driver" });
   });

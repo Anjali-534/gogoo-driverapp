@@ -6,13 +6,23 @@ import { useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTranslation } from "react-i18next";
-import { trackDriverLogin } from "@/services/analytics";
+import {
+  GoogleSignin,
+  isSuccessResponse,
+  isErrorWithCode,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import { trackDriverLogin, trackDriverError } from "@/services/analytics";
 import { registerPushToken } from "@/services/notifications";
 import { setToken } from "@/services/session";
 import LanguageSwitcherButton from "@/components/LanguageSwitcherButton";
 import i18n from "@/i18n";
 
 const API = process.env.EXPO_PUBLIC_API_URL || "https://gogobackend-production.up.railway.app";
+
+GoogleSignin.configure({
+  webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+});
 const POLICY_BASE = "https://gogobackend-production.up.railway.app/policies";
 const CONSENT_STORAGE_KEY = "legal_consent_v1";
 
@@ -24,6 +34,7 @@ export default function DriverLoginScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const [loading,      setLoading]      = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [email,        setEmail]        = useState("");
   const [password,     setPassword]     = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -66,6 +77,71 @@ export default function DriverLoginScreen() {
   } catch { Alert.alert(t("common.error"), t("auth.login.loginErrorMsg")); }
   finally { setLoading(false); }
 };
+
+  const handleGoogleLogin = async () => {
+    if (!agreedTerms || !agreedTDS) {
+      Alert.alert(t("auth.login.acceptTermsAlert"));
+      return;
+    }
+    setGoogleLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const response = await GoogleSignin.signIn();
+      if (!isSuccessResponse(response)) return; // user cancelled the picker
+
+      const { idToken } = response.data;
+      const res = await axios.post(`${API}/auth/driver/google`, { id_token: idToken });
+      const token = res.data.access_token;
+      await setToken(token);
+      await AsyncStorage.setItem("driver_user", JSON.stringify(res.data.user));
+      await AsyncStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify({ agreed: true, at: new Date().toISOString() }));
+
+      const profileRes = await axios.get(`${API}/gogoo/driver/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => ({ data: {} }));
+      if (profileRes.data?.driver_id) {
+        await AsyncStorage.setItem("driver_id", profileRes.data.driver_id);
+        trackDriverLogin({
+          driverId: profileRes.data.driver_id,
+          vehicleType: profileRes.data?.vehicle_type || "unknown",
+          method: "google",
+        });
+        registerPushToken();
+      }
+
+      if (res.data.profile_complete) {
+        router.replace("/(app)/home");
+      } else {
+        // New (or still-incomplete) Google driver — route into the existing
+        // vehicle-select/register onboarding flow instead of dropping them
+        // at home with no real profile. google_flow tells those screens to
+        // skip password collection and submit to
+        // /gogoo/driver/complete-profile instead of /gogoo/driver/signup.
+        await AsyncStorage.setItem("driver_signup_data", JSON.stringify({
+          name: res.data.user?.name || "",
+          email: res.data.user?.email || "",
+          google_flow: true,
+        }));
+        router.replace("/(auth)/driver-vehicle-select");
+      }
+    } catch (e: any) {
+      if (isErrorWithCode(e) && e.code === statusCodes.IN_PROGRESS) return;
+      // This is the Google Sign-In path, not password login — never fall
+      // back to the password-login error copy ("Invalid credentials"),
+      // since a native GoogleSignin SDK error (e.g. DEVELOPER_ERROR, Play
+      // Services unavailable) or a network failure reaching
+      // /auth/driver/google has nothing to do with credentials and that
+      // message would be misleading.
+      trackDriverError({
+        error: isErrorWithCode(e) ? `google_signin code=${e.code}: ${e.message}` : String(e?.message || e),
+        screen: "login_google",
+      });
+      Alert.alert(
+        t("auth.login.googleSignInFailedTitle"),
+        e.response?.data?.error || t("auth.login.googleSignInFailedDefault")
+      );
+    } finally { setGoogleLoading(false); }
+  };
 
   return (
     <View style={s.root}>
@@ -140,6 +216,28 @@ export default function DriverLoginScreen() {
           >
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>{t("auth.login.signIn")}</Text>}
           </TouchableOpacity>
+
+          <View style={s.dividerRow}>
+            <View style={s.dividerLine} />
+            <Text style={s.dividerText}>{t("auth.login.orDivider")}</Text>
+            <View style={s.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            style={[s.googleBtn, googleLoading && s.btnDisabled]}
+            onPress={handleGoogleLogin}
+            disabled={googleLoading || loading}
+          >
+            {googleLoading
+              ? <ActivityIndicator color="#111" />
+              : (
+                <>
+                  <Ionicons name="logo-google" size={18} color="#111" style={s.googleIcon} />
+                  <Text style={s.googleBtnText}>{t("auth.login.continueWithGoogle")}</Text>
+                </>
+              )
+            }
+          </TouchableOpacity>
         </View>
         <View style={s.registerCard}>
           <Text style={s.registerTitle}>{t("auth.login.newDriverTitle")}</Text>
@@ -177,6 +275,12 @@ const s = StyleSheet.create({
   btn: { backgroundColor: "#FF6B2B", borderRadius: 14, paddingVertical: 16, alignItems: "center", marginTop: 20 },
   btnDisabled: { opacity: 0.4 },
   btnText: { color: "#fff", fontWeight: "700", fontSize: 15 },
+  dividerRow:    { flexDirection: "row", alignItems: "center", marginTop: 18 },
+  dividerLine:   { flex: 1, height: 1, backgroundColor: "#EAEAEA" },
+  dividerText:   { color: "#999", fontSize: 11, fontWeight: "700", letterSpacing: 1, textTransform: "uppercase", marginHorizontal: 12 },
+  googleBtn:     { flexDirection: "row", backgroundColor: "#FFFFFF", borderWidth: 1, borderColor: "#EAEAEA", borderRadius: 14, paddingVertical: 15, alignItems: "center", justifyContent: "center", gap: 10, marginTop: 16 },
+  googleIcon:    { marginRight: 2 },
+  googleBtnText: { color: "#111", fontWeight: "700", fontSize: 14 },
   consentSection: { marginTop: 18, gap: 12 },
   consentRow: { flexDirection: "row", alignItems: "flex-start", gap: 10 },
   checkbox: { width: 22, height: 22, borderRadius: 4, borderWidth: 2, borderColor: "#D1D5DB", alignItems: "center", justifyContent: "center", marginTop: 1 },

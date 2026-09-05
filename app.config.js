@@ -55,6 +55,7 @@ module.exports = ({ config }) => ({
     "@react-native-firebase/perf/app.plugin.js",
     "./plugins/withDisableAndroidBackup.js",
     "expo-secure-store",
+    "@react-native-google-signin/google-signin",
     // expo-audio (ride-request ringtone + first-launch mic permission).
     // Keeps the same NSMicrophoneUsageDescription string already used below.
     [
