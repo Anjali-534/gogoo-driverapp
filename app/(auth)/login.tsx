@@ -126,20 +126,6 @@ export default function DriverLoginScreen() {
       }
     } catch (e: any) {
       if (isErrorWithCode(e) && e.code === statusCodes.IN_PROGRESS) return;
-      // ─── TEMPORARY DEBUG — remove once the Google Sign-In error is identified ───
-      // Dumps the raw native/axios error straight to the Metro console so it's
-      // visible immediately on a dev-client build connected to Metro, instead of
-      // waiting on Crashlytics' reporting delay. Safe to delete this whole block.
-      // eslint-disable-next-line no-console
-      console.log("[DEBUG][driver_login_google] Google Sign-In failed →", {
-        code: (e as any)?.code,
-        message: (e as any)?.message,
-        name: (e as any)?.name,
-        isErrorWithCode: isErrorWithCode(e),
-        serverResponse: (e as any)?.response?.data,
-        raw: e,
-      });
-      // ─────────────────────────────────────────────────────────────────────────
       // This is the Google Sign-In path, not password login — never fall
       // back to the password-login error copy ("Invalid credentials"),
       // since a native GoogleSignin SDK error (e.g. DEVELOPER_ERROR, Play
@@ -150,10 +136,17 @@ export default function DriverLoginScreen() {
         error: isErrorWithCode(e) ? `google_signin code=${e.code}: ${e.message}` : String(e?.message || e),
         screen: "login_google",
       });
+      // ─── TEMPORARY DEBUG — surfaces the raw error on screen so it can't be ───
+      // missed. Revert to the real user-facing message once identified:
+      //   Alert.alert(
+      //     t("auth.login.googleSignInFailedTitle"),
+      //     e.response?.data?.error || t("auth.login.googleSignInFailedDefault")
+      //   );
       Alert.alert(
-        t("auth.login.googleSignInFailedTitle"),
-        e.response?.data?.error || t("auth.login.googleSignInFailedDefault")
+        "DEBUG: Google Sign-In Failed",
+        `code: ${(e as any)?.code}\nmessage: ${(e as any)?.message}\nname: ${(e as any)?.name}\nisErrorWithCode: ${isErrorWithCode(e)}\nserverResponse: ${JSON.stringify((e as any)?.response?.data)}`
       );
+      // ──────────────────────────────────────────────────────────────────────
     } finally { setGoogleLoading(false); }
   };
 
