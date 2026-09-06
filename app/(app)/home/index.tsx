@@ -1,7 +1,7 @@
 ﻿import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, Switch, TouchableOpacity,
-  ScrollView, Alert, Animated, Image, Modal, Vibration,
+  ScrollView, Alert, Animated, Image, Modal, Vibration, Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,6 +24,19 @@ import * as Notifications from "expo-notifications";
 import { COLORS, RADIUS } from "@/constants/theme";
 
 const RIDE_REQUEST_VIBRATION_PATTERN = [0, 800, 400, 800];
+
+// ── Hero illustration sizing ──────────────────────────────────────────
+// Computed in JS from the real screen width and the asset's true
+// 1672x940 ratio. Yoga's aspectRatio/percentage resolution for this
+// <Image> inside expo-linear-gradient failed twice (collapsed to 0px,
+// then oversized + centre-cropped), so every dimension here is an
+// explicit pixel number — nothing is left for Yoga to infer.
+const HERO_SCREEN_W = Dimensions.get("window").width;
+const HERO_IMG_W    = HERO_SCREEN_W;
+const HERO_IMG_H    = Math.round(HERO_SCREEN_W * (940 / 1672)); // ≈ width / 1.779
+const HERO_TOP_BAND = 152;  // plain-gradient band above the scene, for greeting + bell
+const HERO_BOT_GAP  = 12;
+const HERO_H        = HERO_TOP_BAND + HERO_IMG_H + HERO_BOT_GAP;
 
 const ACTIVE_STATUSES = ["accepted", "arriving", "in_progress"];
 
@@ -468,15 +481,59 @@ export default function DriverHomeScreen() {
 
       <ScrollView style={s.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* Hero — full-bleed gradient, same technique as user-app's home hero */}
+        {/* Hero — explicit HERO_H (px). The illustration is an absolutely-
+            positioned background pinned to the bottom at an explicit
+            HERO_IMG_W x HERO_IMG_H (box aspect == source aspect, so
+            resizeMode="contain" neither letterboxes nor crops). The
+            greeting / battery / bell / avatar are in normal flow with an
+            explicit zIndex so they always paint above the image. */}
         <LinearGradient
           colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
           locations={[0, 0.6, 1]}
           style={s.hero}
+          onLayout={e => console.log("[HERO/tmp] container", JSON.stringify(e.nativeEvent.layout))}
         >
-          <View style={s.logoBar}>
-            <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+          <Image
+            source={require("../../../assets/illustrations/hero-truck.png")}
+            style={s.heroImg}
+            resizeMode="contain"
+            onLayout={e => console.log("[HERO/tmp] image", JSON.stringify(e.nativeEvent.layout))}
+          />
+
+          <View
+            style={s.heroContent}
+            pointerEvents="box-none"
+            onLayout={e => console.log("[HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
+          >
+            <View style={s.heroTextCol}>
+              <Text style={s.greeting}>{t("home.greeting", { name: firstName })}</Text>
+              <Text style={s.subGreeting}>{t("home.subGreeting")}</Text>
+
+              {/* Battery status — always visible, not just when it blocks ride-accept */}
+              {batteryLevel !== null && (
+                <View
+                  style={[
+                    s.batteryPill,
+                    batteryLevel < 0.15 && !batteryCharging && s.batteryPillUrgent,
+                  ]}
+                >
+                  <Text style={s.batteryPillIcon}>
+                    {batteryCharging ? "⚡" : "🔋"}
+                  </Text>
+                  <Text
+                    style={[
+                      s.batteryPillText,
+                      batteryLevel < 0.15 && !batteryCharging && s.batteryPillTextUrgent,
+                      batteryLevel >= 0.15 && batteryLevel < 0.5 && !batteryCharging && s.batteryPillTextMedium,
+                    ]}
+                  >
+                    {Math.round(batteryLevel * 100)}%
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <View style={s.heroActions}>
               <TouchableOpacity
                 style={s.bellBtn}
                 onPress={() => { setUnreadCount(0); router.push("/(app)/notifications"); }}
@@ -493,39 +550,6 @@ export default function DriverHomeScreen() {
                 <Text style={s.avatarText}>{firstName[0]}</Text>
               </View>
             </View>
-          </View>
-
-          <Image
-            source={require("../../../assets/illustrations/hero-truck.png")}
-            style={s.heroTruckImg}
-            resizeMode="contain"
-          />
-          <View style={s.heroTextCol}>
-            <Text style={s.greeting}>{t("home.greeting", { name: firstName })}</Text>
-            <Text style={s.subGreeting}>{t("home.subGreeting")}</Text>
-
-            {/* Battery status — always visible, not just when it blocks ride-accept */}
-            {batteryLevel !== null && (
-              <View
-                style={[
-                  s.batteryPill,
-                  batteryLevel < 0.15 && !batteryCharging && s.batteryPillUrgent,
-                ]}
-              >
-                <Text style={s.batteryPillIcon}>
-                  {batteryCharging ? "⚡" : "🔋"}
-                </Text>
-                <Text
-                  style={[
-                    s.batteryPillText,
-                    batteryLevel < 0.15 && !batteryCharging && s.batteryPillTextUrgent,
-                    batteryLevel >= 0.15 && batteryLevel < 0.5 && !batteryCharging && s.batteryPillTextMedium,
-                  ]}
-                >
-                  {Math.round(batteryLevel * 100)}%
-                </Text>
-              </View>
-            )}
           </View>
         </LinearGradient>
 
@@ -808,12 +832,18 @@ const s = StyleSheet.create({
   scroll:           { flex: 1, paddingBottom: 80 },
   contentPad:       { paddingHorizontal: 20 },
 
-  // Hero — full-bleed gradient, same technique as user-app's home hero.
-  hero:             { paddingHorizontal: 20, paddingBottom: 28, minHeight: 210 },
-  logoBar:          { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingTop: 52, paddingBottom: 8 },
-  logo:             { width: 180, height: 64, marginLeft: -38 },
-  heroTruckImg:     { position: "absolute", right: -20, bottom: -14, width: 250, height: 156 },
-  heroTextCol:      { maxWidth: "58%", marginTop: 8 },
+  // Hero — every dimension explicit px (see HERO_* consts up top). No
+  // aspectRatio, no percentages: Yoga has nothing to infer.
+  hero:             { width: HERO_SCREEN_W, height: HERO_H },
+  // Illustration: absolute, pinned to the bottom, at an explicit box whose
+  // aspect equals the source's (1672:940) so resizeMode="contain" is exact.
+  heroImg:          { position: "absolute", left: 0, bottom: HERO_BOT_GAP, width: HERO_IMG_W, height: HERO_IMG_H, zIndex: 0 },
+  // Greeting / battery / bell / avatar — normal flow, in the top band, with an
+  // explicit zIndex so they always paint above the image (Android does not
+  // guarantee this for an in-flow sibling drawn after an absolute one).
+  heroContent:      { zIndex: 2, flexDirection: "row", alignItems: "flex-start", paddingHorizontal: 20, paddingTop: 52, gap: 12 },
+  heroActions:      { flexDirection: "row", alignItems: "center", gap: 10 },
+  heroTextCol:      { flex: 1 },
   greeting:         { color: COLORS.textPrimary, fontSize: 20, fontWeight: "800" },
   subGreeting:      { color: COLORS.textSecondary, fontSize: 13, marginTop: 4 },
 
