@@ -284,7 +284,11 @@ export default function DriverRegisterScreen() {
       const summary = failed > 0
         ? tr("alerts.submittedPartial", { uploaded, failed })
         : tr("alerts.submittedFull");
-      Alert.alert(tr("alerts.submittedTitle"), summary, [{ text: t("common.ok"), onPress: () => router.replace("/(app)/home") }]);
+      // Both signup flows (Google and password) land on the Documents
+      // checklist — a freshly-registered driver's one blocking next step is
+      // getting documents verified before they can go online.
+      const postSubmitRoute = "/(app)/documents";
+      Alert.alert(tr("alerts.submittedTitle"), summary, [{ text: t("common.ok"), onPress: () => router.replace(postSubmitRoute as any) }]);
     } catch (e: any) {
       Alert.alert(tr("alerts.submitErrorTitle"), e?.response?.data?.error || tr("alerts.submitErrorMsg"));
     } finally { setLoading(false); }

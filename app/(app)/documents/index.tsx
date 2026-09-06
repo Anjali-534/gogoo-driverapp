@@ -213,6 +213,12 @@ export default function DocumentsScreen() {
         </View>
       ) : (
         <ScrollView style={s.scroll} showsVerticalScrollIndicator={false}>
+          {approved < total && (
+            <View style={s.introBox}>
+              <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.primary} style={{ marginTop: 1 }} />
+              <Text style={s.introText}>{t("documents.verifyIntro")}</Text>
+            </View>
+          )}
           {docs.map((doc) => {
             const cfg         = STATUS_CONFIG[doc.status] || STATUS_CONFIG.missing;
             const iconCfg     = DOC_ICON[doc.doc_type] || DOC_ICON_DEFAULT;
@@ -329,6 +335,8 @@ const s = StyleSheet.create({
   progressFill: { height: 5, backgroundColor: COLORS.primary, borderRadius: 3 },
   progressText: { color: "#999", fontSize: 12 },
   scroll: { flex: 1, paddingHorizontal: 20 },
+  introBox: { flexDirection: "row", gap: 10, alignItems: "flex-start", backgroundColor: COLORS.primaryTint2, borderWidth: 1, borderColor: COLORS.primaryBorder, borderRadius: RADIUS.card, padding: 14, marginBottom: 12 },
+  introText: { flex: 1, color: "#B45309", fontSize: 12.5, lineHeight: 18 },
   center: { flex: 1, justifyContent: "center", alignItems: "center", gap: 12 },
   retryBtn: { backgroundColor: COLORS.primary, borderRadius: RADIUS.input, paddingHorizontal: 24, paddingVertical: 12 },
   retryBtnText: { color: COLORS.white, fontWeight: "800", fontSize: 14 },

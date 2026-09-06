@@ -663,6 +663,7 @@
   "documents": {
     "title": "My Documents",
     "verifiedCount": "{{approved}}/{{total}} verified",
+    "verifyIntro": "Upload every required document to get verified. Once approved, you can go online and start accepting rides — reviews usually take 24–48 hours.",
     "allVerified": "All documents verified!",
     "pendingCount": "{{count}} document pending",
     "pendingCount_other": "{{count}} documents pending",
