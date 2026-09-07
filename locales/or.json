@@ -438,7 +438,8 @@
     "stats": {
       "title": "ଆପଣଙ୍କର ଆଙ୍କଡ଼ା",
       "rating": "ରେଟିଂ",
-      "totalRides": "ମୋଟ ରାଇଡ୍"
+      "totalRides": "ମୋଟ ରାଇଡ୍",
+      "newLabel": "ନୂଆ"
     },
     "recentTrips": {
       "title": "ସାମ୍ପ୍ରତିକ ଯାତ୍ରା",

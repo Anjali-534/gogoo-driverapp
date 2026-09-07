@@ -637,7 +637,7 @@ export default function DriverHomeScreen() {
             <View style={s.statIconWrap}>
               <Ionicons name="star" size={19} color={COLORS.primary} />
             </View>
-            <Text style={s.statValue}>{rating}</Text>
+            <Text style={s.statValue}>{totalRides > 0 ? rating : t("home.stats.newLabel")}</Text>
             <Text style={s.statLabel}>{t("home.stats.rating")}</Text>
           </View>
           <View style={[s.statCard, { marginRight: 0 }]}>
