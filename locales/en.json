@@ -438,8 +438,7 @@
     "stats": {
       "title": "Your Stats",
       "rating": "Rating",
-      "totalRides": "Total Rides",
-      "newLabel": "New"
+      "totalRides": "Total Rides"
     },
     "recentTrips": {
       "title": "Recent Trips",

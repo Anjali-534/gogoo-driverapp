@@ -438,8 +438,7 @@
     "stats": {
       "title": "आपके आंकड़े",
       "rating": "रेटिंग",
-      "totalRides": "कुल राइड्स",
-      "newLabel": "नया"
+      "totalRides": "कुल राइड्स"
     },
     "recentTrips": {
       "title": "हाल की ट्रिप्स",
