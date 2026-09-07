@@ -34,7 +34,7 @@ const RIDE_REQUEST_VIBRATION_PATTERN = [0, 800, 400, 800];
 const HERO_SCREEN_W = Dimensions.get("window").width;
 const HERO_IMG_W    = HERO_SCREEN_W;
 const HERO_IMG_H    = Math.round(HERO_SCREEN_W * (940 / 1672)); // ≈ width / 1.779
-const HERO_TOP_BAND = 152;  // plain-gradient band above the scene, for greeting + bell
+const HERO_TOP_BAND = 32;  // small margin above the scene — greeting/bell now overlay the image itself
 const HERO_BOT_GAP  = 12;
 const HERO_H        = HERO_TOP_BAND + HERO_IMG_H + HERO_BOT_GAP;
 
@@ -337,7 +337,7 @@ export default function DriverHomeScreen() {
       if (!token) return;
       const res = await api.get(`/gogoo/driver/profile`);
       if (res.data?.driver_id)               await AsyncStorage.setItem("driver_id", res.data.driver_id);
-      if (res.data?.rating)                  setRating(Number(res.data.rating).toFixed(1));
+      if (res.data?.rating !== undefined && res.data?.rating !== null) setRating(Number(res.data.rating).toFixed(1));
       if (res.data?.total_rides)             setTotalRides(res.data.total_rides);
       if (res.data?.is_online !== undefined) setIsOnline(res.data.is_online);
       setIsWalletBlocked(!!(res.data?.is_wallet_blocked || res.data?.is_blocked));
@@ -577,14 +577,24 @@ export default function DriverHomeScreen() {
             onPress={() => router.push("/(app)/documents" as any)}
             activeOpacity={0.85}
           >
-            <Text style={s.verifyBannerTitle}>{t("home.verifyBanner.title")}</Text>
-            <Text style={s.verifyBannerText}>
-              {t("home.verifyBanner.text")}
-              {docSummary && (docSummary.pending > 0 || docSummary.rejected > 0)
-                ? `  ${docSummary.pending > 0 ? t("home.verifyBanner.pendingCount", { count: docSummary.pending }) : ""}${docSummary.pending > 0 && docSummary.rejected > 0 ? " · " : ""}${docSummary.rejected > 0 ? t("home.verifyBanner.rejectedCount", { count: docSummary.rejected }) : ""}.`
-                : ""}
-            </Text>
-            <Text style={s.verifyBannerLink}>{t("home.verifyBanner.link")}</Text>
+            <View style={s.verifyStripe1} />
+            <View style={s.verifyStripe2} />
+            <View style={s.verifyIconBox}>
+              <Ionicons name="document-text-outline" size={22} color={COLORS.primary} />
+              <View style={s.verifyIconBadge}>
+                <Ionicons name="checkmark" size={10} color="#fff" />
+              </View>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={s.verifyBannerTitle}>{t("home.verifyBanner.title")}</Text>
+              <Text style={s.verifyBannerText}>
+                {t("home.verifyBanner.text")}
+                {docSummary && (docSummary.pending > 0 || docSummary.rejected > 0)
+                  ? `  ${docSummary.pending > 0 ? t("home.verifyBanner.pendingCount", { count: docSummary.pending }) : ""}${docSummary.pending > 0 && docSummary.rejected > 0 ? " · " : ""}${docSummary.rejected > 0 ? t("home.verifyBanner.rejectedCount", { count: docSummary.rejected }) : ""}.`
+                  : ""}
+              </Text>
+              <Text style={s.verifyBannerLink}>{t("home.verifyBanner.link")}</Text>
+            </View>
           </TouchableOpacity>
         )}
 
@@ -625,18 +635,28 @@ export default function DriverHomeScreen() {
         <View style={s.statsGrid}>
           <View style={s.statCard}>
             <View style={s.statIconWrap}>
-              <Ionicons name="star" size={18} color={COLORS.primary} />
+              <Ionicons name="star" size={19} color={COLORS.primary} />
             </View>
             <Text style={s.statValue}>{rating}</Text>
             <Text style={s.statLabel}>{t("home.stats.rating")}</Text>
           </View>
           <View style={[s.statCard, { marginRight: 0 }]}>
             <View style={s.statIconWrap}>
-              <Ionicons name="flag" size={18} color={COLORS.primary} />
+              <Ionicons name="flag" size={19} color={COLORS.primary} />
             </View>
             <Text style={s.statValue}>{totalRides}</Text>
             <Text style={s.statLabel}>{t("home.stats.totalRides")}</Text>
           </View>
+        </View>
+
+        {/* Tips for more earnings */}
+        <View style={s.earningsTipCard}>
+          <Ionicons name="bulb-outline" size={22} color={COLORS.primary} style={{ marginRight: 12 }} />
+          <View style={{ flex: 1 }}>
+            <Text style={s.earningsTipTitle}>{t("home.tips.title")}</Text>
+            <Text style={s.earningsTipText}>{t("home.tips.earningsHint")}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={COLORS.primary} />
         </View>
 
         {/* Recent Trips */}
@@ -838,9 +858,10 @@ const s = StyleSheet.create({
   // Illustration: absolute, pinned to the bottom, at an explicit box whose
   // aspect equals the source's (1672:940) so resizeMode="contain" is exact.
   heroImg:          { position: "absolute", left: 0, bottom: HERO_BOT_GAP, width: HERO_IMG_W, height: HERO_IMG_H, zIndex: 0 },
-  // Greeting / battery / bell / avatar — normal flow, in the top band, with an
-  // explicit zIndex so they always paint above the image (Android does not
-  // guarantee this for an in-flow sibling drawn after an absolute one).
+  // Greeting / battery / bell / avatar — normal flow, overlaid directly on the
+  // image's sky/cloud area, with an explicit zIndex so they always paint above
+  // the image (Android does not guarantee this for an in-flow sibling drawn
+  // after an absolute one).
   heroContent:      { zIndex: 2, flexDirection: "row", alignItems: "flex-start", paddingHorizontal: 20, paddingTop: 52, gap: 12 },
   heroActions:      { flexDirection: "row", alignItems: "center", gap: 10 },
   heroTextCol:      { flex: 1 },
@@ -873,11 +894,15 @@ const s = StyleSheet.create({
   sectionHeaderRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
   viewAllLink:      { color: COLORS.primary, fontWeight: "700", fontSize: 13 },
 
-  statsGrid:        { flexDirection: "row", marginBottom: 20 },
-  statCard:         { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.input, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, alignItems: "center", marginRight: 10 },
-  statIconWrap:     { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 6 },
-  statValue:        { color: COLORS.textPrimary, fontWeight: "800", fontSize: 22 },
-  statLabel:        { color: "#999", fontSize: 11, marginTop: 2 },
+  statsGrid:        { flexDirection: "row", marginBottom: 16 },
+  statCard:         { flex: 1, backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, paddingVertical: 13, paddingHorizontal: 10, alignItems: "center", marginRight: 10 },
+  statIconWrap:     { width: 42, height: 42, borderRadius: 21, backgroundColor: COLORS.primaryTint, alignItems: "center", justifyContent: "center", marginBottom: 8 },
+  statValue:        { color: COLORS.textPrimary, fontWeight: "800", fontSize: 21 },
+  statLabel:        { color: "#999", fontSize: 12, marginTop: 2 },
+
+  earningsTipCard:  { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.primaryTint, borderRadius: RADIUS.card, padding: 16, marginBottom: 24 },
+  earningsTipTitle: { color: COLORS.primary, fontWeight: "800", fontSize: 15, marginBottom: 4 },
+  earningsTipText:  { color: COLORS.textSecondary, fontSize: 13, lineHeight: 18 },
 
   tripCard:         { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, marginBottom: 10 },
   tripTop:          { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 },
@@ -915,10 +940,14 @@ const s = StyleSheet.create({
   blockedText:      { fontSize: 13, color: "#991B1B", fontWeight: "600", marginBottom: 6, lineHeight: 18 },
   blockedLink:      { fontSize: 13, color: COLORS.danger, fontWeight: "700" },
 
-  verifyBanner:     { backgroundColor: COLORS.warningTint, borderRadius: RADIUS.input, borderLeftWidth: 4, borderLeftColor: COLORS.warning, padding: 14, marginBottom: 16 },
-  verifyBannerTitle:{ fontSize: 13, color: COLORS.warningStrong, fontWeight: "800", marginBottom: 4 },
-  verifyBannerText: { fontSize: 12, color: COLORS.warningStrong, lineHeight: 17, marginBottom: 6 },
-  verifyBannerLink: { fontSize: 13, color: COLORS.warning, fontWeight: "700" },
+  verifyBanner:     { flexDirection: "row", alignItems: "flex-start", position: "relative", overflow: "hidden", backgroundColor: COLORS.primaryTint, borderRadius: RADIUS.card, borderLeftWidth: 4, borderLeftColor: COLORS.primary, padding: 16, marginBottom: 16 },
+  verifyStripe1:    { position: "absolute", right: -24, bottom: -14, width: 100, height: 14, backgroundColor: COLORS.primary, opacity: 0.12, transform: [{ rotate: "-35deg" }] },
+  verifyStripe2:    { position: "absolute", right: -8, bottom: 4, width: 100, height: 14, backgroundColor: COLORS.primary, opacity: 0.18, transform: [{ rotate: "-35deg" }] },
+  verifyIconBox:    { width: 44, height: 44, borderRadius: RADIUS.input, backgroundColor: COLORS.white, alignItems: "center", justifyContent: "center", marginRight: 12, flexShrink: 0 },
+  verifyIconBadge:  { position: "absolute", bottom: -2, right: -2, width: 16, height: 16, borderRadius: 8, backgroundColor: COLORS.primary, borderWidth: 2, borderColor: COLORS.white, alignItems: "center", justifyContent: "center" },
+  verifyBannerTitle:{ fontSize: 15, color: COLORS.textStrong, fontWeight: "800", marginBottom: 4 },
+  verifyBannerText: { fontSize: 13, color: COLORS.textSecondary, lineHeight: 18, marginBottom: 6 },
+  verifyBannerLink: { fontSize: 13, color: COLORS.primary, fontWeight: "700" },
 
   activeRideCard:   { flexDirection: "row", alignItems: "center", backgroundColor: COLORS.success, borderRadius: RADIUS.card, padding: 16, marginBottom: 20, gap: 12 },
   activeRideDot:    { width: 10, height: 10, borderRadius: 5, backgroundColor: "#fff", opacity: 0.9 },

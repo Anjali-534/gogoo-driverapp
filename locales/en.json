@@ -425,7 +425,7 @@
       "fallbackTitle": "Ride in progress"
     },
     "verifyBanner": {
-      "title": "⏳ Verification in progress",
+      "title": "Verification in progress",
       "text": "You can go online once your documents are approved.",
       "pendingCount": "{{count}} pending",
       "rejectedCount": "{{count}} rejected",
@@ -449,6 +449,7 @@
     },
     "tips": {
       "title": "Tips for more earnings",
+      "earningsHint": "Stay online during peak hours and accept more rides.",
       "item1": "Peak hours: 8-10 AM, 5-9 PM",
       "item2": "High demand: Connaught Place, Cyber Hub",
       "item3": "Keep rating above 4.5 for more requests"
