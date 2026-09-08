@@ -546,9 +546,13 @@ export default function DriverHomeScreen() {
                   </View>
                 )}
               </TouchableOpacity>
-              <View style={s.avatar}>
+              <TouchableOpacity
+                style={s.avatar}
+                onPress={() => router.push("/(app)/profile" as any)}
+                hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              >
                 <Text style={s.avatarText}>{firstName[0]}</Text>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </LinearGradient>

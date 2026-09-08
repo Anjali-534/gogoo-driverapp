@@ -171,7 +171,6 @@ export default function DocumentsScreen() {
   return (
     <SafeAreaView style={s.safe}>
       <View style={s.logoBar}>
-        <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
         <Image source={require("../../../assets/illustrations/task.png")} style={s.taskIllustration} resizeMode="contain" />
       </View>
       <View style={s.header}>
@@ -324,8 +323,7 @@ export default function DocumentsScreen() {
 
 const s = StyleSheet.create({
   safe:    { flex: 1, backgroundColor: COLORS.bg },
-  logoBar: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 44, paddingBottom: 4 },
-  logo:    { width: 180, height: 64, marginLeft: -38 },
+  logoBar: { flexDirection: "row", justifyContent: "flex-end", alignItems: "center", paddingHorizontal: 20, paddingTop: 44, paddingBottom: 4 },
   taskIllustration: { width: 64, height: 56 },
   header:  { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
   title: { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },

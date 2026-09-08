@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
-  TouchableOpacity, Image, ActivityIndicator, RefreshControl,
+  TouchableOpacity, Image, ActivityIndicator, RefreshControl, useWindowDimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -10,6 +10,14 @@ import { trackEarningsViewed } from "@/services/analytics";
 import { COLORS, RADIUS } from "@/constants/theme";
 import EarningsRangeFilter, { EarningsRange } from "@/components/EarningsRangeFilter";
 import { useTranslation } from "react-i18next";
+
+// ── Hero illustration sizing ──────────────────────────────────────────
+// Same technique as Home/Orders' hero: width comes from useWindowDimensions()
+// inside the component (rotation-safe live recompute, not a frozen
+// Dimensions.get() snapshot), height is derived from hero-truck.png's true
+// 1774x887 (2:1) ratio. No aspectRatio/percentage sizing.
+const HERO_TOP_BAND = 32;
+const HERO_BOT_GAP  = 12;
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
@@ -39,6 +47,11 @@ function fmtTime(iso: string) {
 
 export default function EarningsScreen() {
   const { t } = useTranslation();
+  // Reactive width — see the HERO_TOP_BAND/HERO_BOT_GAP comment above for
+  // why this isn't a module-level Dimensions.get() constant.
+  const { width: heroScreenW } = useWindowDimensions();
+  const heroImgH = Math.round(heroScreenW * (887 / 1774));
+  const heroH    = HERO_TOP_BAND + heroImgH + HERO_BOT_GAP;
   const DAY_NAMES = DAY_KEYS.map(k => t(`earnings.days.${k}`));
   const [bookings, setBookings] = useState<any[]>([]);
   const [summary,  setSummary]  = useState<any>(null);
@@ -119,22 +132,32 @@ export default function EarningsScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={COLORS.primary} />}
       >
-        {/* Hero — full-bleed gradient, same technique as home/orders */}
+        {/* Hero — explicit computed-px width/height (heroScreenW/heroH from
+            useWindowDimensions above), same technique as Home/Orders' hero:
+            the illustration is an absolutely-positioned full-bleed
+            background at an explicit heroScreenW x heroImgH, with the page
+            title overlaid on top via explicit zIndex. No logo. */}
         <LinearGradient
           colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
           locations={[0, 0.6, 1]}
-          style={s.hero}
+          style={[s.hero, { width: heroScreenW, height: heroH }]}
+          onLayout={e => console.log("[EARNINGS_HERO/tmp] container", JSON.stringify(e.nativeEvent.layout))}
         >
-          <View style={s.logoBar}>
-            <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-          </View>
           <Image
             source={require("../../../assets/illustrations/hero-truck.png")}
-            style={s.heroTruckImg}
+            style={[s.heroBgImg, { width: heroScreenW, height: heroImgH }]}
             resizeMode="contain"
+            onLayout={e => console.log("[EARNINGS_HERO/tmp] image", JSON.stringify(e.nativeEvent.layout))}
           />
-          <View style={s.heroTextCol}>
-            <Text style={s.pageTitle}>{t("earnings.pageTitle")}</Text>
+
+          <View
+            style={s.heroContent}
+            pointerEvents="box-none"
+            onLayout={e => console.log("[EARNINGS_HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
+          >
+            <View style={s.heroTextCol}>
+              <Text style={s.pageTitle}>{t("earnings.pageTitle")}</Text>
+            </View>
           </View>
         </LinearGradient>
 
@@ -344,12 +367,11 @@ export default function EarningsScreen() {
 const s = StyleSheet.create({
   safe:               { flex: 1, backgroundColor: COLORS.bgAlt },
 
-  // ── Hero — full-bleed gradient, same technique as home/orders ──────────
-  hero:               { paddingHorizontal: 20, paddingBottom: 24, minHeight: 170 },
-  logoBar:            { flexDirection: "row", alignItems: "center", paddingTop: 52, paddingBottom: 8 },
-  logo:               { width: 180, height: 64, marginLeft: -38 },
-  heroTruckImg:       { position: "absolute", right: -20, bottom: -14, width: 250, height: 156 },
-  heroTextCol:        { maxWidth: "58%", marginTop: 8 },
+  // ── Hero — full-width background image, same technique as Home/Orders ──
+  hero:               { paddingHorizontal: 20 },
+  heroBgImg:          { position: "absolute", left: 0, bottom: HERO_BOT_GAP, zIndex: 0 },
+  heroContent:        { zIndex: 2, paddingTop: HERO_TOP_BAND },
+  heroTextCol:        { maxWidth: "58%" },
   pageTitle:          { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },
 
   loadingWrap:        { paddingTop: 60, alignItems: "center" },

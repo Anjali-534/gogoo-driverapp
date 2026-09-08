@@ -1,7 +1,7 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, Platform, Linking, Image, Modal, TextInput,
+  ActivityIndicator, Alert, Platform, Linking, Image, Modal, TextInput, Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -25,6 +25,17 @@ import i18n, { getCurrentLanguage, type LanguageCode } from "@/i18n";
 const POLL_MS = 4000;
 const GPS_MS  = 5000;
 const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_KEY || "";
+
+// ── Hero illustration sizing ──────────────────────────────────────────
+// Same explicit-pixel technique as Home's hero (driver-app/app/(app)/home
+// /index.tsx) — computed from real screen width and hero-truck.png's true
+// 1672x940 ratio, no aspectRatio/percentage sizing.
+const HERO_SCREEN_W = Dimensions.get("window").width;
+const HERO_IMG_W    = HERO_SCREEN_W;
+const HERO_IMG_H    = Math.round(HERO_SCREEN_W * (940 / 1672));
+const HERO_TOP_BAND = 32;
+const HERO_BOT_GAP  = 12;
+const HERO_H        = HERO_TOP_BAND + HERO_IMG_H + HERO_BOT_GAP;
 
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -851,37 +862,46 @@ export default function OrdersScreen() {
 
   return (
     <SafeAreaView style={s.safe}>
-      {/* Hero — full-bleed gradient, same technique as driver-app's home hero */}
+      {/* Hero — explicit HERO_H (px), same technique as Home's hero: the
+          illustration is an absolutely-positioned full-bleed background at
+          an explicit HERO_IMG_W x HERO_IMG_H, with the title/subtitle in
+          normal flow at an explicit zIndex so they overlay directly on top
+          of it instead of sitting in a separate band above the image. */}
       <LinearGradient
         colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
         locations={[0, 0.6, 1]}
         style={s.hero}
+        onLayout={e => console.log("[ORDERS_HERO/tmp] container", JSON.stringify(e.nativeEvent.layout))}
       >
-        <View style={s.logoBar}>
-          <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
-          {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
-        </View>
-
         <Image
           source={require("../../../assets/illustrations/hero-truck.png")}
-          style={s.heroTruckImg}
+          style={s.heroImg}
           resizeMode="contain"
+          onLayout={e => console.log("[ORDERS_HERO/tmp] image", JSON.stringify(e.nativeEvent.layout))}
         />
-        <View style={s.heroTextCol}>
-          <Text style={s.title}>
-            {activeBooking
-              ? t("orders.title.current")
-              : <>{t("orders.title.requestsPrefix")}<Text style={{ color: COLORS.primary }}>{t("orders.title.requestsHighlight")}</Text></>}
-          </Text>
-          <Text style={s.subtitle}>
-            {!ready
-              ? t("orders.subtitle.loading")
-              : activeBooking
-                ? t("orders.subtitle.newRequestsWaiting", { count: pending.length })
-                : myLat
-                  ? t("orders.subtitle.requestsNearYou", { count: pending.length })
-                  : t("orders.subtitle.enableLocation")}
-          </Text>
+
+        <View
+          style={s.heroContent}
+          pointerEvents="box-none"
+          onLayout={e => console.log("[ORDERS_HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
+        >
+          <View style={s.heroTextCol}>
+            <Text style={s.title}>
+              {activeBooking
+                ? t("orders.title.current")
+                : <>{t("orders.title.requestsPrefix")}<Text style={{ color: COLORS.primary }}>{t("orders.title.requestsHighlight")}</Text></>}
+            </Text>
+            <Text style={s.subtitle}>
+              {!ready
+                ? t("orders.subtitle.loading")
+                : activeBooking
+                  ? t("orders.subtitle.newRequestsWaiting", { count: pending.length })
+                  : myLat
+                    ? t("orders.subtitle.requestsNearYou", { count: pending.length })
+                    : t("orders.subtitle.enableLocation")}
+            </Text>
+          </View>
+          {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
         </View>
       </LinearGradient>
 
@@ -1173,11 +1193,12 @@ const s = StyleSheet.create({
   busyBtn:    { opacity:0.6 },
 
   // ── Hero — full-bleed gradient, same technique as driver-app's home hero ──
-  hero:         { paddingHorizontal:20, paddingBottom:28, minHeight:190 },
-  logoBar:      { flexDirection:"row", justifyContent:"space-between", alignItems:"center", paddingTop:52, paddingBottom:8 },
-  logo:         { width:180, height:64, marginLeft:-38 },
-  heroTruckImg: { position:"absolute", right:-20, bottom:-14, width:250, height:156 },
-  heroTextCol:  { maxWidth:"58%", marginTop:8 },
+  // Hero — every dimension explicit px (see HERO_* consts up top), same
+  // pattern as Home's hero. No aspectRatio, no percentages.
+  hero:         { width: HERO_SCREEN_W, height: HERO_H },
+  heroImg:      { position: "absolute", left: 0, bottom: HERO_BOT_GAP, width: HERO_IMG_W, height: HERO_IMG_H, zIndex: 0 },
+  heroContent:  { zIndex: 2, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 52, gap: 12 },
+  heroTextCol:  { flex: 1 },
   title:        { color:"#111", fontSize:22, fontWeight:"800" },
   subtitle:     { color:"#777", fontSize:12, marginTop:4 },
 
