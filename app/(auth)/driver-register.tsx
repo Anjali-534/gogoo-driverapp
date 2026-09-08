@@ -2,7 +2,7 @@
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ScrollView, SafeAreaView, Alert, ActivityIndicator,
-  Switch, Image, StatusBar
+  Switch, Image, StatusBar, KeyboardAvoidingView, Platform
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
@@ -314,6 +314,7 @@ export default function DriverRegisterScreen() {
         {STEPS.map((_, i) => <View key={i} style={[s.progressSeg, i <= step && { backgroundColor: accentColor }]} />)}
       </View>
 
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
       <ScrollView style={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <View style={s.content}>
 
@@ -466,6 +467,7 @@ export default function DriverRegisterScreen() {
         </TouchableOpacity>
         <Text style={s.stepIndicator}>{tr("stepIndicator", { step: step + 1 })}</Text>
       </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }

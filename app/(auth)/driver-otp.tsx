@@ -1,5 +1,5 @@
 ﻿import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, StatusBar } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -50,47 +50,49 @@ export default function DriverOTPScreen() {
   return (
     <SafeAreaView style={s.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
-      <View style={s.container}>
-        <TouchableOpacity onPress={() => router.back()} style={s.back}>
-          <Text style={s.backText}>{t("auth.otp.back")}</Text>
-        </TouchableOpacity>
-        <View style={s.iconCircle}>
-          <Text style={s.iconEmoji}>📱</Text>
-        </View>
-        <Text style={s.title}>{t("auth.otp.title")}</Text>
-        <Text style={s.subtitle}>
-          {t("auth.otp.subtitlePrefix")}{"\n"}
-          <Text style={s.phone}>{phone || t("auth.otp.phoneFallback")}</Text>
-        </Text>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <ScrollView contentContainerStyle={s.container} keyboardShouldPersistTaps="handled">
+          <TouchableOpacity onPress={() => router.back()} style={s.back}>
+            <Text style={s.backText}>{t("auth.otp.back")}</Text>
+          </TouchableOpacity>
+          <View style={s.iconCircle}>
+            <Text style={s.iconEmoji}>📱</Text>
+          </View>
+          <Text style={s.title}>{t("auth.otp.title")}</Text>
+          <Text style={s.subtitle}>
+            {t("auth.otp.subtitlePrefix")}{"\n"}
+            <Text style={s.phone}>{phone || t("auth.otp.phoneFallback")}</Text>
+          </Text>
 
-        <View style={s.otpRow}>
-          {otp.map((digit, i) => (
-            <TextInput key={i} ref={ref => { if (ref) inputs.current[i] = ref; }}
-              style={[s.otpBox, digit && s.otpBoxFilled]}
-              value={digit} onChangeText={val => handleChange(val.slice(-1), i)}
-              keyboardType="numeric" maxLength={1} textAlign="center" />
-          ))}
-        </View>
-        <TouchableOpacity style={[s.btn, loading && s.btnDisabled]} onPress={handleVerify} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>{t("auth.otp.verify")}</Text>}
-        </TouchableOpacity>
-        <View style={s.resendRow}>
-          <Text style={s.resendText}>{t("auth.otp.resendText")}</Text>
-          {resendTimer > 0
-            ? <Text style={s.resendTimer}>{t("auth.otp.resendTimer", { sec: resendTimer })}</Text>
-            : <TouchableOpacity onPress={() => setResendTimer(30)}>
-                <Text style={s.resendLink}>{t("auth.otp.resendLink")}</Text>
-              </TouchableOpacity>
-          }
-        </View>
-      </View>
+          <View style={s.otpRow}>
+            {otp.map((digit, i) => (
+              <TextInput key={i} ref={ref => { if (ref) inputs.current[i] = ref; }}
+                style={[s.otpBox, digit && s.otpBoxFilled]}
+                value={digit} onChangeText={val => handleChange(val.slice(-1), i)}
+                keyboardType="numeric" maxLength={1} textAlign="center" />
+            ))}
+          </View>
+          <TouchableOpacity style={[s.btn, loading && s.btnDisabled]} onPress={handleVerify} disabled={loading}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.btnText}>{t("auth.otp.verify")}</Text>}
+          </TouchableOpacity>
+          <View style={s.resendRow}>
+            <Text style={s.resendText}>{t("auth.otp.resendText")}</Text>
+            {resendTimer > 0
+              ? <Text style={s.resendTimer}>{t("auth.otp.resendTimer", { sec: resendTimer })}</Text>
+              : <TouchableOpacity onPress={() => setResendTimer(30)}>
+                  <Text style={s.resendLink}>{t("auth.otp.resendLink")}</Text>
+                </TouchableOpacity>
+            }
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 const s = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FAFAFA" },
-  container: { flex: 1, paddingHorizontal: 24, paddingTop: 36 },
+  container: { flexGrow: 1, paddingHorizontal: 24, paddingTop: 36 },
   back: { marginBottom: 32 },
   backText: { color: "#FF6B2B", fontSize: 15, fontWeight: "600" },
   iconCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: "#FFF0EC", alignItems: "center", justifyContent: "center", alignSelf: "center", marginBottom: 24, borderWidth: 1, borderColor: "#FFD9C9" },

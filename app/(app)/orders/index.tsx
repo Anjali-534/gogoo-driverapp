@@ -93,8 +93,57 @@ function getStatusColor(status: string): string {
 
 const SPEECH_LOCALE: Record<LanguageCode, string> = { en: "en-IN", hi: "hi-IN", or: "or-IN" };
 
+// ── TTS voice consistency ───────────────────────────────────────────────
+// language/rate/pitch are fully controllable and pinned below, but the
+// actual voice/accent otherwise falls back to whatever the device's
+// default TTS engine picks — which varies by manufacturer. Google's
+// engine tends to be more consistently available and higher quality than
+// OEM alternatives, so when a Google voice for the needed language is
+// present in the device's own installed voice list, we pin its
+// identifier explicitly. Note this can only choose among voices the
+// device already exposes — getAvailableVoicesAsync() reflects whichever
+// TTS engine is currently the OS default, so it can't force-switch the
+// engine itself, only prefer a Google voice if one is already listed.
+// If no match is found for a language, `voice` is left undefined and
+// Speech.speak() behaves exactly as before (OS default).
+let preferredVoicesPromise: Promise<Partial<Record<string, string>>> | null = null;
+
+function loadPreferredVoices(): Promise<Partial<Record<string, string>>> {
+  if (!preferredVoicesPromise) {
+    preferredVoicesPromise = Speech.getAvailableVoicesAsync()
+      .then(voices => {
+        const picked: Partial<Record<string, string>> = {};
+        for (const locale of Object.values(SPEECH_LOCALE)) {
+          const matches = voices.filter(v => v.language?.toLowerCase().replace("_", "-") === locale.toLowerCase());
+          const google  = matches.find(v => /google/i.test(v.identifier) || /google/i.test(v.name || ""));
+          const chosen  = google || matches[0];
+          if (chosen) picked[locale] = chosen.identifier;
+        }
+        // Temporary debug log — confirms real on-device voice availability,
+        // in particular the or-IN flag noted as unverified in
+        // locales/REVIEW.md:109-112.
+        console.log("[VOICE/tmp] available", voices.map(v => `${v.identifier} (${v.language})`));
+        console.log("[VOICE/tmp] picked", picked);
+        return picked;
+      })
+      .catch(() => ({}));
+  }
+  return preferredVoicesPromise;
+}
+// Kick off the (cached) lookup at module load rather than waiting for the
+// first speak() call, so the cache is warm by the time a ride status
+// first triggers voice nav.
+loadPreferredVoices();
+
 function speak(msg: string) {
-  try { Speech.speak(msg, { language: SPEECH_LOCALE[getCurrentLanguage()] || "en-IN", rate: 0.9 }); } catch {}
+  const language = SPEECH_LOCALE[getCurrentLanguage()] || "en-IN";
+  loadPreferredVoices()
+    .then(voices => {
+      try { Speech.speak(msg, { language, pitch: 1.0, rate: 0.9, voice: voices[language] }); } catch {}
+    })
+    .catch(() => {
+      try { Speech.speak(msg, { language, pitch: 1.0, rate: 0.9 }); } catch {}
+    });
 }
 
 // ── Vehicle marker ─────────────────────────────────────────────────────────
