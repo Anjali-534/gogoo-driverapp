@@ -56,6 +56,9 @@ module.exports = ({ config }) => ({
     "./plugins/withDisableAndroidBackup.js",
     "expo-secure-store",
     "@react-native-google-signin/google-signin",
+    // TEMPORARY DEBUG: remove once the Google Sign-In SHA-1 mismatch
+    // investigation is closed (see app/(auth)/login.tsx onLongPress).
+    "./plugins/withSigningCertModule.js",
     // expo-audio (ride-request ringtone + first-launch mic permission).
     // Keeps the same NSMicrophoneUsageDescription string already used below.
     [
