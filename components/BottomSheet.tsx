@@ -22,13 +22,23 @@ interface Props {
   children: React.ReactNode;
   onExpandChange?: (expanded: boolean) => void;
   onSnapChange?: (snap: SnapState) => void;
+  // When EXPANDED, the caller's own scrollable content (if any) owns
+  // vertical drags except right at its own top edge. Wire this ref to
+  // that ScrollView's onScroll (contentOffset.y) so the sheet knows
+  // whether it's safe to take a downward drag as "collapse" instead of
+  // "scroll". Omit it for sheets with no scrollable content inside —
+  // the whole card is then draggable in every snap state.
+  scrollOffsetRef?: React.MutableRefObject<number>;
 }
 
 const BottomSheet = forwardRef<BottomSheetHandle, Props>(
-  ({ children, onExpandChange, onSnapChange }, ref) => {
+  ({ children, onExpandChange, onSnapChange, scrollOffsetRef }, ref) => {
     const sheetY      = useRef(new Animated.Value(SHEET_OFFSET)).current;
     const panStartRef = useRef(0);
     const currentYRef = useRef(SHEET_OFFSET);
+    // Read synchronously inside PanResponder callbacks — those fire outside
+    // React's render cycle, so a prop/state value here would lag by a frame.
+    const currentSnapRef = useRef<SnapState>("COLLAPSED");
 
     const snapTo = (target: number, snap: SnapState, velocity = 0) => {
       Animated.spring(sheetY, {
@@ -39,6 +49,7 @@ const BottomSheet = forwardRef<BottomSheetHandle, Props>(
         friction: 12,
       }).start();
       currentYRef.current = target;
+      currentSnapRef.current = snap;
       onExpandChange?.(snap === "EXPANDED");
       onSnapChange?.(snap);
     };
@@ -50,6 +61,7 @@ const BottomSheet = forwardRef<BottomSheetHandle, Props>(
     const reset = () => {
       sheetY.setValue(SHEET_OFFSET);
       currentYRef.current = SHEET_OFFSET;
+      currentSnapRef.current = "COLLAPSED";
       onExpandChange?.(false);
       onSnapChange?.("COLLAPSED");
     };
@@ -58,9 +70,40 @@ const BottomSheet = forwardRef<BottomSheetHandle, Props>(
 
     const pan = useRef(
       PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder:  (_, gs) => Math.abs(gs.dy) > 4,
-        onPanResponderGrant: () => { panStartRef.current = currentYRef.current; },
+        // Never claim on touch-down — a tap on any button in the sheet
+        // (call, chat, advance-status, cancel, collapse) must resolve as a
+        // press, not get swallowed by the drag gesture.
+        onStartShouldSetPanResponder: () => {
+          console.log("[SHEET_PAN/tmp] onStartShouldSetPanResponder -> false (always)");
+          return false;
+        },
+        onMoveShouldSetPanResponder: (_, gs) => {
+          const verticalEnough = Math.abs(gs.dy) > 8 && Math.abs(gs.dy) > Math.abs(gs.dx) * 1.5;
+          const snap = currentSnapRef.current;
+          const offset = scrollOffsetRef?.current ?? 0;
+          let claim: boolean;
+          let reason: string;
+          if (!verticalEnough) {
+            claim = false;
+            reason = "not vertical enough";
+          } else if (snap !== "EXPANDED") {
+            claim = true;
+            reason = "not expanded -> whole card draggable";
+          } else {
+            const atTop = offset <= 0;
+            claim = atTop && gs.dy > 0;
+            reason = `expanded: atTop=${atTop}, draggingDown=${gs.dy > 0}`;
+          }
+          console.log(
+            "[SHEET_PAN/tmp] onMoveShouldSetPanResponder",
+            JSON.stringify({ dx: gs.dx, dy: gs.dy, snap, scrollOffset: offset, verticalEnough, claim, reason })
+          );
+          return claim;
+        },
+        onPanResponderGrant: () => {
+          console.log("[SHEET_PAN/tmp] onPanResponderGrant — gesture claimed, drag starting");
+          panStartRef.current = currentYRef.current;
+        },
         onPanResponderMove: (_, gs) => {
           const next = Math.max(0, Math.min(HIDDEN_OFFSET, panStartRef.current + gs.dy));
           sheetY.setValue(next);
@@ -82,8 +125,12 @@ const BottomSheet = forwardRef<BottomSheetHandle, Props>(
     ).current;
 
     return (
-      <Animated.View style={[sh.sheet, { height: FULL_HEIGHT, transform: [{ translateY: sheetY }] }]}>
-        <View {...pan.panHandlers} style={sh.handleWrap} hitSlop={{ top: 14, bottom: 14, left: 0, right: 0 }}>
+      <Animated.View
+        {...pan.panHandlers}
+        style={[sh.sheet, { height: FULL_HEIGHT, transform: [{ translateY: sheetY }] }]}
+        onLayout={e => console.log("[SHEET_PAN/tmp] outer Animated.View layout", JSON.stringify(e.nativeEvent.layout), "FULL_HEIGHT", FULL_HEIGHT)}
+      >
+        <View style={sh.handleWrap} hitSlop={{ top: 14, bottom: 14, left: 0, right: 0 }}>
           <View style={sh.handle} />
         </View>
         {children}

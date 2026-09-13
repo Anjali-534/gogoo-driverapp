@@ -214,6 +214,7 @@ export default function OrdersScreen() {
   const [otpLoading,     setOtpLoading]     = useState(false);
 
   const sheetRef = useRef<BottomSheetHandle>(null);
+  const sheetScrollOffsetRef = useRef(0);
 
   // ── Camera auto-follow driver GPS ──────────────────────────────────────
   useEffect(() => {
@@ -731,7 +732,7 @@ export default function OrdersScreen() {
         />
 
         {/* ── BOTTOM SHEET ─────────────────────────────────── */}
-        <BottomSheet ref={sheetRef} onExpandChange={setSheetExpanded} onSnapChange={setSheetSnap}>
+        <BottomSheet ref={sheetRef} onExpandChange={setSheetExpanded} onSnapChange={setSheetSnap} scrollOffsetRef={sheetScrollOffsetRef}>
           {/* Peek content */}
           <View style={s.peekContent}>
             <View style={s.riderRow}>
@@ -813,7 +814,13 @@ export default function OrdersScreen() {
           </View>
 
           {/* Expanded content */}
-          <ScrollView style={s.expandedContent} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={s.expandedContent}
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            scrollEventThrottle={16}
+            onScroll={e => { sheetScrollOffsetRef.current = e.nativeEvent.contentOffset.y; }}
+          >
             <View style={s.routeCard}>
               <Text style={s.routeCardTitle}>{t("orders.sheet.routeTitle")}</Text>
               <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.success}]} /><Text style={s.routeAddr} numberOfLines={2}>{activeBooking.pickup?.address||t("common.pickupFallback")}</Text></View>

@@ -314,7 +314,7 @@ export default function DriverRegisterScreen() {
         {STEPS.map((_, i) => <View key={i} style={[s.progressSeg, i <= step && { backgroundColor: accentColor }]} />)}
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : "height"}>
       <ScrollView style={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
         <View style={s.content}>
 
