@@ -69,6 +69,7 @@ export default function DriverOTPScreen() {
               <TextInput key={i} ref={ref => { if (ref) inputs.current[i] = ref; }}
                 style={[s.otpBox, digit && s.otpBoxFilled]}
                 value={digit} onChangeText={val => handleChange(val.slice(-1), i)}
+                cursorColor="#111" selectionColor="#111"
                 keyboardType="numeric" maxLength={1} textAlign="center" />
             ))}
           </View>

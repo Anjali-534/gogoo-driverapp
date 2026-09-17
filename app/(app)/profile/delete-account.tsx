@@ -106,6 +106,8 @@ export default function DeleteAccountScreen() {
                       onChangeText={setPassword}
                       placeholder={t("profile.deleteAccount.passwordPlaceholder")}
                       placeholderTextColor={COLORS.textMuted}
+                      cursorColor={COLORS.textPrimary}
+                      selectionColor={COLORS.textPrimary}
                       secureTextEntry={!showPassword}
                     />
                     <TouchableOpacity onPress={() => setShowPassword(v => !v)} style={s.eyeBtn}>
@@ -148,6 +150,8 @@ export default function DeleteAccountScreen() {
                     onChangeText={setConfirmText}
                     placeholder="DELETE"
                     placeholderTextColor={COLORS.textMuted}
+                    cursorColor={COLORS.textPrimary}
+                    selectionColor={COLORS.textPrimary}
                     autoCapitalize="characters"
                     autoCorrect={false}
                   />

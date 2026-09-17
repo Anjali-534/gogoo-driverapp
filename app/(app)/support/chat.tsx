@@ -206,6 +206,8 @@ export default function DriverSupportChatScreen() {
               style={s.input}
               placeholder={t("support.typeMessage")}
               placeholderTextColor={COLORS.textMuted}
+              cursorColor={COLORS.textPrimary}
+              selectionColor={COLORS.textPrimary}
               value={input}
               onChangeText={setInput}
               multiline

@@ -102,6 +102,8 @@ export default function NewDriverSupportChatScreen() {
             style={s.messageInput}
             placeholder={t("support.messagePlaceholder")}
             placeholderTextColor={COLORS.textMuted}
+            cursorColor={COLORS.textPrimary}
+            selectionColor={COLORS.textPrimary}
             value={message}
             onChangeText={setMessage}
             multiline

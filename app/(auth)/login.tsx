@@ -179,6 +179,7 @@ export default function DriverLoginScreen() {
           <Text style={s.label}>{t("auth.login.emailLabel")}</Text>
           <TextInput style={s.input} value={email} onChangeText={setEmail}
             placeholder={t("auth.login.emailPlaceholder")} placeholderTextColor="#AEAEAE"
+            cursorColor="#111" selectionColor="#111"
             keyboardType="email-address" autoCapitalize="none" />
           <Text style={[s.label, { marginTop: 12 }]}>{t("auth.login.passwordLabel")}</Text>
           <View style={s.passwordRow}>
@@ -188,6 +189,8 @@ export default function DriverLoginScreen() {
               onChangeText={setPassword}
               placeholder={t("auth.login.passwordPlaceholder")}
               placeholderTextColor="#AEAEAE"
+              cursorColor="#111"
+              selectionColor="#111"
               secureTextEntry={!showPassword}
             />
             <TouchableOpacity onPress={() => setShowPassword(v => !v)} style={s.eyeBtn}>

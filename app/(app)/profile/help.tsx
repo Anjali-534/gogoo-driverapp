@@ -117,6 +117,8 @@ export default function HelpScreen() {
             onChangeText={setContactName}
             placeholder={t("profile.help.namePlaceholder")}
             placeholderTextColor="#AAA"
+            cursorColor={COLORS.textPrimary}
+            selectionColor={COLORS.textPrimary}
           />
           <Text style={[s.contactLabel, { marginTop: 12 }]}>{t("profile.help.phoneLabel")}</Text>
           <TextInput
@@ -125,6 +127,8 @@ export default function HelpScreen() {
             onChangeText={setContactPhone}
             placeholder={t("profile.help.phonePlaceholder")}
             placeholderTextColor="#AAA"
+            cursorColor={COLORS.textPrimary}
+            selectionColor={COLORS.textPrimary}
             keyboardType="phone-pad"
             maxLength={10}
           />

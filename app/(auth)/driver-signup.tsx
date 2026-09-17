@@ -67,7 +67,7 @@ export default function DriverSignupScreen() {
             ].map(f => (
               <View key={f.label}>
                 <Text style={s.label}>{f.label}</Text>
-                <TextInput style={s.input} placeholderTextColor="#AEAEAE" {...(f as any)} />
+                <TextInput style={s.input} placeholderTextColor="#AEAEAE" cursorColor="#111" selectionColor="#111" {...(f as any)} />
               </View>
             ))}
             <View>
@@ -79,6 +79,8 @@ export default function DriverSignupScreen() {
                   onChangeText={setPassword}
                   placeholder={t("auth.signup.passwordPlaceholder")}
                   placeholderTextColor="#AEAEAE"
+                  cursorColor="#111"
+                  selectionColor="#111"
                   secureTextEntry={!showPassword}
                 />
                 <TouchableOpacity onPress={() => setShowPassword(v => !v)} style={s.eyeBtn}>
@@ -89,6 +91,7 @@ export default function DriverSignupScreen() {
             <View>
               <Text style={s.label}>{t("auth.signup.referralLabel")}</Text>
               <TextInput style={s.input} placeholderTextColor="#AEAEAE" value={referralCode}
+                cursorColor="#111" selectionColor="#111"
                 onChangeText={val => { setReferralCode(val); setReferralCheck(null); }}
                 onBlur={checkReferralCode}
                 placeholder={t("auth.signup.referralPlaceholder")} autoCapitalize="characters" />

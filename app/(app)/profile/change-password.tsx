@@ -76,6 +76,8 @@ export default function ChangePasswordScreen() {
                   onChangeText={setCurrentPassword}
                   placeholder={t("profile.changePassword.currentPasswordPlaceholder")}
                   placeholderTextColor={COLORS.textMuted}
+                  cursorColor={COLORS.textPrimary}
+                  selectionColor={COLORS.textPrimary}
                   secureTextEntry={!showCurrent}
                 />
                 <TouchableOpacity onPress={() => setShowCurrent(v => !v)} style={s.eyeBtn}>
@@ -93,6 +95,8 @@ export default function ChangePasswordScreen() {
                   onChangeText={setNewPassword}
                   placeholder={t("profile.changePassword.newPasswordPlaceholder")}
                   placeholderTextColor={COLORS.textMuted}
+                  cursorColor={COLORS.textPrimary}
+                  selectionColor={COLORS.textPrimary}
                   secureTextEntry={!showNew}
                 />
                 <TouchableOpacity onPress={() => setShowNew(v => !v)} style={s.eyeBtn}>
@@ -111,6 +115,8 @@ export default function ChangePasswordScreen() {
                   onChangeText={setConfirmPassword}
                   placeholder={t("profile.changePassword.confirmPasswordPlaceholder")}
                   placeholderTextColor={COLORS.textMuted}
+                  cursorColor={COLORS.textPrimary}
+                  selectionColor={COLORS.textPrimary}
                   secureTextEntry={!showConfirm}
                 />
                 <TouchableOpacity onPress={() => setShowConfirm(v => !v)} style={s.eyeBtn}>

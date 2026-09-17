@@ -106,6 +106,8 @@ export default function EditProfileScreen() {
               onChangeText={setHomeAddress}
               placeholder={t("profile.edit.homeAddressPlaceholder")}
               placeholderTextColor={COLORS.textMuted}
+              cursorColor={COLORS.textPrimary}
+              selectionColor={COLORS.textPrimary}
               multiline
             />
           </View>

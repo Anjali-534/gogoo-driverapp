@@ -384,14 +384,14 @@ export default function DriverRegisterScreen() {
                   <View style={{ marginBottom: 10 }}>
                     <Text style={s.label}>{doc.numberLabel?.toUpperCase()}</Text>
                     <TextInput style={s.input} value={docNumbers[doc.id] || ""} onChangeText={val => setDocNumber(doc.id, val)}
-                      placeholder={doc.numberPlaceholder} placeholderTextColor="#AEAEAE" autoCapitalize="characters" />
+                      placeholder={doc.numberPlaceholder} placeholderTextColor="#AEAEAE" cursorColor="#111" selectionColor="#111" autoCapitalize="characters" />
                   </View>
                 )}
                 {doc.hasExpiry && (
                   <View style={{ marginBottom: 10 }}>
                     <Text style={s.label}>{doc.expiryLabel?.toUpperCase() || tr("documents.expiryDateLabel")}</Text>
                     <TextInput style={s.input} value={docExpiries[doc.id] || ""} onChangeText={val => setDocExpiry(doc.id, val)}
-                      placeholder={tr("documents.expiryPh")} placeholderTextColor="#AEAEAE" keyboardType="numeric" />
+                      placeholder={tr("documents.expiryPh")} placeholderTextColor="#AEAEAE" cursorColor="#111" selectionColor="#111" keyboardType="numeric" />
                   </View>
                 )}
                 <View style={s.uploadRow}>
@@ -476,7 +476,7 @@ function F({ label, ...props }: { label: string; [key: string]: any }) {
   return (
     <View style={{ marginBottom: 14 }}>
       <Text style={s.label}>{label}</Text>
-      <TextInput style={s.input} placeholderTextColor="#AEAEAE" {...props} />
+      <TextInput style={s.input} placeholderTextColor="#AEAEAE" cursorColor="#111" selectionColor="#111" {...props} />
     </View>
   );
 }

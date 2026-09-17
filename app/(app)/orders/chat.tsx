@@ -131,6 +131,8 @@ export default function DriverRideChatScreen() {
                 onChangeText={setInput}
                 placeholder={t("orders.chat.inputPlaceholder")}
                 placeholderTextColor={COLORS.textMuted}
+                cursorColor={COLORS.textPrimary}
+                selectionColor={COLORS.textPrimary}
                 multiline
               />
               <TouchableOpacity

@@ -469,6 +469,8 @@ export default function LedgerScreen() {
                 style={s.amountInput}
                 placeholder={t("profile.ledger.addMoneyAmountPlaceholder")}
                 placeholderTextColor={COLORS.textMuted}
+                cursorColor={COLORS.textPrimary}
+                selectionColor={COLORS.textPrimary}
                 keyboardType="number-pad"
                 value={addAmount}
                 onChangeText={setAddAmount}
@@ -509,6 +511,8 @@ export default function LedgerScreen() {
                 style={s.amountInput}
                 placeholder={t("profile.ledger.withdrawAmountPlaceholder")}
                 placeholderTextColor={COLORS.textMuted}
+                cursorColor={COLORS.textPrimary}
+                selectionColor={COLORS.textPrimary}
                 keyboardType="number-pad"
                 value={withdrawAmount}
                 onChangeText={setWithdrawAmount}
