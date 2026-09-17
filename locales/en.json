@@ -592,6 +592,8 @@
       "batteryTooLowMsg": "Your battery is below 15%. Please charge your phone to accept rides. Riders depend on your phone staying alive during the trip!",
       "cannotAcceptTitle": "Cannot Accept",
       "cannotAcceptMsg": "Could not accept booking",
+      "alreadyAcceptedByYou": "You already accepted this ride.",
+      "acceptedRefreshFailed": "Ride accepted — refreshing details. Pull to retry if it doesn't appear.",
       "updateStatusError": "Could not update status",
       "alreadyCompleted": "This trip is already marked complete.",
       "cancelRideTitle": "Cancel Ride",

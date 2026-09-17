@@ -2,6 +2,7 @@
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
   ActivityIndicator, Alert, Platform, Linking, Image, Modal, TextInput, Dimensions,
+  RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -187,6 +188,17 @@ export default function OrdersScreen() {
   const spoken500Ref      = useRef(false);
   const spoken100Ref      = useRef(false);
   const isMounted         = useRef(true);
+  // Bumped whenever the active booking is invalidated from outside the GPS
+  // push loop (e.g. cancelRide succeeding). startGpsPush captures the
+  // generation at the moment each interval tick's request is issued;
+  // clearInterval only stops FUTURE ticks, so a tick's request that was
+  // already in flight when the booking was cancelled would otherwise land
+  // late and silently resurrect the just-cancelled booking in state.
+  const bookingGenerationRef = useRef(0);
+  // Set when an accept's POST succeeds but the enrichment GET can't
+  // confirm details (see acceptBooking) — lets pull-to-refresh finish the
+  // job without re-hitting accept.
+  const pendingAcceptedBookingIdRef = useRef<string | null>(null);
 
   const [ready,          setReady]          = useState(false);
   const [myLat,          setMyLat]          = useState(0);
@@ -199,6 +211,7 @@ export default function OrdersScreen() {
   const [accepting,      setAccepting]      = useState<string | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [cancelling,     setCancelling]     = useState(false);
+  const [refreshing,     setRefreshing]     = useState(false);
   const [view,           setView]           = useState<"list"|"map">("list");
   const [routeCoords,    setRouteCoords]    = useState<{ latitude: number; longitude: number }[]>([]);
   const [routeDistText,  setRouteDistText]  = useState("");
@@ -403,6 +416,29 @@ export default function OrdersScreen() {
     }
   };
 
+  // ── Pull to refresh — also the recovery path when an accept's own
+  // enrichment GET failed (see acceptBooking): the accept already
+  // succeeded server-side, so this just re-fetches the ride details
+  // instead of re-hitting accept.
+  const handlePullRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const bookingId = pendingAcceptedBookingIdRef.current;
+      if (bookingId && !activeBooking) {
+        try {
+          const res = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
+          pendingAcceptedBookingIdRef.current = null;
+          enterActiveBooking(res.data, bookingId);
+        } catch {
+          // Still unavailable — leave the ref set so the next pull retries.
+        }
+      }
+      await fetchPending();
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   // ── Completion trigger ─────────────────────────────────────────────────
   const rideStartTimeRef = useRef<string | null>(null);
 
@@ -439,6 +475,11 @@ export default function OrdersScreen() {
   // ── GPS push + active booking refresh + auto-complete + voice prox ─────
   const startGpsPush = (bookingId: string) => {
     if (gpsRef.current) clearInterval(gpsRef.current);
+    // Captured once per push session — see bookingGenerationRef above.
+    // clearInterval (e.g. from cancelRide) only stops ticks that haven't
+    // started yet, so a tick whose api.get was already in flight when the
+    // generation was bumped checks this before touching state.
+    const myGeneration = ++bookingGenerationRef.current;
     gpsRef.current = setInterval(async () => {
       const { token, driverId } = authRef.current;
       const { lat, lng, heading, speedKmh } = myPosRef.current;
@@ -446,6 +487,7 @@ export default function OrdersScreen() {
       try {
         await api.post(`/gogoo/drivers/${driverId}/location`, { lat, lng, heading, speed: speedKmh });
         const res = await api.get(`/gogoo/bookings/${bookingId}`);
+        if (bookingGenerationRef.current !== myGeneration) return;
         setActiveBooking(res.data);
 
         // Proximity voice alerts
@@ -503,36 +545,80 @@ export default function OrdersScreen() {
   };
 
   // ── Accept ─────────────────────────────────────────────────────────────
-  const acceptBooking = async (bookingId: string) => {
-    const tooLow = await isBatteryTooLow();
-    if (tooLow) {
-      Alert.alert(
-        t("orders.alerts.batteryTooLowTitle"),
-        t("orders.alerts.batteryTooLowMsg"),
-        [{ text: t("common.ok") }]
-      );
-      return;
-    }
+  const enterActiveBooking = (booking: any, bookingId: string) => {
+    setActiveBooking(booking);
+    lastRouteKeyRef.current = "";
+    setRouteCoords([]);
+    setRouteDistText("");
+    setRouteDurText("");
+    startGpsPush(bookingId);
+    setView("map");
+    // Reset sheet to peek when entering map
+    sheetRef.current?.reset();
+  };
 
+  const acceptBooking = async (bookingId: string) => {
+    // Disabled BEFORE the battery check, not after — isBatteryTooLow awaits
+    // two native bridge calls with no visual feedback in between, and a tap
+    // landing in that window used to fire a second, fully independent
+    // accept request for the same booking.
     setAccepting(bookingId);
     try {
-      const acceptRes = await api.post(`/gogoo/bookings/${bookingId}/accept`, {});
+      const tooLow = await isBatteryTooLow();
+      if (tooLow) {
+        Alert.alert(
+          t("orders.alerts.batteryTooLowTitle"),
+          t("orders.alerts.batteryTooLowMsg"),
+          [{ text: t("common.ok") }]
+        );
+        return;
+      }
+
+      let acceptRes;
+      try {
+        acceptRes = await api.post(`/gogoo/bookings/${bookingId}/accept`, {}, { timeout: 8000 });
+      } catch (e: any) {
+        // Safety net for the rare residual double-fire: a 409 here means
+        // someone already holds this booking — could be genuinely another
+        // driver, or our own earlier tap that actually won. Only the rider
+        // or the assigned driver may view a booking, so a quick GET tells
+        // them apart without guessing from the error string.
+        if (e.response?.status === 409) {
+          try {
+            const check = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
+            enterActiveBooking(check.data, bookingId);
+            Alert.alert(t("common.notice"), t("orders.alerts.alreadyAcceptedByYou"));
+            return;
+          } catch {
+            // Genuinely someone else's ride — fall through to the normal error below.
+          }
+        }
+        Alert.alert(t("orders.alerts.cannotAcceptTitle"), e.response?.data?.error || t("orders.alerts.cannotAcceptMsg"));
+        return;
+      }
+
       if (acceptRes.data?.driver_id) {
         authRef.current.driverId = acceptRes.data.driver_id;
         await AsyncStorage.setItem("driver_id", acceptRes.data.driver_id);
       }
-      const res = await api.get(`/gogoo/bookings/${bookingId}`);
-      setActiveBooking(res.data);
-      lastRouteKeyRef.current = "";
-      setRouteCoords([]);
-      setRouteDistText("");
-      setRouteDurText("");
-      startGpsPush(bookingId);
-      setView("map");
-      // Reset sheet to peek when entering map
-      sheetRef.current?.reset();
-    } catch (e: any) {
-      Alert.alert(t("orders.alerts.cannotAcceptTitle"), e.response?.data?.error || t("orders.alerts.cannotAcceptMsg"));
+
+      // The accept itself has now genuinely succeeded — from here on, a
+      // failure only means we couldn't fetch the ride's details yet, never
+      // that the accept didn't happen. Never show "couldn't accept" past
+      // this point.
+      let bookingRes;
+      try {
+        bookingRes = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
+      } catch {
+        try {
+          bookingRes = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 }); // one retry
+        } catch {
+          pendingAcceptedBookingIdRef.current = bookingId;
+          Alert.alert(t("common.notice"), t("orders.alerts.acceptedRefreshFailed"));
+          return;
+        }
+      }
+      enterActiveBooking(bookingRes.data, bookingId);
     } finally {
       setAccepting(null);
     }
@@ -591,6 +677,11 @@ export default function OrdersScreen() {
               status: "cancelled", cancelled_by: "driver", cancel_reason: "Cancelled by driver",
             });
             if (gpsRef.current) { clearInterval(gpsRef.current); gpsRef.current = null; }
+            // Invalidates any GPS-push tick whose api.get was already in
+            // flight before this cancel landed — otherwise its stale
+            // response could resolve after this and resurrect the booking
+            // we just cancelled (see startGpsPush).
+            bookingGenerationRef.current++;
             setActiveBooking(null);
             setView("list");
             setRouteCoords([]);
@@ -978,7 +1069,13 @@ export default function OrdersScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handlePullRefresh} colors={[COLORS.primary]} tintColor={COLORS.primary} />
+        }
+      >
 
         {/* ── Turn on location banner ──────────────────────── */}
         {ready && !myLat && !activeBooking && (
