@@ -16,7 +16,7 @@ import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/services/api";
 import { getToken } from "@/services/session";
 import { useTranslation } from "react-i18next";
-import { trackOTPVerified, trackOTPFailed, trackRideCompleted } from "@/services/analytics";
+import { trackOTPVerified, trackOTPFailed, trackRideCompleted, trackDriverError } from "@/services/analytics";
 import { isBatteryTooLow } from "@/services/battery";
 import { olaDirections, decodePolyline as olaDecodePolyline, logMapsProvider } from "@/services/olamaps";
 import { COLORS, RADIUS } from "@/constants/theme";
@@ -547,7 +547,7 @@ export default function OrdersScreen() {
     if (!activeBooking) return;
     setUpdatingStatus(true);
     try {
-      await api.patch(`/gogoo/bookings/${activeBooking?.id}/status`, { status });
+      await api.patch(`/gogoo/bookings/${activeBooking?.id}/status`, { status }, { timeout: 8000 });
       if (status === "completed") {
         try {
           const finalRes = await api.get(`/gogoo/bookings/${activeBooking?.id}`);
@@ -556,7 +556,24 @@ export default function OrdersScreen() {
       } else {
         setActiveBooking((prev: any) => prev ? { ...prev, status } : prev);
       }
-    } catch { Alert.alert(t("common.error"), t("orders.alerts.updateStatusError")); }
+    } catch (e: any) {
+      const errorCode = e.response?.data?.error;
+      if (errorCode === "already_completed") {
+        // The GPS-proximity auto-complete (or an earlier retry of this same
+        // tap) already landed this exact completion server-side — the path
+        // that won the race already transitions the screen, so this is an
+        // expected, harmless outcome, not a real failure.
+        Alert.alert(t("common.notice"), t("orders.alerts.alreadyCompleted"));
+      } else {
+        trackDriverError({
+          error: e.response
+            ? `status=${e.response.status} ${errorCode || e.response.data?.message || ""}`.trim()
+            : String(e?.message || e),
+          screen: "orders_update_status",
+        });
+        Alert.alert(t("common.error"), e.response?.data?.message || errorCode || t("orders.alerts.updateStatusError"));
+      }
+    }
     finally { if (isMounted.current) setUpdatingStatus(false); }
   };
 

@@ -1,6 +1,7 @@
 {
   "common": {
     "error": "Error",
+    "notice": "Notice",
     "ok": "OK",
     "cancel": "Cancel",
     "delete": "Delete",
@@ -592,6 +593,7 @@
       "cannotAcceptTitle": "Cannot Accept",
       "cannotAcceptMsg": "Could not accept booking",
       "updateStatusError": "Could not update status",
+      "alreadyCompleted": "This trip is already marked complete.",
       "cancelRideTitle": "Cancel Ride",
       "cancelRideMsg": "Are you sure you want to cancel this ride? Repeated cancellations may result in a temporary block.",
       "keepRide": "Keep Ride",
