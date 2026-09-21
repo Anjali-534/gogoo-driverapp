@@ -287,6 +287,26 @@
             "label": "वाहन फोटो"
           }
         },
+        "cab": {
+          "rc": {
+            "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",
+            "numberLabel": "RC नंबर",
+            "expiryLabel": "RC समाप्ति"
+          },
+          "insurance": {
+            "label": "बीमा प्रमाणपत्र",
+            "numberLabel": "बीमा पॉलिसी नंबर",
+            "expiryLabel": "बीमा समाप्ति"
+          },
+          "puc": {
+            "label": "प्रदूषण प्रमाणपत्र (PUC)",
+            "numberLabel": "PUC नंबर",
+            "expiryLabel": "PUC समाप्ति"
+          },
+          "vehicle_photo": {
+            "label": "वाहन फोटो"
+          }
+        },
         "truck_city": {
           "rc": {
             "label": "रजिस्ट्रेशन सर्टिफिकेट (RC)",

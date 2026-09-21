@@ -287,6 +287,26 @@
             "label": "ଗାଡ଼ି ଫଟୋ"
           }
         },
+        "cab": {
+          "rc": {
+            "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",
+            "numberLabel": "RC ନମ୍ବର",
+            "expiryLabel": "RC ସମାପ୍ତି"
+          },
+          "insurance": {
+            "label": "ବୀମା ପ୍ରମାଣପତ୍ର",
+            "numberLabel": "ବୀମା ପଲିସୀ ନମ୍ବର",
+            "expiryLabel": "ବୀମା ସମାପ୍ତି"
+          },
+          "puc": {
+            "label": "ପ୍ରଦୂଷଣ ପ୍ରମାଣପତ୍ର (PUC)",
+            "numberLabel": "PUC ନମ୍ବର",
+            "expiryLabel": "PUC ସମାପ୍ତି"
+          },
+          "vehicle_photo": {
+            "label": "ଗାଡ଼ି ଫଟୋ"
+          }
+        },
         "truck_city": {
           "rc": {
             "label": "ରେଜିଷ୍ଟ୍ରେସନ୍ ସାର୍ଟିଫିକେଟ୍ (RC)",

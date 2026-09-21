@@ -287,6 +287,26 @@
             "label": "Vehicle Photo"
           }
         },
+        "cab": {
+          "rc": {
+            "label": "Registration Certificate (RC)",
+            "numberLabel": "RC Number",
+            "expiryLabel": "RC Expiry"
+          },
+          "insurance": {
+            "label": "Insurance Certificate",
+            "numberLabel": "Insurance Policy No.",
+            "expiryLabel": "Insurance Expiry"
+          },
+          "puc": {
+            "label": "Pollution Certificate (PUC)",
+            "numberLabel": "PUC Number",
+            "expiryLabel": "PUC Expiry"
+          },
+          "vehicle_photo": {
+            "label": "Vehicle Photo"
+          }
+        },
         "truck_city": {
           "rc": {
             "label": "Registration Certificate (RC)",

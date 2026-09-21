@@ -12,6 +12,7 @@ import {
   trackDriverAppOpened,
   trackUsagePattern,
 } from "@/services/analytics";
+import { refreshTokenIfStale } from "@/services/api";
 
 export default function AppLayout() {
   const { t } = useTranslation();
@@ -29,6 +30,13 @@ export default function AppLayout() {
           await trackDriverAppOpened(driverId);
         }
       } catch {}
+      // Renew the token here if it's getting close to its 30-day expiry —
+      // this tab layout only mounts once already inside an authenticated
+      // session, so app launch (into the app, not the splash/login screens)
+      // is covered by this same call, no separate hook needed. See
+      // refreshTokenIfStale in services/api.ts for why this must happen
+      // proactively rather than only reacting to a 401.
+      refreshTokenIfStale().catch(() => {});
     };
     init();
 
@@ -42,6 +50,9 @@ export default function AppLayout() {
           await endDriverSession();
         }
       } catch {}
+      if (state === "active") {
+        refreshTokenIfStale().catch(() => {});
+      }
     });
 
     return () => sub.remove();

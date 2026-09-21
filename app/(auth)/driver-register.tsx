@@ -48,8 +48,21 @@ export default function DriverRegisterScreen() {
     two_wheeler: [
       { id: "rc",           label: tr("vehicleDocs.two_wheeler.rc.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.two_wheeler.rc.numberLabel"),            numberPlaceholder: "DL01AB1234567",    expiryLabel: tr("vehicleDocs.two_wheeler.rc.expiryLabel") },
       { id: "insurance",    label: tr("vehicleDocs.two_wheeler.insurance.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.two_wheeler.insurance.numberLabel"),  numberPlaceholder: "INS-XXXXXXXXXX",   expiryLabel: tr("vehicleDocs.two_wheeler.insurance.expiryLabel") },
-      { id: "puc",          label: tr("vehicleDocs.two_wheeler.puc.label"), required: false, hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.two_wheeler.puc.numberLabel"),            numberPlaceholder: "PUC-XXXXXXXXXX",   expiryLabel: tr("vehicleDocs.two_wheeler.puc.expiryLabel") },
+      // required:true — matches backend requiredDocs["two_wheeler"], which
+      // always requires puc (see documents.go); this was previously false,
+      // letting drivers skip a doc the backend gates verification on.
+      { id: "puc",          label: tr("vehicleDocs.two_wheeler.puc.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.two_wheeler.puc.numberLabel"),            numberPlaceholder: "PUC-XXXXXXXXXX",   expiryLabel: tr("vehicleDocs.two_wheeler.puc.expiryLabel") },
       { id: "vehicle_photo",label: tr("vehicleDocs.two_wheeler.vehicle_photo.label"), required: true,  hasNumber: false, hasExpiry: false },
+    ],
+    // cab_3w/cab_4w/cab_4w_suv previously had no docKey mapping at all (see
+    // below), so drivers registering with those vehicle types were never
+    // shown any vehicle-specific doc fields. Matches backend
+    // requiredDocs["cab"] (documents.go) exactly.
+    cab: [
+      { id: "rc",           label: tr("vehicleDocs.cab.rc.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.cab.rc.numberLabel"),            numberPlaceholder: "DL01AB1234567",    expiryLabel: tr("vehicleDocs.cab.rc.expiryLabel") },
+      { id: "insurance",    label: tr("vehicleDocs.cab.insurance.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.cab.insurance.numberLabel"),  numberPlaceholder: "INS-XXXXXXXXXX",   expiryLabel: tr("vehicleDocs.cab.insurance.expiryLabel") },
+      { id: "puc",          label: tr("vehicleDocs.cab.puc.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.cab.puc.numberLabel"),            numberPlaceholder: "PUC-XXXXXXXXXX",   expiryLabel: tr("vehicleDocs.cab.puc.expiryLabel") },
+      { id: "vehicle_photo",label: tr("vehicleDocs.cab.vehicle_photo.label"), required: true,  hasNumber: false, hasExpiry: false },
     ],
     truck_city: [
       { id: "rc",           label: tr("vehicleDocs.truck_city.rc.label"), required: true,  hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.truck_city.rc.numberLabel"),            numberPlaceholder: "DL01AB1234567",    expiryLabel: tr("vehicleDocs.truck_city.rc.expiryLabel") },
@@ -70,7 +83,11 @@ export default function DriverRegisterScreen() {
     ],
     packers: [
       { id: "gst_cert",       label: tr("vehicleDocs.packers.gst_cert.label"),  required: true,  hasNumber: true, hasExpiry: false, numberLabel: tr("vehicleDocs.packers.gst_cert.numberLabel"),           numberPlaceholder: "22AAAAA0000A1Z5" },
-      { id: "goods_insurance",label: tr("vehicleDocs.packers.goods_insurance.label"), required: false, hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.packers.goods_insurance.numberLabel"), numberPlaceholder: "INS-XXXXXXXXXX",  expiryLabel: tr("vehicleDocs.packers.goods_insurance.expiryLabel") },
+      // required:true — matches backend requiredDocs["packers"], which
+      // always requires goods_insurance (see documents.go); this was
+      // previously false, letting drivers skip a doc the backend gates
+      // verification on.
+      { id: "goods_insurance",label: tr("vehicleDocs.packers.goods_insurance.label"), required: true, hasNumber: true, hasExpiry: true,  numberLabel: tr("vehicleDocs.packers.goods_insurance.numberLabel"), numberPlaceholder: "INS-XXXXXXXXXX",  expiryLabel: tr("vehicleDocs.packers.goods_insurance.expiryLabel") },
       { id: "vehicle_photo",  label: tr("vehicleDocs.packers.vehicle_photo.label"),   required: true,  hasNumber: false, hasExpiry: false },
     ],
     ambulance: [
@@ -146,7 +163,11 @@ export default function DriverRegisterScreen() {
     : vehicleTypeSlug.startsWith("truck_city") ? "truck_city"
     : vehicleTypeSlug.startsWith("truck_os") ? "truck_outstation"
     : vehicleTypeSlug.startsWith("ambulance") ? "ambulance"
-    : vehicleTypeSlug === "cab_2w" ? "two_wheeler"
+    // cab_2w/cab_3w/cab_4w/cab_4w_suv all map to the backend's "cab"
+    // category (see getVehicleCategory in documents.go) — cab_3w/4w/4w_suv
+    // previously fell through to null here, so those drivers were never
+    // shown rc/insurance/puc/vehicle_photo fields at registration at all.
+    : vehicleTypeSlug.startsWith("cab_") ? "cab"
     : null;
   const allDocs = [...COMMON_DOCS, ...(docKey ? VEHICLE_DOCS[docKey] || [] : [])];
   const setDocNumber = (id: string, val: string) => setDocNumbers(p => ({ ...p, [id]: val }));
