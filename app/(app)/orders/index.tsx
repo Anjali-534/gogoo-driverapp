@@ -1301,9 +1301,17 @@ export default function OrdersScreen() {
                     <View style={s.serviceBadge}><Text style={s.serviceText}>{order.service_name||t("common.bookingFallback")}</Text></View>
                     <Text style={s.orderFare}>{t("common.fareAmount", { amount: Math.round(order.estimated_fare||0) })}</Text>
                   </View>
-                  <Text style={[s.orderDist, secLeft <= 30 && { color: COLORS.danger }]}>
-                    {t("orders.card.expiresIn", { sec: secLeft })}
-                  </Text>
+                  {/* search_started_at is missing against an old backend that
+                      predates this feature — remainingSeconds then falls back
+                      to the full window so the card still counts as visible,
+                      but showing a countdown that would just sit frozen at
+                      180s forever is worse than showing none; the card still
+                      disappears correctly via the next poll either way. */}
+                  {order.search_started_at && (
+                    <Text style={[s.orderDist, secLeft <= 30 && { color: COLORS.danger }]}>
+                      {t("orders.card.expiresIn", { sec: secLeft })}
+                    </Text>
+                  )}
                   {dist !== null && <Text style={s.orderDist}>{t("orders.card.distanceFromYou", { dist: fmtDist(dist) })}</Text>}
                   <View style={s.orderRoute}>
                     <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.success}]} /><Text style={s.orderAddr} numberOfLines={2}>{order.pickup?.address||t("common.pickupFallback")}</Text></View>
