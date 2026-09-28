@@ -206,6 +206,14 @@ export default function OrdersScreen() {
   const [myHeading,      setMyHeading]      = useState(0);
   const [mySpeedKmh,     setMySpeedKmh]     = useState(0);
   const [pending,        setPending]        = useState<any[]>([]);
+  const [searchTimeoutSeconds, setSearchTimeoutSeconds] = useState(180);
+  const [nowTick,        setNowTick]        = useState(Date.now());
+  // Booking ids the driver dismissed with the Reject button this session —
+  // fetchPending re-filters against this on every poll, otherwise a
+  // rejected card silently reappears on the very next 4s tick since the
+  // server still returns it (rejecting is purely local, the booking is
+  // still genuinely searching for some other driver).
+  const dismissedIdsRef = useRef<Set<string>>(new Set());
   const [activeBooking,  setActiveBooking]  = useState<any>(null);
   const [loading,        setLoading]        = useState(false);
   const [accepting,      setAccepting]      = useState<string | null>(null);
@@ -328,6 +336,27 @@ export default function OrdersScreen() {
 
   useEffect(() => { activeBookingRef.current = activeBooking; }, [activeBooking]);
 
+  // Ticks the pending-request countdowns once a second — only while there's
+  // something to count down, so an idle driver screen isn't re-rendering
+  // for nothing.
+  useEffect(() => {
+    if (pending.length === 0) return;
+    const t = setInterval(() => setNowTick(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, [pending.length]);
+
+  // A request whose local countdown has hit zero disappears immediately
+  // rather than waiting for the next 4s poll to confirm the server also
+  // expired it — see requirement G. remainingSeconds falls back to the
+  // full window if search_started_at is somehow missing, never to 0, so a
+  // malformed response can't make every card vanish at once.
+  const remainingSeconds = useCallback((order: any) => {
+    const startedMs = order?.search_started_at ? new Date(order.search_started_at).getTime() : NaN;
+    if (Number.isNaN(startedMs)) return searchTimeoutSeconds;
+    return Math.max(0, Math.round(searchTimeoutSeconds - (nowTick - startedMs) / 1000));
+  }, [searchTimeoutSeconds, nowTick]);
+  const visiblePending = pending.filter(order => remainingSeconds(order) > 0);
+
   useFocusEffect(
     useCallback(() => {
       if (!readyRef.current || activeBookingRef.current) return;
@@ -407,7 +436,11 @@ export default function OrdersScreen() {
     try {
       setLoading(true);
       const res = await api.get(`/gogoo/bookings-pending`, { timeout: 8000 });
-      setPending(res.data?.bookings || []);
+      if (typeof res.data?.search_timeout_seconds === "number" && res.data.search_timeout_seconds > 0) {
+        setSearchTimeoutSeconds(res.data.search_timeout_seconds);
+      }
+      const list: any[] = res.data?.bookings || [];
+      setPending(list.filter(b => !dismissedIdsRef.current.has(b.id)));
     } catch (e: any) {
       // 401s are handled globally by the shared axios interceptor.
       if (e.response?.status === 401) setPending([]);
@@ -584,13 +617,29 @@ export default function OrdersScreen() {
         // or the assigned driver may view a booking, so a quick GET tells
         // them apart without guessing from the error string.
         if (e.response?.status === 409) {
+          // The sweeper (backend expiry.go) got there first — the rider has
+          // already been shown a no-driver-found screen, so this is an
+          // expected outcome, not a failure. Neutral notice, not an error.
+          if (e.response?.data?.error === "expired") {
+            dismissedIdsRef.current.add(bookingId);
+            setPending(p => p.filter(b => b.id !== bookingId));
+            Alert.alert(t("common.notice"), t("orders.alerts.requestExpired"));
+            fetchPending();
+            return;
+          }
           try {
             const check = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
             enterActiveBooking(check.data, bookingId);
             Alert.alert(t("common.notice"), t("orders.alerts.alreadyAcceptedByYou"));
             return;
           } catch {
-            // Genuinely someone else's ride — fall through to the normal error below.
+            // Genuinely someone else's ride — neutral notice (expected
+            // outcome in a live marketplace), not an error alert.
+            dismissedIdsRef.current.add(bookingId);
+            setPending(p => p.filter(b => b.id !== bookingId));
+            Alert.alert(t("common.notice"), t("orders.alerts.alreadyTakenByAnother"));
+            fetchPending();
+            return;
           }
         }
         Alert.alert(t("orders.alerts.cannotAcceptTitle"), e.response?.data?.error || t("orders.alerts.cannotAcceptMsg"));
@@ -625,6 +674,7 @@ export default function OrdersScreen() {
   };
 
   const rejectBooking = (bookingId: string) => {
+    dismissedIdsRef.current.add(bookingId);
     setPending(p => p.filter(b => b.id !== bookingId));
   };
 
@@ -1059,13 +1109,13 @@ export default function OrdersScreen() {
               {!ready
                 ? t("orders.subtitle.loading")
                 : activeBooking
-                  ? t("orders.subtitle.newRequestsWaiting", { count: pending.length })
+                  ? t("orders.subtitle.newRequestsWaiting", { count: visiblePending.length })
                   : myLat
-                    ? t("orders.subtitle.requestsNearYou", { count: pending.length })
+                    ? t("orders.subtitle.requestsNearYou", { count: visiblePending.length })
                     : t("orders.subtitle.enableLocation")}
             </Text>
           </View>
-          {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
+          {loading && !visiblePending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
         </View>
       </LinearGradient>
 
@@ -1202,18 +1252,18 @@ export default function OrdersScreen() {
           {activeBooking && (
             <View style={s.pendingHeader}>
               <Text style={s.pendingTitle}>{t("orders.pending.title")}</Text>
-              {pending.length > 0 && (
-                <View style={s.pendingBadge}><Text style={s.pendingBadgeTxt}>{pending.length}</Text></View>
+              {visiblePending.length > 0 && (
+                <View style={s.pendingBadge}><Text style={s.pendingBadgeTxt}>{visiblePending.length}</Text></View>
               )}
             </View>
           )}
 
-          {!ready || (loading && !pending.length) ? (
+          {!ready || (loading && !visiblePending.length) ? (
             <View style={s.emptyState}>
               <ActivityIndicator color={COLORS.primary} size="large" />
               <Text style={s.emptyTitle}>{t("orders.empty.looking")}</Text>
             </View>
-          ) : pending.length === 0 ? (
+          ) : visiblePending.length === 0 ? (
             activeBooking ? (
               <View style={s.emptyState}>
                 <Text style={s.emptyIcon}>👀</Text>
@@ -1242,14 +1292,18 @@ export default function OrdersScreen() {
               </View>
             )
           ) : (
-            pending.map(order => {
+            visiblePending.map(order => {
               const dist = myLat > 0 && order.pickup?.lat ? haversineKm(myLat, myLng, order.pickup.lat, order.pickup.lng) : null;
+              const secLeft = remainingSeconds(order);
               return (
                 <View key={order.id} style={[s.orderCard, !!activeBooking && s.orderCardLocked]}>
                   <View style={s.orderTop}>
                     <View style={s.serviceBadge}><Text style={s.serviceText}>{order.service_name||t("common.bookingFallback")}</Text></View>
                     <Text style={s.orderFare}>{t("common.fareAmount", { amount: Math.round(order.estimated_fare||0) })}</Text>
                   </View>
+                  <Text style={[s.orderDist, secLeft <= 30 && { color: COLORS.danger }]}>
+                    {t("orders.card.expiresIn", { sec: secLeft })}
+                  </Text>
                   {dist !== null && <Text style={s.orderDist}>{t("orders.card.distanceFromYou", { dist: fmtDist(dist) })}</Text>}
                   <View style={s.orderRoute}>
                     <View style={s.miniRow}><View style={[s.dot,{backgroundColor:COLORS.success}]} /><Text style={s.orderAddr} numberOfLines={2}>{order.pickup?.address||t("common.pickupFallback")}</Text></View>
