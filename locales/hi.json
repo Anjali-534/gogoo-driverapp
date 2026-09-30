@@ -159,6 +159,7 @@
       "back": "← वापस",
       "continueTo": "{{step}} पर आगे बढ़ें",
       "submit": "पंजीकरण जमा करें",
+      "uploadingProgress": "दस्तावेज़ अपलोड हो रहे हैं: {{total}} में से {{done}}",
       "stepIndicator": "{{step}} / 4",
       "personal": {
         "sectionTitle": "व्यक्तिगत जानकारी",

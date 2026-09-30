@@ -159,6 +159,7 @@
       "back": "← ପଛକୁ",
       "continueTo": "{{step}} କୁ ଆଗକୁ ବଢ଼ନ୍ତୁ",
       "submit": "ପଞ୍ଜୀକରଣ ଦାଖଲ କରନ୍ତୁ",
+      "uploadingProgress": "ଡକ୍ୟୁମେଣ୍ଟ ଅପଲୋଡ୍ ହେଉଛି: {{total}} ରୁ {{done}}",
       "stepIndicator": "{{step}} / 4",
       "personal": {
         "sectionTitle": "ବ୍ୟକ୍ତିଗତ ବିବରଣୀ",

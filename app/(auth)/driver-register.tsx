@@ -27,6 +27,12 @@ function parseDDMMYYYY(input: string): string | null {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+// Signup document uploads: how many run at once, and each one's limit —
+// generous because photos are still uploaded at full resolution until
+// client-side compression ships with the next native build.
+const UPLOAD_CONCURRENCY = 3;
+const UPLOAD_TIMEOUT_MS = 90_000;
+
 export default function DriverRegisterScreen() {
   const router = useRouter();
   const { t } = useTranslation();
@@ -101,6 +107,9 @@ export default function DriverRegisterScreen() {
 
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  // Set while the signup document uploads run: done counts finished uploads
+  // (succeeded or failed) out of total.
+  const [uploadProgress, setUploadProgress] = useState<{ done: number; total: number } | null>(null);
   const [category, setCategory] = useState("cab");
   const [vehicleTypeLabel, setVehicleTypeLabel] = useState("");
   const [vehicleTypeSlug, setVehicleTypeSlug] = useState("");
@@ -285,7 +294,11 @@ export default function DriverRegisterScreen() {
 
       let uploaded = 0, failed = 0;
       if (driverId) {
-        for (const [docId, img] of Object.entries(docImages)) {
+        // UPLOAD_CONCURRENCY uploads at a time instead of one after another
+        // (10–13 full-size photos per signup). Each upload is independent —
+        // a failure is counted and the rest carry on, as before.
+        const entries = Object.entries(docImages);
+        const uploadOne = async ([docId, img]: (typeof entries)[number]) => {
           const docType = (DOC_TYPE_MAP as Record<string, string>)[docId] || docId;
           const form = new FormData();
           form.append("doc_type", docType);
@@ -295,11 +308,18 @@ export default function DriverRegisterScreen() {
           try {
             await axios.post(`${API}/gogoo/drivers/${driverId}/documents`, form, {
               headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" },
-              timeout: 30000,
+              timeout: UPLOAD_TIMEOUT_MS,
             });
             uploaded++;
           } catch { failed++; }
-        }
+          finally { setUploadProgress(p => (p ? { ...p, done: p.done + 1 } : p)); }
+        };
+        setUploadProgress({ done: 0, total: entries.length });
+        let nextIndex = 0;
+        const worker = async () => {
+          while (nextIndex < entries.length) await uploadOne(entries[nextIndex++]);
+        };
+        await Promise.all(Array.from({ length: Math.min(UPLOAD_CONCURRENCY, entries.length) }, worker));
       }
       await AsyncStorage.removeItem("driver_signup_data");
       const summary = failed > 0
@@ -312,7 +332,7 @@ export default function DriverRegisterScreen() {
       Alert.alert(tr("alerts.submittedTitle"), summary, [{ text: t("common.ok"), onPress: () => router.replace(postSubmitRoute as any) }]);
     } catch (e: any) {
       Alert.alert(tr("alerts.submitErrorTitle"), e?.response?.data?.error || tr("alerts.submitErrorMsg"));
-    } finally { setLoading(false); }
+    } finally { setLoading(false); setUploadProgress(null); }
   };
 
   const categoryColors: Record<string, string> = { cab: "#FF6B2B", truck: "#FF6B2B", ambulance: "#EF4444", packers: "#10B981", parcel: "#F59E0B" };
@@ -482,7 +502,12 @@ export default function DriverRegisterScreen() {
 
       <View style={s.footer}>
         <TouchableOpacity style={[s.btn, { backgroundColor: accentColor }, loading && s.btnDisabled]} onPress={next} disabled={loading}>
-          {loading ? <ActivityIndicator color="#fff" /> : (
+          {loading && uploadProgress ? (
+            <View style={s.btnProgress}>
+              <ActivityIndicator color="#fff" />
+              <Text style={s.btnText}>{tr("uploadingProgress", { done: uploadProgress.done, total: uploadProgress.total })}</Text>
+            </View>
+          ) : loading ? <ActivityIndicator color="#fff" /> : (
             <Text style={s.btnText}>{step < 3 ? tr("continueTo", { step: STEPS[step + 1] }) : tr("submit")}</Text>
           )}
         </TouchableOpacity>
@@ -564,6 +589,7 @@ const s = StyleSheet.create({
   footer: { paddingHorizontal: 20, paddingVertical: 16, borderTopWidth: 1, borderTopColor: "#EFEFEF", backgroundColor: "#FAFAFA" },
   btn: { borderRadius: 16, paddingVertical: 18, alignItems: "center" },
   btnDisabled: { opacity: 0.6 },
+  btnProgress: { flexDirection: "row", alignItems: "center", gap: 10 },
   btnText: { color: "#fff", fontWeight: "700", fontSize: 16 },
   stepIndicator: { color: "#999", fontSize: 12, textAlign: "center", marginTop: 8 },
 });

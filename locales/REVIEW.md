@@ -452,3 +452,18 @@ whole-repo grep sweep after Batch 4's scoped files were done:
 
 Both are now covered by the Batch 4 key cross-reference and tsc runs (re-run after these two
 fixes, still clean).
+
+## Batch 5 — signup document upload progress
+
+One new key, shown on the register Submit button while the signup document uploads run
+(now three at a time instead of one after another). Uses the glossary term for "document"
+(दस्तावेज़ / ଡକ୍ୟୁମେଣ୍ଟ). Word order follows each language's "N of M" pattern, so the
+placeholders swap: Hindi/Odia put `{{total}}` first.
+
+| Key | English | Hindi | Odia |
+|---|---|---|---|
+| `auth.register.uploadingProgress` | Uploading documents: {{done}} of {{total}} | दस्तावेज़ अपलोड हो रहे हैं: {{total}} में से {{done}} | ଡକ୍ୟୁମେଣ୍ଟ ଅପଲୋଡ୍ ହେଉଛି: {{total}} ରୁ {{done}} |
+
+For the native pass: whether "{{total}} ରୁ {{done}}" reads naturally as "3 of 12" in Odia,
+or whether a fuller phrasing (e.g. with ଟି) is expected.
+

@@ -11,6 +11,7 @@ import SOSButton from "../../../components/SOSButton";
 import { PickupMarker, DropMarker } from "../../../components/VehicleMarkers";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
+import { rememberPosition } from "@/services/location";
 import * as Speech from "expo-speech";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
@@ -279,6 +280,8 @@ export default function OrdersScreen() {
           const speedMs = loc.coords.speed ?? 0;
           const speedKmh = speedMs > 0 ? speedMs * 3.6 : 0;
           myPosRef.current = { lat: loc.coords.latitude, lng: loc.coords.longitude, heading, speedKmh };
+          // Shared with home's "Go online", which reuses a recent fix.
+          rememberPosition(loc.coords.latitude, loc.coords.longitude, loc.timestamp);
           setMyLat(loc.coords.latitude);
           setMyLng(loc.coords.longitude);
           setMyHeading(heading);

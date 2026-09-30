@@ -159,6 +159,7 @@
       "back": "← Back",
       "continueTo": "Continue to {{step}}",
       "submit": "Submit Registration",
+      "uploadingProgress": "Uploading documents: {{done}} of {{total}}",
       "stepIndicator": "{{step}} / 4",
       "personal": {
         "sectionTitle": "Personal Details",

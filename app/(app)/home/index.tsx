@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { api } from "@/services/api";
 import * as Location from "expo-location";
+import { quickPosition, freshPosition } from "@/services/location";
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import * as Battery from "expo-battery";
 import { useRouter, useFocusEffect } from "expo-router";
@@ -390,15 +391,20 @@ export default function DriverHomeScreen() {
         return;
       }
       let lat: number, lng: number;
+      let positionStale = false;
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
         if (status !== "granted") {
           Alert.alert(t("home.alerts.locationRequiredTitle"), t("home.alerts.locationRequiredMsg"));
           return;
         }
-        const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-        lat = loc.coords.latitude;
-        lng = loc.coords.longitude;
+        // Recent/last-known position first instead of blocking the toggle
+        // on a brand-new fix; a stale one is refreshed below once online.
+        const pos = await quickPosition();
+        if (!pos) throw new Error("no position");
+        lat = pos.coords.lat;
+        lng = pos.coords.lng;
+        positionStale = pos.stale;
       } catch {
         Alert.alert(t("home.alerts.locationRequiredTitle"), t("home.alerts.locationRequiredMsg"));
         return;
@@ -406,6 +412,14 @@ export default function DriverHomeScreen() {
       if (driverId) {
         await api.patch(`/gogoo/drivers/${driverId}/online`, { is_online: newStatus, lat, lng });
         if (newStatus) {
+          // Went online on a last-known position: get a fresh fix in the
+          // background and push it, since dispatch matches on this position
+          // until the next location update.
+          if (positionStale) {
+            freshPosition().then(f => {
+              if (f) api.post(`/gogoo/drivers/${driverId}/location`, { lat: f.lat, lng: f.lng }).catch(() => {});
+            });
+          }
           sessionStartRef.current = Date.now();
           sessionRidesRef.current = 0;
           trackDriverOnline({ driverId, vehicleType: driver?.vehicle_type || "unknown" });
