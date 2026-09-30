@@ -345,17 +345,22 @@ export default function OrdersScreen() {
     return () => clearInterval(t);
   }, [pending.length]);
 
-  // A request whose local countdown has hit zero disappears immediately
-  // rather than waiting for the next 4s poll to confirm the server also
-  // expired it — see requirement G. remainingSeconds falls back to the
-  // full window if search_started_at is somehow missing, never to 0, so a
-  // malformed response can't make every card vanish at once.
-  const remainingSeconds = useCallback((order: any) => {
-    const startedMs = order?.search_started_at ? new Date(order.search_started_at).getTime() : NaN;
-    if (Number.isNaN(startedMs)) return searchTimeoutSeconds;
-    return Math.max(0, Math.round(searchTimeoutSeconds - (nowTick - startedMs) / 1000));
+  // Which requests to show is decided ONLY by the server: every booking
+  // /bookings-pending returns is shown (minus ones this driver rejected), and
+  // one disappears when a poll stops returning it. The countdown below is
+  // display-only and never hides a card — it used to be computed from the
+  // phone's own clock and used as a filter, so a phone set a few minutes
+  // fast hid every request while the ride-request push still rang.
+  //
+  // countdownEndsAt (set in fetchPending) is anchored to the server's clock
+  // via the response's Date header, then counted down with local elapsed
+  // time, so a wrong phone clock can't skew it. null when there's nothing
+  // trustworthy to anchor to — then no countdown is shown at all.
+  const countdownSeconds = useCallback((order: any): number | null => {
+    if (typeof order?.countdownEndsAt !== "number") return null;
+    const sec = Math.round((order.countdownEndsAt - nowTick) / 1000);
+    return Math.min(searchTimeoutSeconds, Math.max(0, sec));
   }, [searchTimeoutSeconds, nowTick]);
-  const visiblePending = pending.filter(order => remainingSeconds(order) > 0);
 
   useFocusEffect(
     useCallback(() => {
@@ -436,11 +441,29 @@ export default function OrdersScreen() {
     try {
       setLoading(true);
       const res = await api.get(`/gogoo/bookings-pending`, { timeout: 8000 });
-      if (typeof res.data?.search_timeout_seconds === "number" && res.data.search_timeout_seconds > 0) {
-        setSearchTimeoutSeconds(res.data.search_timeout_seconds);
-      }
+      const receivedAt = Date.now();
+      const timeoutSec: number =
+        typeof res.data?.search_timeout_seconds === "number" && res.data.search_timeout_seconds > 0
+          ? res.data.search_timeout_seconds
+          : searchTimeoutSeconds;
+      setSearchTimeoutSeconds(timeoutSec);
+      // Server "now" from the HTTP Date header (1s resolution — plenty for a
+      // visual timer). Seconds left = timeout - (serverNow - search start),
+      // both server-clock times; turned into a local end time relative to
+      // when this response arrived, so only local *elapsed* time is used.
+      const serverNowMs = Date.parse(String(res.headers?.date ?? ""));
       const list: any[] = res.data?.bookings || [];
-      setPending(list.filter(b => !dismissedIdsRef.current.has(b.id)));
+      setPending(
+        list
+          .filter(b => !dismissedIdsRef.current.has(b.id))
+          .map(b => {
+            const startedMs = b?.search_started_at ? new Date(b.search_started_at).getTime() : NaN;
+            const countdownEndsAt = Number.isNaN(serverNowMs) || Number.isNaN(startedMs)
+              ? null
+              : receivedAt + (timeoutSec * 1000 - (serverNowMs - startedMs));
+            return { ...b, countdownEndsAt };
+          }),
+      );
     } catch (e: any) {
       // 401s are handled globally by the shared axios interceptor.
       if (e.response?.status === 401) setPending([]);
@@ -1109,13 +1132,13 @@ export default function OrdersScreen() {
               {!ready
                 ? t("orders.subtitle.loading")
                 : activeBooking
-                  ? t("orders.subtitle.newRequestsWaiting", { count: visiblePending.length })
+                  ? t("orders.subtitle.newRequestsWaiting", { count: pending.length })
                   : myLat
-                    ? t("orders.subtitle.requestsNearYou", { count: visiblePending.length })
+                    ? t("orders.subtitle.requestsNearYou", { count: pending.length })
                     : t("orders.subtitle.enableLocation")}
             </Text>
           </View>
-          {loading && !visiblePending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
+          {loading && !pending.length && <ActivityIndicator color={COLORS.primary} size="small" />}
         </View>
       </LinearGradient>
 
@@ -1252,18 +1275,18 @@ export default function OrdersScreen() {
           {activeBooking && (
             <View style={s.pendingHeader}>
               <Text style={s.pendingTitle}>{t("orders.pending.title")}</Text>
-              {visiblePending.length > 0 && (
-                <View style={s.pendingBadge}><Text style={s.pendingBadgeTxt}>{visiblePending.length}</Text></View>
+              {pending.length > 0 && (
+                <View style={s.pendingBadge}><Text style={s.pendingBadgeTxt}>{pending.length}</Text></View>
               )}
             </View>
           )}
 
-          {!ready || (loading && !visiblePending.length) ? (
+          {!ready || (loading && !pending.length) ? (
             <View style={s.emptyState}>
               <ActivityIndicator color={COLORS.primary} size="large" />
               <Text style={s.emptyTitle}>{t("orders.empty.looking")}</Text>
             </View>
-          ) : visiblePending.length === 0 ? (
+          ) : pending.length === 0 ? (
             activeBooking ? (
               <View style={s.emptyState}>
                 <Text style={s.emptyIcon}>👀</Text>
@@ -1292,22 +1315,19 @@ export default function OrdersScreen() {
               </View>
             )
           ) : (
-            visiblePending.map(order => {
+            pending.map(order => {
               const dist = myLat > 0 && order.pickup?.lat ? haversineKm(myLat, myLng, order.pickup.lat, order.pickup.lng) : null;
-              const secLeft = remainingSeconds(order);
+              const secLeft = countdownSeconds(order);
               return (
                 <View key={order.id} style={[s.orderCard, !!activeBooking && s.orderCardLocked]}>
                   <View style={s.orderTop}>
                     <View style={s.serviceBadge}><Text style={s.serviceText}>{order.service_name||t("common.bookingFallback")}</Text></View>
                     <Text style={s.orderFare}>{t("common.fareAmount", { amount: Math.round(order.estimated_fare||0) })}</Text>
                   </View>
-                  {/* search_started_at is missing against an old backend that
-                      predates this feature — remainingSeconds then falls back
-                      to the full window so the card still counts as visible,
-                      but showing a countdown that would just sit frozen at
-                      180s forever is worse than showing none; the card still
-                      disappears correctly via the next poll either way. */}
-                  {order.search_started_at && (
+                  {/* Display only — never decides visibility. Hidden when it
+                      can't be anchored to the server's clock (old backend
+                      without search_started_at, or no Date header). */}
+                  {secLeft !== null && (
                     <Text style={[s.orderDist, secLeft <= 30 && { color: COLORS.danger }]}>
                       {t("orders.card.expiresIn", { sec: secLeft })}
                     </Text>
