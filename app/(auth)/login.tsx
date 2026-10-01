@@ -155,6 +155,15 @@ export default function DriverLoginScreen() {
   // android/.../SigningCertModule.kt + SigningCertPackage.kt once the
   // Google Sign-In SHA-1 mismatch investigation is closed.
   const handleShowSigningCertDebug = async () => {
+    // A null module means this binary predates the debug plugin and is only
+    // running newer JS delivered via an OTA update.
+    if (!NativeModules.SigningCertModule) {
+      Alert.alert(
+        "TEMPORARY DEBUG: Signing Cert SHA-1",
+        "Native module not in this binary (older build running OTA-updated JS). Install the latest build from Play."
+      );
+      return;
+    }
     try {
       const sha1 = await NativeModules.SigningCertModule.getSigningCertSha1();
       Alert.alert("TEMPORARY DEBUG: Signing Cert SHA-1", sha1);
