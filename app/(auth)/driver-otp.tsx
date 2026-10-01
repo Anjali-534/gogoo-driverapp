@@ -25,11 +25,29 @@ export default function DriverOTPScreen() {
   }, []);
 
   const handleChange = (val, idx) => {
+    // A pasted or autofilled code arrives as several digits in one box.
+    // Spread it across the boxes — from the first box for a full 6-digit
+    // code, otherwise from this box — and focus the last one filled. Two
+    // characters is just a digit typed over an existing one (handled below).
+    const digits = val.replace(/\D/g, "");
+    if (digits.length > 2) {
+      const start = digits.length >= 6 ? 0 : idx;
+      const newOtp = [...otp];
+      const spread = digits.slice(0, 6 - start).split("");
+      spread.forEach((d, k) => { newOtp[start + k] = d; });
+      setOtp(newOtp);
+      inputs.current[start + spread.length - 1]?.focus();
+      return;
+    }
+
+    // Typed over a filled box: keep the new digit, whichever side of the
+    // old one the cursor was on.
+    const ch = val.length === 2 ? (val[0] === otp[idx] ? val[1] : val[0]) : val;
     const newOtp = [...otp];
-    newOtp[idx] = val;
+    newOtp[idx] = ch;
     setOtp(newOtp);
-    if (val && idx < 5) inputs.current[idx + 1]?.focus();
-    if (!val && idx > 0) inputs.current[idx - 1]?.focus();
+    if (ch && idx < 5) inputs.current[idx + 1]?.focus();
+    if (!ch && idx > 0) inputs.current[idx - 1]?.focus();
   };
 
   const handleVerify = async () => {
@@ -70,12 +88,13 @@ export default function DriverOTPScreen() {
             {otp.map((digit, i) => (
               <TextInput key={i} ref={ref => { if (ref) inputs.current[i] = ref; }}
                 style={[s.otpBox, digit && s.otpBoxFilled]}
-                value={digit} onChangeText={val => handleChange(val.slice(-1), i)}
+                value={digit} onChangeText={val => handleChange(val, i)}
                 cursorColor="#111" selectionColor="#111"
-                keyboardType="numeric" maxLength={1} textAlign="center"
-                // OTP autofill hint, first box only. Each box holds one
-                // digit (maxLength 1), so an autofilled code is truncated
-                // until handleChange learns to spread a multi-digit value.
+                // maxLength 6, not 1: a 1 would truncate a pasted/autofilled
+                // code before handleChange could spread it. Each box still
+                // only ever displays one digit.
+                keyboardType="numeric" maxLength={6} textAlign="center"
+                // OTP autofill hint, first box only.
                 autoComplete={i === 0 ? "one-time-code" : "off"}
                 textContentType={i === 0 ? "oneTimeCode" : "none"} />
             ))}
