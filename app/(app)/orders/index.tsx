@@ -1,13 +1,14 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
-  ActivityIndicator, Alert, Platform, Linking, Image, Modal, TextInput, Dimensions,
+  ActivityIndicator, Alert, Platform, Linking, Image, Modal, Dimensions,
   RefreshControl,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import BottomSheet, { BottomSheetHandle } from "../../../components/BottomSheet";
 import SOSButton from "../../../components/SOSButton";
+import RideOtpSheet from "../../../components/RideOtpSheet";
 import { PickupMarker, DropMarker } from "../../../components/VehicleMarkers";
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import * as Location from "expo-location";
@@ -184,7 +185,6 @@ export default function OrdersScreen() {
   const activeBookingRef  = useRef<any>(null);
   const autoCompletingRef = useRef(false);
   const mapRef            = useRef<MapView>(null);
-  const otpInputRef       = useRef<TextInput>(null);
   const lastRouteKeyRef   = useRef("");
   const prevVoiceStatusRef = useRef("");
   const spoken500Ref      = useRef(false);
@@ -845,8 +845,8 @@ export default function OrdersScreen() {
   };
 
   // ── OTP handlers ──────────────────────────────────────────────────────
+  // Focus/blur and keyboard handling live in RideOtpSheet.
   const closeOtpModal = () => {
-    otpInputRef.current?.blur();
     setShowOtpModal(false);
     setOtpInput("");
     setOtpError("");
@@ -857,7 +857,6 @@ export default function OrdersScreen() {
     setOtpInput("");
     setOtpError("");
     setShowOtpModal(true);
-    setTimeout(() => { otpInputRef.current?.focus(); }, 400);
   };
 
   const handleVerifyOtp = async () => {
@@ -866,7 +865,6 @@ export default function OrdersScreen() {
     setOtpLoading(true);
     try {
       await api.post(`/gogoo/bookings/${activeBooking.id}/verify-otp`, { otp: otpInput });
-      otpInputRef.current?.blur();
       setShowOtpModal(false);
       rideStartTimeRef.current = new Date().toISOString();
       trackOTPVerified({ bookingId: activeBooking.id, attempts: 1 });
@@ -884,6 +882,19 @@ export default function OrdersScreen() {
       }
     }
   };
+
+  // Rendered by both the map view and the list view below.
+  const otpSheet = (
+    <RideOtpSheet
+      visible={showOtpModal}
+      value={otpInput}
+      onChange={v => { setOtpInput(v); setOtpError(""); }}
+      error={otpError}
+      loading={otpLoading}
+      onVerify={handleVerifyOtp}
+      onClose={closeOtpModal}
+    />
+  );
 
   // ════════════════════════════════════════════════════════════════════════
   //  MAP VIEW
@@ -1092,47 +1103,7 @@ export default function OrdersScreen() {
         )}
 
         {/* ── OTP VERIFICATION MODAL ───────────────────────────── */}
-        <Modal visible={showOtpModal} transparent animationType="slide" onRequestClose={() => closeOtpModal()}>
-          <View style={s.modalOverlay}>
-            <View style={s.otpModal}>
-              <View style={s.modalHandle} />
-              <Text style={s.otpIcon}>🔐</Text>
-              <Text style={s.otpTitle}>{t("orders.otp.title")}</Text>
-              <Text style={s.otpSubtitle}>{t("orders.otp.subtitle")}</Text>
-              <TouchableOpacity onPress={() => otpInputRef.current?.focus()} activeOpacity={1}>
-                <View style={s.otpBoxRow}>
-                  {[0,1,2,3].map(i => (
-                    <View key={i} style={[s.otpBox, otpInput.length === i && s.otpBoxActive, otpInput.length > i && s.otpBoxFilled]}>
-                      <Text style={s.otpBoxText}>{otpInput[i] || ""}</Text>
-                    </View>
-                  ))}
-                </View>
-              </TouchableOpacity>
-              <TextInput
-                ref={otpInputRef}
-                style={s.hiddenInput}
-                value={otpInput}
-                onChangeText={v => { if (/^\d{0,4}$/.test(v)) { setOtpInput(v); setOtpError(""); } }}
-                keyboardType="number-pad"
-                maxLength={4}
-                autoFocus={false}
-                caretHidden
-                showSoftInputOnFocus
-              />
-              {otpError ? <Text style={s.otpError}>{"⚠"} {otpError}</Text> : null}
-              <TouchableOpacity
-                style={[s.otpVerifyBtn, otpInput.length !== 4 && s.otpVerifyBtnDisabled]}
-                onPress={handleVerifyOtp}
-                disabled={otpInput.length !== 4 || otpLoading}
-              >
-                {otpLoading ? <ActivityIndicator color="#FFF" /> : <Text style={s.otpVerifyBtnText}>{t("orders.otp.verify")}</Text>}
-              </TouchableOpacity>
-              <TouchableOpacity style={s.otpCancelBtn} onPress={() => closeOtpModal()}>
-                <Text style={s.otpCancelText}>{t("common.cancel")}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Modal>
+        {otpSheet}
       </View>
     );
   }
@@ -1425,42 +1396,7 @@ export default function OrdersScreen() {
       </ScrollView>
 
       {/* ── OTP VERIFICATION MODAL ────────────────────────────── */}
-      <Modal visible={showOtpModal} transparent animationType="slide" onRequestClose={() => closeOtpModal()}>
-        <View style={s.modalOverlay}>
-          <View style={s.otpModal}>
-            <View style={s.modalHandle} />
-            <Text style={s.otpIcon}>🔐</Text>
-            <Text style={s.otpTitle}>{t("orders.otp.title")}</Text>
-            <Text style={s.otpSubtitle}>{t("orders.otp.subtitle")}</Text>
-            <View style={s.otpBoxRow}>
-              {[0,1,2,3].map(i => (
-                <View key={i} style={[s.otpBox, otpInput.length === i && s.otpBoxActive, otpInput.length > i && s.otpBoxFilled]}>
-                  <Text style={s.otpBoxText}>{otpInput[i] || ""}</Text>
-                </View>
-              ))}
-            </View>
-            <TextInput
-              style={s.hiddenInput}
-              value={otpInput}
-              onChangeText={v => { if (/^\d{0,4}$/.test(v)) { setOtpInput(v); setOtpError(""); } }}
-              keyboardType="number-pad"
-              maxLength={4}
-              autoFocus
-            />
-            {otpError ? <Text style={s.otpError}>{"⚠"} {otpError}</Text> : null}
-            <TouchableOpacity
-              style={[s.otpVerifyBtn, otpInput.length !== 4 && s.otpVerifyBtnDisabled]}
-              onPress={handleVerifyOtp}
-              disabled={otpInput.length !== 4 || otpLoading}
-            >
-              {otpLoading ? <ActivityIndicator color="#FFF" /> : <Text style={s.otpVerifyBtnText}>{t("orders.otp.verify")}</Text>}
-            </TouchableOpacity>
-            <TouchableOpacity style={s.otpCancelBtn} onPress={() => closeOtpModal()}>
-              <Text style={s.otpCancelText}>{t("common.cancel")}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {otpSheet}
 
       {/* ── TRIP COMPLETION MODAL ──────────────────────────────── */}
       <Modal visible={!!completedRide} transparent animationType="fade">
@@ -1663,26 +1599,6 @@ const s = StyleSheet.create({
   fareBreakRow:   { flexDirection:"row", justifyContent:"space-between" },
   fareBreakLbl:   { color:"#777", fontSize:13 },
   fareBreakVal:   { color:"#111", fontSize:13, fontWeight:"700" },
-
-  // ── OTP modal ─────────────────────────────────────────────────────────────
-  modalOverlay:       { flex:1, backgroundColor:"rgba(0,0,0,0.5)", justifyContent:"flex-end" },
-  otpModal:           { backgroundColor:"#FFF", borderTopLeftRadius:28, borderTopRightRadius:28, padding:28, paddingBottom:40, alignItems:"center" },
-  modalHandle:        { width:40, height:4, backgroundColor:"#E5E7EB", borderRadius:2, marginBottom:24 },
-  otpIcon:            { fontSize:48, marginBottom:12 },
-  otpTitle:           { fontSize:22, fontWeight:"800", color:"#0D0D0D", marginBottom:8 },
-  otpSubtitle:        { fontSize:14, color:"#6B7280", textAlign:"center", lineHeight:20, marginBottom:28 },
-  otpBoxRow:          { flexDirection:"row", gap:12, marginBottom:8 },
-  otpBox:             { width:60, height:60, borderRadius:14, borderWidth:2, borderColor:"#E5E7EB", backgroundColor:"#F8F9FA", alignItems:"center", justifyContent:"center" },
-  otpBoxActive:       { borderColor:COLORS.primary, backgroundColor:"#FFF8F5" },
-  otpBoxFilled:       { borderColor:COLORS.primary, backgroundColor:"#FFF" },
-  otpBoxText:         { fontSize:24, fontWeight:"800", color:"#0D0D0D" },
-  hiddenInput:        { position:"absolute", opacity:0, width:1, height:1 },
-  otpError:           { color:COLORS.danger, fontSize:13, fontWeight:"600", marginTop:8, marginBottom:4 },
-  otpVerifyBtn:       { backgroundColor:COLORS.primary, borderRadius:RADIUS.card, paddingVertical:18, width:"100%", alignItems:"center", marginTop:20, shadowColor:COLORS.primary, shadowOffset:{width:0,height:4}, shadowOpacity:0.3, shadowRadius:12, elevation:6 },
-  otpVerifyBtnDisabled:{ backgroundColor:"#E5E7EB", shadowOpacity:0, elevation:0 },
-  otpVerifyBtnText:   { color:"#FFF", fontSize:16, fontWeight:"700", letterSpacing:0.3 },
-  otpCancelBtn:       { marginTop:12, paddingVertical:12 },
-  otpCancelText:      { color:"#9CA3AF", fontSize:14, fontWeight:"600" },
 
   // ── Completion modal ─────────────────────────────────────────────────────
   completionOverlay:  { flex:1, backgroundColor:"rgba(0,0,0,0.55)", alignItems:"center", justifyContent:"center", padding:24 },
