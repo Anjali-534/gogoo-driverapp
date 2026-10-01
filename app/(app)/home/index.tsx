@@ -2,6 +2,7 @@
 import {
   View, Text, StyleSheet, SafeAreaView, Switch, TouchableOpacity,
   ScrollView, Alert, Animated, Image, Modal, Vibration, Dimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,6 +22,7 @@ import {
 import { registerPushToken } from "@/services/notifications";
 import { getBatteryLevel, isBatteryTooLow } from "@/services/battery";
 import { clearSession, getToken } from "@/services/session";
+import { setAcceptedRide } from "@/services/acceptedRide";
 import * as Notifications from "expo-notifications";
 import { COLORS, RADIUS } from "@/constants/theme";
 
@@ -264,35 +266,57 @@ export default function DriverHomeScreen() {
 
   const acceptTimeRef = useRef<number>(0);
 
+  // Ref, not just state: a second tap can land before the setAccepting
+  // re-render disables the button, and must not fire a second accept.
+  const acceptingRef = useRef(false);
+  const [accepting, setAccepting] = useState(false);
+
   const handleAccept = async () => {
-    if (!incomingRide) return;
-
-    const tooLow = await isBatteryTooLow();
-    if (tooLow) {
-      setBatteryBlocked(true);
-      stopRingtone();
-      Alert.alert(
-        t("home.alerts.batteryTooLowTitle"),
-        t("home.alerts.batteryTooLowMsg"),
-        [{ text: t("common.ok") }]
-      );
-      return;
-    }
-
-    const responseTimeSecs = Math.round((Date.now() - acceptTimeRef.current) / 1000);
+    if (!incomingRide || acceptingRef.current) return;
+    acceptingRef.current = true;
+    setAccepting(true);
     try {
-      await api.post(`/gogoo/bookings/${incomingRide.id}/accept`, {});
+      const tooLow = await isBatteryTooLow();
+      if (tooLow) {
+        setBatteryBlocked(true);
+        stopRingtone();
+        Alert.alert(
+          t("home.alerts.batteryTooLowTitle"),
+          t("home.alerts.batteryTooLowMsg"),
+          [{ text: t("common.ok") }]
+        );
+        return;
+      }
+
+      const ride = incomingRide;
+      const responseTimeSecs = Math.round((Date.now() - acceptTimeRef.current) / 1000);
+      try {
+        await api.post(`/gogoo/bookings/${ride.id}/accept`, {}, { timeout: 8000 });
+      } catch (e: any) {
+        const code = e.response?.data?.error;
+        if (code === "self_ride") {
+          dismissPopup("reject");
+          Alert.alert(t("common.notice"), t("orders.alerts.selfRide"));
+          return;
+        }
+        Alert.alert(t("common.error"), e.response?.data?.message || code || t("home.alerts.acceptError"));
+        return;
+      }
       trackRideAccepted({
-        bookingId: incomingRide.id,
-        service: incomingRide.service_type?.category || "cab",
-        fare: Number(incomingRide.estimated_fare || 0),
+        bookingId: ride.id,
+        service: ride.service_type?.category || "cab",
+        fare: Number(ride.estimated_fare || 0),
         responseTimeSecs,
       });
       sessionRidesRef.current += 1;
       dismissPopup("accept");
+      // Orders shows the map straight from this and refreshes in the
+      // background — see services/acceptedRide.ts.
+      setAcceptedRide(ride.id, { ...ride, status: "accepted" });
       router.push("/(app)/orders" as any);
-    } catch (e: any) {
-      Alert.alert(t("common.error"), e.response?.data?.error || t("home.alerts.acceptError"));
+    } finally {
+      acceptingRef.current = false;
+      setAccepting(false);
     }
   };
 
@@ -848,9 +872,11 @@ export default function DriverHomeScreen() {
               <TouchableOpacity
                 style={[s.acceptBtn, batteryBlocked && s.acceptBtnDisabled]}
                 onPress={handleAccept}
-                disabled={batteryBlocked}
+                disabled={batteryBlocked || accepting}
               >
-                <Text style={s.acceptBtnText}>{t("home.popup.accept")}</Text>
+                {accepting
+                  ? <ActivityIndicator color="#fff" />
+                  : <Text style={s.acceptBtnText}>{t("home.popup.accept")}</Text>}
               </TouchableOpacity>
             </View>
             {batteryBlocked && (

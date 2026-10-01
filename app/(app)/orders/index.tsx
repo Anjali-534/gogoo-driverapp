@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { api } from "@/services/api";
 import { getToken } from "@/services/session";
+import { takeAcceptedRide } from "@/services/acceptedRide";
 import { useTranslation } from "react-i18next";
 import { trackOTPVerified, trackOTPFailed, trackRideCompleted, trackDriverError } from "@/services/analytics";
 import { isBatteryTooLow } from "@/services/battery";
@@ -218,6 +219,7 @@ export default function OrdersScreen() {
   const [activeBooking,  setActiveBooking]  = useState<any>(null);
   const [loading,        setLoading]        = useState(false);
   const [accepting,      setAccepting]      = useState<string | null>(null);
+  const acceptingRef = useRef(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [cancelling,     setCancelling]     = useState(false);
   const [refreshing,     setRefreshing]     = useState(false);
@@ -367,6 +369,15 @@ export default function OrdersScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      // Just accepted from Home's popup: show the map right away from the
+      // request data already in hand. Checked before readyRef so it also
+      // works on Orders' very first mount, while boot is still running.
+      const handoff = takeAcceptedRide();
+      if (handoff) {
+        enterActiveBooking(handoff.booking, handoff.bookingId);
+        refreshActiveBooking(handoff.bookingId);
+        return;
+      }
       if (!readyRef.current || activeBookingRef.current) return;
       const { token } = authRef.current;
       if (!token) return;
@@ -616,11 +627,25 @@ export default function OrdersScreen() {
     sheetRef.current?.reset();
   };
 
+  // Background fetch of the full booking (rider phone, payment method, OTP
+  // state, ...) right after entering the map from request data, instead of
+  // waiting GPS_MS for the push loop's first tick. A failure is harmless:
+  // that loop refreshes it anyway.
+  const refreshActiveBooking = async (bookingId: string) => {
+    try {
+      const res = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
+      if (activeBookingRef.current?.id === bookingId) setActiveBooking(res.data);
+    } catch {}
+  };
+
   const acceptBooking = async (bookingId: string) => {
     // Disabled BEFORE the battery check, not after — isBatteryTooLow awaits
     // two native bridge calls with no visual feedback in between, and a tap
     // landing in that window used to fire a second, fully independent
-    // accept request for the same booking.
+    // accept request for the same booking. The ref also covers a second tap
+    // landing before setAccepting's re-render disables the button.
+    if (acceptingRef.current) return;
+    acceptingRef.current = true;
     setAccepting(bookingId);
     try {
       const tooLow = await isBatteryTooLow();
@@ -643,6 +668,16 @@ export default function OrdersScreen() {
         // or the assigned driver may view a booking, so a quick GET tells
         // them apart without guessing from the error string.
         if (e.response?.status === 409) {
+          // The driver's own ride request (same account signed into the
+          // rider app). Must be handled before the GET check below: they
+          // can view their own booking as its rider, which would otherwise
+          // be misread as "you already accepted this".
+          if (e.response?.data?.error === "self_ride") {
+            dismissedIdsRef.current.add(bookingId);
+            setPending(p => p.filter(b => b.id !== bookingId));
+            Alert.alert(t("common.notice"), t("orders.alerts.selfRide"));
+            return;
+          }
           // The sweeper (backend expiry.go) got there first — the rider has
           // already been shown a no-driver-found screen, so this is an
           // expected outcome, not a failure. Neutral notice, not an error.
@@ -681,6 +716,16 @@ export default function OrdersScreen() {
       // failure only means we couldn't fetch the ride's details yet, never
       // that the accept didn't happen. Never show "couldn't accept" past
       // this point.
+      //
+      // Normal case: the request card already has everything the map needs
+      // (pickup/drop, fare, rider name), so show it now and fetch the full
+      // booking in the background.
+      const requestCard = pending.find(b => b.id === bookingId);
+      if (requestCard) {
+        enterActiveBooking({ ...requestCard, status: "accepted" }, bookingId);
+        refreshActiveBooking(bookingId);
+        return;
+      }
       let bookingRes;
       try {
         bookingRes = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
@@ -695,6 +740,7 @@ export default function OrdersScreen() {
       }
       enterActiveBooking(bookingRes.data, bookingId);
     } finally {
+      acceptingRef.current = false;
       setAccepting(null);
     }
   };

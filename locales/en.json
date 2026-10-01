@@ -617,6 +617,7 @@
       "alreadyAcceptedByYou": "You already accepted this ride.",
       "requestExpired": "This request has expired — no driver accepted it in time.",
       "alreadyTakenByAnother": "This ride was already accepted by another driver.",
+      "selfRide": "You can't accept your own ride request.",
       "acceptedRefreshFailed": "Ride accepted — refreshing details. Pull to retry if it doesn't appear.",
       "updateStatusError": "Could not update status",
       "alreadyCompleted": "This trip is already marked complete.",
