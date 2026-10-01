@@ -79,7 +79,7 @@ export default function EditProfileScreen() {
         <Text style={s.headerTitle}>{t("profile.edit.title")}</Text>
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
         {/* Profile Card */}
         <View style={s.profileCard}>

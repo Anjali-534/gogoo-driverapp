@@ -164,7 +164,7 @@ export default function DriverSupportChatScreen() {
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior="padding"
         keyboardVerticalOffset={0}
       >
         {loading ? (
@@ -176,6 +176,8 @@ export default function DriverSupportChatScreen() {
             contentContainerStyle={{ paddingVertical: 16, paddingHorizontal: 16 }}
             showsVerticalScrollIndicator={false}
             onContentSizeChange={() => scrollRef.current?.scrollToEnd({ animated: true })}
+            // Keeps the newest message visible when the list shrinks for the keyboard.
+            onLayout={() => scrollRef.current?.scrollToEnd({ animated: true })}
           >
             {messages.length === 0 && (
               <Text style={s.emptyChat}>{t("support.sendToStart")}</Text>

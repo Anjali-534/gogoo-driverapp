@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, ScrollView, StatusBar, Image, Linking, KeyboardAvoidingView, Platform, NativeModules } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, ScrollView, StatusBar, Image, Linking, KeyboardAvoidingView, NativeModules } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -176,7 +176,7 @@ export default function DriverLoginScreen() {
     <View style={s.root}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
       <LanguageSwitcherButton />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={s.container} keyboardShouldPersistTaps="handled">
         <View style={s.logoRow}>
           <Image source={require("../../assets/logo.png")} style={{ height: 80, width: 220 }} resizeMode="contain" />

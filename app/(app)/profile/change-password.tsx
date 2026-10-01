@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
-  TouchableOpacity, TextInput, StatusBar, Alert, Platform, KeyboardAvoidingView,
+  TouchableOpacity, TextInput, StatusBar, Alert, KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -64,7 +64,7 @@ export default function ChangePasswordScreen() {
         <Text style={s.headerTitle}>{t("profile.changePassword.title")}</Text>
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           <View style={s.fieldsCard}>
             <View style={s.field}>

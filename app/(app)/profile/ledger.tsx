@@ -2,7 +2,7 @@
 import {
   View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
-  Modal, TextInput, KeyboardAvoidingView, Platform,
+  Modal, TextInput, KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -459,7 +459,7 @@ export default function LedgerScreen() {
       )}
 
       <Modal visible={addMoneyOpen} transparent animationType="slide" onRequestClose={() => setAddMoneyOpen(false)}>
-        <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <KeyboardAvoidingView style={s.modalBackdrop} behavior="padding">
           <View style={s.modalCard}>
             <Text style={s.modalTitle}>{t("profile.ledger.addMoneyModalTitle")}</Text>
             <Text style={s.modalLabel}>{t("profile.ledger.addMoneyAmountLabel")}</Text>
@@ -501,7 +501,7 @@ export default function LedgerScreen() {
       </Modal>
 
       <Modal visible={withdrawOpen} transparent animationType="slide" onRequestClose={() => setWithdrawOpen(false)}>
-        <KeyboardAvoidingView style={s.modalBackdrop} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+        <KeyboardAvoidingView style={s.modalBackdrop} behavior="padding">
           <View style={s.modalCard}>
             <Text style={s.modalTitle}>{t("profile.ledger.withdrawModalTitle")}</Text>
             <Text style={s.modalLabel}>{t("profile.ledger.withdrawAmountLabel")}</Text>

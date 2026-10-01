@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
   TouchableOpacity, StatusBar, Linking, TextInput, Alert,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -90,7 +90,7 @@ export default function HelpScreen() {
         <Text style={s.headerTitle}>{t("profile.help.title")}</Text>
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false}>
         <SOSButton variant="inline" />
 

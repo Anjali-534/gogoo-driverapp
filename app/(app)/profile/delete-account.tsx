@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {
   View, Text, StyleSheet, SafeAreaView, ScrollView,
-  TouchableOpacity, TextInput, StatusBar, Platform, KeyboardAvoidingView,
+  TouchableOpacity, TextInput, StatusBar, KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -87,7 +87,7 @@ export default function DeleteAccountScreen() {
         <Text style={s.headerTitle}>{t("profile.deleteAccount.title")}</Text>
       </View>
 
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           {step === "password" ? (
             <>
