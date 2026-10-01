@@ -374,7 +374,7 @@ export default function OrdersScreen() {
       // works on Orders' very first mount, while boot is still running.
       const handoff = takeAcceptedRide();
       if (handoff) {
-        enterActiveBooking(handoff.booking, handoff.bookingId);
+        enterActiveBooking(seedFromRequest(handoff.booking), handoff.bookingId);
         refreshActiveBooking(handoff.bookingId);
         return;
       }
@@ -615,6 +615,13 @@ export default function OrdersScreen() {
   };
 
   // ── Accept ─────────────────────────────────────────────────────────────
+  // A just-accepted ride built from the request card, shown until the full
+  // booking arrives. The card has pickup/drop, fare, distance and rider name,
+  // but not payment_method or vehicle_category — detailsPending tells the UI
+  // to show a placeholder for those instead of guessing (e.g. "Cash", a cab
+  // icon). Any fetched booking replaces this object, clearing the flag.
+  const seedFromRequest = (request: any) => ({ ...request, status: "accepted", detailsPending: true });
+
   const enterActiveBooking = (booking: any, bookingId: string) => {
     setActiveBooking(booking);
     lastRouteKeyRef.current = "";
@@ -722,7 +729,7 @@ export default function OrdersScreen() {
       // booking in the background.
       const requestCard = pending.find(b => b.id === bookingId);
       if (requestCard) {
-        enterActiveBooking({ ...requestCard, status: "accepted" }, bookingId);
+        enterActiveBooking(seedFromRequest(requestCard), bookingId);
         refreshActiveBooking(bookingId);
         return;
       }
@@ -912,8 +919,9 @@ export default function OrdersScreen() {
           showsMyLocationButton={false}
           initialRegion={{ latitude:myLat||28.61, longitude:myLng||77.20, latitudeDelta:0.04, longitudeDelta:0.04 }}
         >
-          {/* Driver's own vehicle marker */}
-          {myLat > 0 && (
+          {/* Driver's own vehicle marker — held back until vehicle_category
+              is known, rather than briefly drawing a cab for every vehicle */}
+          {myLat > 0 && !activeBooking.detailsPending && (
             <Marker coordinate={{ latitude:myLat, longitude:myLng }} title={t("orders.map.markerYou")} flat anchor={{x:0.5,y:0.5}}>
               <VehicleMarker category={category} />
             </Marker>
@@ -974,7 +982,10 @@ export default function OrdersScreen() {
               <View style={{ alignItems:"flex-end", gap:6 }}>
                 <Text style={s.fareAmt}>{t("common.fareAmount", { amount: Math.round(activeBooking.estimated_fare||0) })}</Text>
                 <View style={s.paymentPill}>
-                  <Text style={s.paymentPillTxt}>{activeBooking.payment_method === "wallet" ? t("orders.card.paymentWallet") : t("orders.card.paymentCash")}</Text>
+                  <Text style={s.paymentPillTxt}>
+                    {activeBooking.detailsPending ? "—"
+                      : activeBooking.payment_method === "wallet" ? t("orders.card.paymentWallet") : t("orders.card.paymentCash")}
+                  </Text>
                 </View>
               </View>
             </View>
