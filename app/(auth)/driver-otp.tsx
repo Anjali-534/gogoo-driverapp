@@ -1,5 +1,5 @@
 ﻿import React, { useState, useRef, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, Alert, StatusBar, KeyboardAvoidingView, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -50,7 +50,9 @@ export default function DriverOTPScreen() {
   return (
     <SafeAreaView style={s.safe}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      {/* "padding" on Android too: under edge-to-edge, adjustResize no longer
+          shrinks the window, so without it Verify sits under the keyboard. */}
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={s.container} keyboardShouldPersistTaps="handled">
           <TouchableOpacity onPress={() => router.back()} style={s.back}>
             <Text style={s.backText}>{t("auth.otp.back")}</Text>
@@ -70,7 +72,12 @@ export default function DriverOTPScreen() {
                 style={[s.otpBox, digit && s.otpBoxFilled]}
                 value={digit} onChangeText={val => handleChange(val.slice(-1), i)}
                 cursorColor="#111" selectionColor="#111"
-                keyboardType="numeric" maxLength={1} textAlign="center" />
+                keyboardType="numeric" maxLength={1} textAlign="center"
+                // OTP autofill hint, first box only. Each box holds one
+                // digit (maxLength 1), so an autofilled code is truncated
+                // until handleChange learns to spread a multi-digit value.
+                autoComplete={i === 0 ? "one-time-code" : "off"}
+                textContentType={i === 0 ? "oneTimeCode" : "none"} />
             ))}
           </View>
           <TouchableOpacity style={[s.btn, loading && s.btnDisabled]} onPress={handleVerify} disabled={loading}>
