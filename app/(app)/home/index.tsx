@@ -78,6 +78,9 @@ export default function DriverHomeScreen() {
   const [incomingRide,  setIncomingRide]  = useState<any>(null);
   const [showRidePopup, setShowRidePopup] = useState(false);
   const [countdown,     setCountdown]     = useState(30);
+  // Last /bookings-pending poll failed (non-401) — without this an online
+  // driver can't tell a broken feed from a quiet one.
+  const [feedError,     setFeedError]     = useState(false);
   const [batteryBlocked, setBatteryBlocked] = useState(false);
   const [batteryLevel,   setBatteryLevel]   = useState<number | null>(null);
   const [batteryCharging, setBatteryCharging] = useState(false);
@@ -211,12 +214,13 @@ export default function DriverHomeScreen() {
 
   // Poll for incoming ride requests while online
   useEffect(() => {
-    if (!isOnline) return;
+    if (!isOnline) { setFeedError(false); return; }
     const poll = setInterval(async () => {
       try {
         const token = await getToken();
         if (!token) return;
         const res = await api.get(`/gogoo/bookings-pending`);
+        setFeedError(false);
         const bookings: any[] = res.data?.bookings || res.data || [];
         if (bookings.length > 0) {
           const newest = bookings[0];
@@ -238,7 +242,15 @@ export default function DriverHomeScreen() {
             });
           }
         }
-      } catch {}
+      } catch (e: any) {
+        // 401s are handled globally by the shared axios interceptor.
+        if (e.response?.status === 401) return;
+        console.warn(
+          `home poll: /gogoo/bookings-pending failed status=${e.response?.status ?? "network"}`,
+          e.response?.data ?? e.message,
+        );
+        setFeedError(true);
+      }
     }, 4000);
     return () => clearInterval(poll);
   }, [isOnline]);
@@ -652,6 +664,14 @@ export default function DriverHomeScreen() {
           </View>
         )}
 
+        {/* Ride-request feed failing */}
+        {isOnline && feedError && (
+          <View style={s.feedErrorBanner}>
+            <Ionicons name="cloud-offline-outline" size={16} color={COLORS.warningStrong} />
+            <Text style={s.feedErrorText}>{t("orders.empty.loadFailed")}</Text>
+          </View>
+        )}
+
         {/* Active ride banner */}
         {activeBooking && (
           <TouchableOpacity
@@ -983,6 +1003,8 @@ const s = StyleSheet.create({
   blockedBanner:    { backgroundColor: "#FEE2E2", borderRadius: RADIUS.input, borderLeftWidth: 4, borderLeftColor: COLORS.danger, padding: 14, marginBottom: 16 },
   blockedText:      { fontSize: 13, color: "#991B1B", fontWeight: "600", marginBottom: 6, lineHeight: 18 },
   blockedLink:      { fontSize: 13, color: COLORS.danger, fontWeight: "700" },
+  feedErrorBanner:  { flexDirection: "row", alignItems: "center", gap: 8, backgroundColor: COLORS.warningTint, borderRadius: RADIUS.input, borderLeftWidth: 4, borderLeftColor: COLORS.warning, padding: 12, marginBottom: 16 },
+  feedErrorText:    { flex: 1, fontSize: 13, color: COLORS.warningStrong, fontWeight: "600" },
 
   verifyBanner:     { flexDirection: "row", alignItems: "flex-start", position: "relative", overflow: "hidden", backgroundColor: COLORS.primaryTint, borderRadius: RADIUS.card, borderLeftWidth: 4, borderLeftColor: COLORS.primary, padding: 16, marginBottom: 16 },
   verifyStripe1:    { position: "absolute", right: -24, bottom: -14, width: 100, height: 14, backgroundColor: COLORS.primary, opacity: 0.12, transform: [{ rotate: "-35deg" }] },

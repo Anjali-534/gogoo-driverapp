@@ -218,7 +218,10 @@ export default function OrdersScreen() {
   const dismissedIdsRef = useRef<Set<string>>(new Set());
   const [activeBooking,  setActiveBooking]  = useState<any>(null);
   const [loading,        setLoading]        = useState(false);
-  const [accepting,      setAccepting]      = useState<string | null>(null);
+  // Last /bookings-pending poll failed (non-401). Shown instead of the empty
+  // list — otherwise a server error looks exactly like "no requests".
+  const [feedError,      setFeedError]      = useState(false);
+  const [accepting,     setAccepting]      = useState<string | null>(null);
   const acceptingRef = useRef(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [cancelling,     setCancelling]     = useState(false);
@@ -478,9 +481,15 @@ export default function OrdersScreen() {
             return { ...b, countdownEndsAt };
           }),
       );
+      setFeedError(false);
     } catch (e: any) {
       // 401s are handled globally by the shared axios interceptor.
-      if (e.response?.status === 401) setPending([]);
+      if (e.response?.status === 401) { setPending([]); return; }
+      console.warn(
+        `fetchPending: /gogoo/bookings-pending failed status=${e.response?.status ?? "network"}`,
+        e.response?.data ?? e.message,
+      );
+      setFeedError(true);
     } finally {
       setLoading(false);
     }
@@ -1312,10 +1321,15 @@ export default function OrdersScreen() {
             </View>
           )}
 
-          {!ready || (loading && !pending.length) ? (
+          {!ready || (loading && !pending.length && !feedError) ? (
             <View style={s.emptyState}>
               <ActivityIndicator color={COLORS.primary} size="large" />
               <Text style={s.emptyTitle}>{t("orders.empty.looking")}</Text>
+            </View>
+          ) : pending.length === 0 && feedError ? (
+            <View style={s.emptyState}>
+              <Ionicons name="cloud-offline-outline" size={32} color={COLORS.warningStrong} />
+              <Text style={s.emptyTitle}>{t("orders.empty.loadFailed")}</Text>
             </View>
           ) : pending.length === 0 ? (
             activeBooking ? (

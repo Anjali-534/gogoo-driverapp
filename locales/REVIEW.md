@@ -467,3 +467,15 @@ placeholders swap: Hindi/Odia put `{{total}}` first.
 For the native pass: whether "{{total}} ରୁ {{done}}" reads naturally as "3 of 12" in Odia,
 or whether a fuller phrasing (e.g. with ଟି) is expected.
 
+
+## Batch 6 — ride-request feed error state
+
+One new key, shown on Orders in place of the empty list (and as a small banner on Home while
+online) when a `/gogoo/bookings-pending` poll fails with anything other than a 401. Reuses the
+glossary term for "ride" (राइड / ରାଇଡ୍) and the existing "request" loanword (रिक्वेस्ट / ରିକୱେଷ୍ଟ).
+
+| Key | English | Hindi | Odia |
+|---|---|---|---|
+| `orders.empty.loadFailed` | Couldn't load ride requests — retrying | राइड रिक्वेस्ट्स लोड नहीं हो सकीं — फिर से कोशिश हो रही है | ରାଇଡ୍ ରିକୱେଷ୍ଟ ଲୋଡ୍ ହୋଇପାରିଲା ନାହିଁ — ପୁଣି ଚେଷ୍ଟା କରାଯାଉଛି |
+
+For the native pass: whether "ପୁଣି ଚେଷ୍ଟା କରାଯାଉଛି" reads naturally as an ongoing automatic retry.

@@ -579,7 +579,8 @@
       "noRequestsActive": "No new requests right now",
       "noRequestsIdle": "No ride requests right now",
       "subActive": "New requests will appear here while you complete the current ride",
-      "subIdle": "New requests appear automatically every {{sec}} seconds"
+      "subIdle": "New requests appear automatically every {{sec}} seconds",
+      "loadFailed": "Couldn't load ride requests — retrying"
     },
     "otp": {
       "title": "Enter Ride OTP",
