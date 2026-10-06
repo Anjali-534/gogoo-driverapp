@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, ScrollView, StatusBar, Image, Linking, KeyboardAvoidingView, NativeModules } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, ScrollView, StatusBar, Image, Linking, KeyboardAvoidingView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
@@ -136,40 +136,11 @@ export default function DriverLoginScreen() {
         error: isErrorWithCode(e) ? `google_signin code=${e.code}: ${e.message}` : String(e?.message || e),
         screen: "login_google",
       });
-      // ─── TEMPORARY DEBUG — surfaces the raw error on screen so it can't be ───
-      // missed. Revert to the real user-facing message once identified:
-      //   Alert.alert(
-      //     t("auth.login.googleSignInFailedTitle"),
-      //     e.response?.data?.error || t("auth.login.googleSignInFailedDefault")
-      //   );
       Alert.alert(
-        "DEBUG: Google Sign-In Failed",
-        `code: ${(e as any)?.code}\nmessage: ${(e as any)?.message}\nname: ${(e as any)?.name}\nisErrorWithCode: ${isErrorWithCode(e)}\nserverResponse: ${JSON.stringify((e as any)?.response?.data)}`
+        t("auth.login.googleSignInFailedTitle"),
+        e.response?.data?.error || t("auth.login.googleSignInFailedDefault")
       );
-      // ──────────────────────────────────────────────────────────────────────
     } finally { setGoogleLoading(false); }
-  };
-
-  // TEMPORARY DEBUG: shows this running build's actual signing certificate
-  // SHA-1, read directly from PackageManager on-device. Remove alongside
-  // android/.../SigningCertModule.kt + SigningCertPackage.kt once the
-  // Google Sign-In SHA-1 mismatch investigation is closed.
-  const handleShowSigningCertDebug = async () => {
-    // A null module means this binary predates the debug plugin and is only
-    // running newer JS delivered via an OTA update.
-    if (!NativeModules.SigningCertModule) {
-      Alert.alert(
-        "TEMPORARY DEBUG: Signing Cert SHA-1",
-        "Native module not in this binary (older build running OTA-updated JS). Install the latest build from Play."
-      );
-      return;
-    }
-    try {
-      const sha1 = await NativeModules.SigningCertModule.getSigningCertSha1();
-      Alert.alert("TEMPORARY DEBUG: Signing Cert SHA-1", sha1);
-    } catch (e: any) {
-      Alert.alert("TEMPORARY DEBUG: Signing Cert SHA-1", `Error: ${e?.message || e}`);
-    }
   };
 
   return (
@@ -259,7 +230,6 @@ export default function DriverLoginScreen() {
           <TouchableOpacity
             style={[s.googleBtn, googleLoading && s.btnDisabled]}
             onPress={handleGoogleLogin}
-            onLongPress={handleShowSigningCertDebug}
             disabled={googleLoading || loading}
           >
             {googleLoading
