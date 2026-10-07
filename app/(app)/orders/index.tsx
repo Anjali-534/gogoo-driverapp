@@ -968,13 +968,13 @@ export default function OrdersScreen() {
         </MapView>
 
         {/* Back button */}
-        <TouchableOpacity style={s.mapBack} onPress={() => setView("list")} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
+        <TouchableOpacity style={[s.mapBack, { top: insets.top + 16 }]} onPress={() => setView("list")} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
           <Text style={s.mapBackTxt}>{t("orders.map.back")}</Text>
         </TouchableOpacity>
 
         {/* Distance pill */}
         {distLabel ? (
-          <View style={[s.distPill, { backgroundColor: accent }]}>
+          <View style={[s.distPill, { top: insets.top + 16, backgroundColor: accent }]}>
             <Text style={s.distPillTxt}>
               {beforePickup ? t("orders.map.pickupDistPrefix", { dist: distLabel }) : t("orders.map.dropDistPrefix", { dist: distLabel })}
             </Text>
@@ -982,7 +982,7 @@ export default function OrdersScreen() {
         ) : null}
 
         {/* Speed pill — driver's own live GPS speed */}
-        <View style={s.speedPill}>
+        <View style={[s.speedPill, { top: insets.top + 16 }]}>
           <Text style={s.speedPillTxt}>{t("orders.map.speedKmh", { speed: Math.round(mySpeedKmh) })}</Text>
         </View>
 
@@ -1560,11 +1560,11 @@ const s = StyleSheet.create({
   lockedTxt:  { color:"#9CA3AF", fontWeight:"700", fontSize:13 },
 
   // ── Map view ──────────────────────────────────────────────────────────────
-  mapBack:    { position:"absolute", top:Platform.OS==="ios"?56:40, left:16, backgroundColor:"#fff", borderRadius:RADIUS.input, paddingHorizontal:14, paddingVertical:10, elevation:4 },
+  mapBack:    { position:"absolute", left:16, backgroundColor:"#fff", borderRadius:RADIUS.input, paddingHorizontal:14, paddingVertical:10, elevation:4 },
   mapBackTxt: { color:"#111", fontWeight:"700", fontSize:14 },
-  distPill:   { position:"absolute", top:Platform.OS==="ios"?56:40, alignSelf:"center", paddingHorizontal:16, paddingVertical:8, borderRadius:20, elevation:5 },
+  distPill:   { position:"absolute", alignSelf:"center", paddingHorizontal:16, paddingVertical:8, borderRadius:20, elevation:5 },
   distPillTxt:{ color:"#fff", fontWeight:"800", fontSize:13 },
-  speedPill:    { position:"absolute", top:Platform.OS==="ios"?56:40, right:16, backgroundColor:"#fff", paddingHorizontal:12, paddingVertical:8, borderRadius:20, elevation:5 },
+  speedPill:    { position:"absolute", right:16, backgroundColor:"#fff", paddingHorizontal:12, paddingVertical:8, borderRadius:20, elevation:5 },
   speedPillTxt: { color:"#111", fontWeight:"800", fontSize:13 },
 
   restorePillWrap: { position:"absolute", bottom:40, left:0, right:0, alignItems:"center" },
