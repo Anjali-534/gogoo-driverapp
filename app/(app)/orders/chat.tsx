@@ -120,7 +120,7 @@ export default function DriverRideChatScreen() {
 
         {chatEnabled ? (
           <View style={s.inputArea}>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.quickRow} contentContainerStyle={{ gap: 8, paddingHorizontal: 4 }}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.quickRow} contentContainerStyle={{ gap: 8, paddingHorizontal: 4, alignItems: "center" }}>
               {QUICK_REPLIES.map(q => (
                 <TouchableOpacity key={q} style={s.quickChip} onPress={() => sendMessage(q)} disabled={sending} hitSlop={{ top: 6, bottom: 6, left: 2, right: 2 }}>
                   <Text style={s.quickChipText}>{q}</Text>
@@ -176,8 +176,8 @@ const s = StyleSheet.create({
   bubbleText: { fontSize: 14, color: COLORS.textPrimary, lineHeight: 20 },
   timeText:   { fontSize: 10, color: COLORS.textMuted, marginTop: 3, marginHorizontal: 4 },
 
-  quickRow:   { maxHeight: 40, marginBottom: 8 },
-  quickChip:  { paddingHorizontal: 12, paddingVertical: 8, backgroundColor: "#FFF3EC", borderRadius: 18, borderWidth: 1, borderColor: "#FFD9C2" },
+  quickRow:   { flexGrow: 0, flexShrink: 0, marginBottom: 8 },
+  quickChip:  { minHeight: 36, justifyContent: "center", paddingHorizontal: 12, paddingVertical: 8, backgroundColor: "#FFF3EC", borderRadius: 18, borderWidth: 1, borderColor: "#FFD9C2" },
   quickChipText: { fontSize: 12, color: COLORS.primary, fontWeight: "700" },
 
   inputArea:  { backgroundColor: COLORS.white, borderTopWidth: 1, borderTopColor: COLORS.border, paddingTop: 10, paddingHorizontal: 12, paddingBottom: Platform.OS === "ios" ? 8 : 12 },

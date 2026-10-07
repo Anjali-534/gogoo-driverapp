@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
+import Chip from "@/components/Chip";
 import * as Notifications from "expo-notifications";
 import { useTranslation } from "react-i18next";
 
@@ -155,19 +156,16 @@ export default function DriverNotificationsScreen() {
         contentContainerStyle={s.pillsWrap}
         style={s.pillsRow}
       >
-        {CATEGORIES.map(cat => {
-          const active = activecat === cat.key;
-          return (
-            <TouchableOpacity
-              key={cat.key}
-              style={[s.pill, active && { backgroundColor: COLORS.primary, borderColor: COLORS.primary }]}
-              onPress={() => setActivecat(cat.key)}
-              activeOpacity={0.75}
-            >
-              <Text style={[s.pillText, active && s.pillTextActive]}>{cat.label}</Text>
-            </TouchableOpacity>
-          );
-        })}
+        {CATEGORIES.map(cat => (
+          <Chip
+            key={cat.key}
+            label={cat.label}
+            active={activecat === cat.key}
+            onPress={() => setActivecat(cat.key)}
+            style={s.pill}
+            textStyle={s.pillText}
+          />
+        ))}
       </ScrollView>
 
       {loading ? (
@@ -204,13 +202,13 @@ const s = StyleSheet.create({
   back:           { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   title:          { color: COLORS.textPrimary, fontSize: 20, fontWeight: "900" },
   subtitle:       { color: COLORS.primary, fontSize: 12, fontWeight: "600", marginTop: 1 },
-  pillsRow:       { maxHeight: 52, flexGrow: 0 },
-  pillsWrap:      { paddingHorizontal: 20, paddingBottom: 12 },
-  pill:           { borderWidth: 1.5, borderColor: COLORS.borderStrong, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 7, backgroundColor: COLORS.white, marginRight: 8 },
-  pillText:       { color: COLORS.textSecondary, fontSize: 13, fontWeight: "600" },
-  pillTextActive: { color: COLORS.white },
+  // No maxHeight cap, and flexShrink: 0 so the FlatList below can't squash it.
+  pillsRow:       { flexGrow: 0, flexShrink: 0 },
+  pillsWrap:      { alignItems: "center", paddingHorizontal: 20, paddingBottom: 12 },
+  pill:           { paddingHorizontal: 16, backgroundColor: COLORS.white },
+  pillText:       { fontSize: 13 },
   center:         { flex: 1, alignItems: "center", justifyContent: "center" },
-  list:           { paddingHorizontal: 20, paddingBottom: 100 },
+  list:           { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 100 },
   emptyContainer: { flex: 1, paddingHorizontal: 20 },
   card:           { flexDirection: "row", backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 14, marginBottom: 10, gap: 12, alignItems: "flex-start" },
   cardUnread:     { borderColor: "#BFDBFE", backgroundColor: COLORS.infoTint },

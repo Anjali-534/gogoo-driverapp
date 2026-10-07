@@ -12,6 +12,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
 import { COLORS, RADIUS } from "@/constants/theme";
 import EarningsRangeFilter, { EarningsRange } from "@/components/EarningsRangeFilter";
+import Chip from "@/components/Chip";
 import { useTranslation } from "react-i18next";
 // expo-file-system / expo-sharing are NATIVE modules — required lazily
 // inside downloadStatement (not statically imported here) because the
@@ -349,18 +350,16 @@ export default function LedgerScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
+              style={s.monthScroll}
               contentContainerStyle={s.monthRow}
             >
               {lastSixMonths().map(m => (
-                <TouchableOpacity
+                <Chip
                   key={m.key}
-                  style={[s.monthChip, selectedMonth === m.key && s.monthChipActive]}
+                  label={m.label}
+                  active={selectedMonth === m.key}
                   onPress={() => setSelectedMonth(m.key)}
-                >
-                  <Text style={[s.monthChipText, selectedMonth === m.key && s.monthChipTextActive]}>
-                    {m.label}
-                  </Text>
-                </TouchableOpacity>
+                />
               ))}
             </ScrollView>
             <TouchableOpacity
@@ -580,11 +579,8 @@ const s = StyleSheet.create({
   statChipLabel:   { fontSize: 11, color: COLORS.textMuted, fontWeight: "600", marginBottom: 4 },
   statChipValue:   { fontSize: 18, fontWeight: "800", color: COLORS.textPrimary },
   statementCard:   { backgroundColor: COLORS.white, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, padding: 16, marginBottom: 16 },
-  monthRow:        { paddingBottom: 12 },
-  monthChip:       { borderWidth: 1.5, borderColor: COLORS.borderStrong, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, backgroundColor: COLORS.bgAlt, marginRight: 8 },
-  monthChipActive: { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  monthChipText:       { color: COLORS.textSecondary, fontSize: 12, fontWeight: "600" },
-  monthChipTextActive: { color: "#FFF" },
+  monthScroll:     { flexGrow: 0, flexShrink: 0 },
+  monthRow:        { alignItems: "center", paddingBottom: 12 },
   downloadBtn:     { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 8, borderRadius: RADIUS.input, paddingVertical: 14, overflow: "hidden", position: "relative" },
   downloadIllustration: { position: "absolute", right: -10, bottom: -14, width: 72, height: 60, opacity: 0.5 },
   downloadBtnText: { color: "#fff", fontSize: 14, fontWeight: "700" },

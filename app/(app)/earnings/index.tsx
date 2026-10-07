@@ -279,6 +279,7 @@ export default function EarningsScreen() {
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
+              style={s.daySelector}
               contentContainerStyle={s.daySelectorWrap}
             >
               {weekDays.map((day, i) => {
@@ -390,11 +391,12 @@ const s = StyleSheet.create({
   statDivider:        { width: 1, height: 64, backgroundColor: COLORS.border },
   statValue:          { fontSize: 20, fontWeight: "800", color: COLORS.textStrong },
   statLabel:          { fontSize: 11, color: COLORS.textSecondary, marginTop: 2, textAlign: "center" },
-  daySelectorWrap:    { paddingHorizontal: 16, paddingVertical: 8, marginBottom: 8 },
+  daySelector:        { flexGrow: 0, flexShrink: 0 },
+  daySelectorWrap:    { alignItems: "flex-start", paddingHorizontal: 16, paddingVertical: 8, marginBottom: 8 },
   dayCol:             { alignItems: "center", paddingHorizontal: 10, gap: 6, marginRight: 4 },
   dayName:            { fontSize: 11, fontWeight: "600", color: COLORS.textMuted },
   dayNameActive:      { color: COLORS.primary },
-  dayCircle:          { width: 36, height: 36, borderRadius: 18, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.border },
+  dayCircle:          { minWidth: 36, minHeight: 36, paddingHorizontal: 4, borderRadius: 18, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.border },
   dayCircleActive:    { backgroundColor: COLORS.primary },
   dayCircleText:      { fontSize: 14, fontWeight: "700", color: COLORS.textSecondary },
   dayCircleTextActive:{ color: "#FFF" },

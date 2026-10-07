@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
-import { COLORS, RADIUS } from "@/constants/theme";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { COLORS } from "@/constants/theme";
+import Chip from "./Chip";
 
 export type EarningsRange =
   | "this_week" | "last_week"
@@ -30,17 +31,11 @@ export default function EarningsRangeFilter({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={s.scroll}
         contentContainerStyle={s.row}
       >
         {RANGES.map(r => (
-          <TouchableOpacity
-            key={r.key}
-            style={[s.chip, selected === r.key && s.chipActive]}
-            onPress={() => onSelect(r.key)}
-            activeOpacity={0.75}
-          >
-            <Text style={[s.chipText, selected === r.key && s.chipTextActive]}>{r.label}</Text>
-          </TouchableOpacity>
+          <Chip key={r.key} label={r.label} active={selected === r.key} onPress={() => onSelect(r.key)} />
         ))}
       </ScrollView>
       {rangeLabel ? <Text style={s.rangeLabel}>{rangeLabel}</Text> : null}
@@ -49,13 +44,11 @@ export default function EarningsRangeFilter({
 }
 
 const s = StyleSheet.create({
-  row:            { paddingBottom: 4 },
-  // marginRight on each chip, NOT `gap` on the horizontal ScrollView — gap
-  // is unreliable inside a horizontal ScrollView's contentContainerStyle on
-  // this RN/Expo version and was already found + fixed once in this project.
-  chip:           { borderWidth: 1.5, borderColor: COLORS.borderStrong, borderRadius: 20, paddingHorizontal: 14, paddingVertical: 7, backgroundColor: COLORS.bgAlt, marginRight: 8 },
-  chipActive:     { backgroundColor: COLORS.primary, borderColor: COLORS.primary },
-  chipText:       { color: COLORS.textSecondary, fontSize: 12, fontWeight: "600" },
-  chipTextActive: { color: "#FFF" },
+  scroll:         { flexGrow: 0, flexShrink: 0 },
+  // Chip spacing is marginRight on each chip, NOT `gap` on the horizontal
+  // ScrollView — gap is unreliable inside a horizontal ScrollView's
+  // contentContainerStyle on this RN/Expo version and was already found +
+  // fixed once in this project.
+  row:            { alignItems: "center", paddingBottom: 4 },
   rangeLabel:     { color: COLORS.textMuted, fontSize: 12, fontWeight: "600", marginTop: 6, marginBottom: 4 },
 });
