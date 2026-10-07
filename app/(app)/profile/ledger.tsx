@@ -1,9 +1,10 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, ScrollView,
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
   Modal, TextInput, KeyboardAvoidingView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { getToken } from "@/services/session";
@@ -240,7 +241,7 @@ export default function LedgerScreen() {
   };
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" />
       <LinearGradient colors={["#FFE8D9", "#FFF6F0", COLORS.bgAlt]} locations={[0, 0.6, 1]} style={s.header}>
         <TouchableOpacity onPress={() => router.back()} style={s.back} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
@@ -547,7 +548,7 @@ export default function LedgerScreen() {
 
 const s = StyleSheet.create({
   safe:            { flex: 1, backgroundColor: COLORS.bgAlt },
-  header:          { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 52, paddingBottom: 12 },
+  header:          { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 28, paddingBottom: 12 },
   headerIllustration: { width: 60, height: 52 },
   back:            { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   headerTitle:     { color: COLORS.textPrimary, fontSize: 20, fontWeight: "900", flex: 1 },

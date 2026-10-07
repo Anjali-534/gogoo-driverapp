@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, StyleSheet, ScrollView,
   TouchableOpacity, StatusBar, ActivityIndicator, RefreshControl,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
@@ -60,7 +61,7 @@ export default function DriverSupportIndexScreen() {
   };
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
@@ -140,7 +141,7 @@ export default function DriverSupportIndexScreen() {
 
 const s = StyleSheet.create({
   safe:         { flex: 1, backgroundColor: COLORS.bgAlt },
-  header:       { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingTop: 52, paddingBottom: 12 },
+  header:       { flexDirection: "row", alignItems: "center", gap: 12, paddingHorizontal: 20, paddingTop: 28, paddingBottom: 12 },
   back:         { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   title:        { fontSize: 18, fontWeight: "900", color: COLORS.textPrimary, letterSpacing: 0.5 },
   subtitle:     { fontSize: 12, color: COLORS.textMuted, marginTop: 2 },

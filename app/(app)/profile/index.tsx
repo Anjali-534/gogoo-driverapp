@@ -1,8 +1,9 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, ScrollView,
   TouchableOpacity, Alert, StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -108,7 +109,7 @@ export default function DriverProfileScreen() {
   const handleSupportChat = () => router.push("/(app)/support" as any);
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={s.scroll}>
 
@@ -218,9 +219,9 @@ export default function DriverProfileScreen() {
 
 const s = StyleSheet.create({
   safe:          { flex: 1, backgroundColor: COLORS.bgAlt },
-  // paddingTop:52 matches the header clearance already used on Home/Orders
-  // this session (their logoBar/hero use the same value inside SafeAreaView).
-  scroll:        { paddingTop: 52, paddingHorizontal: 20, paddingBottom: 100 },
+  // SafeAreaView (safe-area-context, top edge) now supplies the status-bar
+  // inset; paddingTop is just the gap below it (old hardcoded 52 minus 24).
+  scroll:        { paddingTop: 28, paddingHorizontal: 20, paddingBottom: 100 },
   // No card: this wraps just the illustration + header content for layout/
   // clipping purposes — no backgroundColor, so it sits on the plain page bg.
   heroCard:      { borderRadius: RADIUS.sheet, overflow: "hidden", padding: 24, marginBottom: 20, position: "relative" },

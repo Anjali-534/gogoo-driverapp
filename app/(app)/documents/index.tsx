@@ -1,8 +1,9 @@
 ﻿import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Alert, ActivityIndicator, Linking, Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as DocumentPicker from "expo-document-picker";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -169,7 +170,7 @@ export default function DocumentsScreen() {
   const progressPct = total > 0 ? Math.round((approved / total) * 100) : 0;
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <View style={s.logoBar}>
         <Image source={require("../../../assets/illustrations/task.png")} style={s.taskIllustration} resizeMode="contain" />
       </View>
@@ -323,7 +324,7 @@ export default function DocumentsScreen() {
 
 const s = StyleSheet.create({
   safe:    { flex: 1, backgroundColor: COLORS.bg },
-  logoBar: { flexDirection: "row", justifyContent: "flex-end", alignItems: "center", paddingHorizontal: 20, paddingTop: 44, paddingBottom: 4 },
+  logoBar: { flexDirection: "row", justifyContent: "flex-end", alignItems: "center", paddingHorizontal: 20, paddingTop: 20, paddingBottom: 4 },
   taskIllustration: { width: 64, height: 56 },
   header:  { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 20, paddingTop: 16, paddingBottom: 12 },
   title: { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },

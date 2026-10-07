@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import {
-  View, Text, Image, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, Image, StyleSheet, ScrollView,
   TouchableOpacity, ActivityIndicator, RefreshControl, Linking, Alert, StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
@@ -77,7 +78,7 @@ export default function DriverReferScreen() {
   };
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" />
       <View style={s.header}>
         <TouchableOpacity onPress={() => router.back()} style={s.back} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
@@ -192,7 +193,7 @@ export default function DriverReferScreen() {
 
 const s = StyleSheet.create({
   safe:         { flex: 1, backgroundColor: COLORS.bgAlt },
-  header:       { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 52, paddingBottom: 12 },
+  header:       { flexDirection: "row", alignItems: "center", gap: 14, paddingHorizontal: 20, paddingTop: 28, paddingBottom: 12 },
   back:         { width: 38, height: 38, borderRadius: 19, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   headerTitle:  { color: COLORS.textPrimary, fontSize: 20, fontWeight: "900", flex: 1 },
   headerIllustration: { width: 56, height: 48 },

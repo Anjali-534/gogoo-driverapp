@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, TouchableOpacity,
+  View, Text, StyleSheet, TouchableOpacity,
   TextInput, ScrollView, KeyboardAvoidingView, Platform,
   StatusBar, ActivityIndicator,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -136,7 +137,7 @@ export default function DriverSupportChatScreen() {
   };
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
@@ -241,7 +242,7 @@ export default function DriverSupportChatScreen() {
 
 const s = StyleSheet.create({
   safe:          { flex: 1, backgroundColor: COLORS.bgAlt },
-  header:        { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingTop: 52, paddingBottom: 12, backgroundColor: COLORS.white, borderBottomWidth: 1, borderBottomColor: COLORS.border },
+  header:        { flexDirection: "row", alignItems: "center", gap: 10, paddingHorizontal: 16, paddingTop: 28, paddingBottom: 12, backgroundColor: COLORS.white, borderBottomWidth: 1, borderBottomColor: COLORS.border },
   back:          { width: 36, height: 36, borderRadius: 18, backgroundColor: COLORS.border, alignItems: "center", justifyContent: "center" },
   ticketNum:     { fontSize: 13, fontWeight: "700", color: COLORS.textPrimary, fontFamily: "monospace" },
   ticketSubject: { fontSize: 12, color: COLORS.textSecondary, marginTop: 1 },

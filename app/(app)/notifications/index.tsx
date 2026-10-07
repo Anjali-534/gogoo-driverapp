@@ -1,8 +1,9 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, FlatList,
+  View, Text, StyleSheet, FlatList,
   TouchableOpacity, ActivityIndicator, RefreshControl, Linking, Image, ScrollView,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { api } from "@/services/api";
@@ -133,7 +134,7 @@ export default function DriverNotificationsScreen() {
   };
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right"]}>
       <View style={s.logoBar}>
         <Image source={require("../../../assets/logo.png")} style={s.logo} resizeMode="contain" />
       </View>

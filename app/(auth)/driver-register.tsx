@@ -1,9 +1,10 @@
 ﻿import React, { useState, useEffect } from "react";
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  ScrollView, SafeAreaView, Alert, ActivityIndicator,
+  ScrollView, Alert, ActivityIndicator,
   Switch, Image, StatusBar, KeyboardAvoidingView, Platform
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -340,7 +341,7 @@ export default function DriverRegisterScreen() {
   const displayVehicleLabel = vehicleTypeSlug ? t(`auth.vehicleSelect.options.${vehicleTypeSlug}`, { defaultValue: vehicleTypeLabel }) : vehicleTypeLabel;
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["top", "left", "right", "bottom"]}>
       <StatusBar barStyle="dark-content" backgroundColor="#FAFAFA" />
       <View style={s.header}>
         {step > 0 && <TouchableOpacity onPress={() => setStep(step - 1)} style={s.backBtn}><Text style={s.backText}>{tr("back")}</Text></TouchableOpacity>}
@@ -540,7 +541,7 @@ function T({ label, value, onToggle, accentColor }: { label: string; value: bool
 
 const s = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#FAFAFA" },
-  header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingTop: 36, paddingBottom: 12 },
+  header: { flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingTop: 12, paddingBottom: 12 },
   backBtn: { width: 60 },
   backText: { color: "#FF6B2B", fontSize: 14, fontWeight: "600" },
   headerCenter: { flex: 1, alignItems: "center" },
