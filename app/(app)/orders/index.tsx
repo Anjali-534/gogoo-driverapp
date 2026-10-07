@@ -1,9 +1,10 @@
 ﻿import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity,
+  View, Text, StyleSheet, ScrollView, TouchableOpacity,
   ActivityIndicator, Alert, Platform, Linking, Image, Modal, Dimensions,
   RefreshControl,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import BottomSheet, { BottomSheetHandle } from "../../../components/BottomSheet";
@@ -40,6 +41,10 @@ const HERO_IMG_H    = Math.round(HERO_SCREEN_W * (940 / 1672));
 const HERO_TOP_BAND = 32;
 const HERO_BOT_GAP  = 12;
 const HERO_H        = HERO_TOP_BAND + HERO_IMG_H + HERO_BOT_GAP;
+// The hero is drawn edge-to-edge behind the status bar (SafeAreaView has no
+// top edge). These layouts were tuned assuming a ~24dp status bar inside the
+// hero, so the real top inset replaces that allowance in height + padding.
+const ASSUMED_STATUS_BAR = 24;
 
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -175,6 +180,7 @@ function VehicleMarker({ category }: { category?: string }) {
 // ════════════════════════════════════════════════════════════════════════════
 export default function OrdersScreen() {
   const router            = useRouter();
+  const insets            = useSafeAreaInsets();
   const { t }             = useTranslation();
   const authRef           = useRef({ token: "", driverId: "" });
   const pollRef           = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -1138,7 +1144,7 @@ export default function OrdersScreen() {
     activeBooking?.status === "in_progress" ? t("orders.status.tripInProgress") : "";
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["left", "right"]}>
       {/* Hero — explicit HERO_H (px), same technique as Home's hero: the
           illustration is an absolutely-positioned full-bleed background at
           an explicit HERO_IMG_W x HERO_IMG_H, with the title/subtitle in
@@ -1147,7 +1153,7 @@ export default function OrdersScreen() {
       <LinearGradient
         colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
         locations={[0, 0.6, 1]}
-        style={s.hero}
+        style={[s.hero, { height: HERO_H - ASSUMED_STATUS_BAR + insets.top }]}
         onLayout={e => console.log("[ORDERS_HERO/tmp] container", JSON.stringify(e.nativeEvent.layout))}
       >
         <Image
@@ -1158,7 +1164,7 @@ export default function OrdersScreen() {
         />
 
         <View
-          style={s.heroContent}
+          style={[s.heroContent, { paddingTop: insets.top + 52 - ASSUMED_STATUS_BAR }]}
           pointerEvents="box-none"
           onLayout={e => console.log("[ORDERS_HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
         >
@@ -1459,7 +1465,7 @@ const s = StyleSheet.create({
   // pattern as Home's hero. No aspectRatio, no percentages.
   hero:         { width: HERO_SCREEN_W, height: HERO_H },
   heroImg:      { position: "absolute", left: 0, bottom: HERO_BOT_GAP, width: HERO_IMG_W, height: HERO_IMG_H, zIndex: 0 },
-  heroContent:  { zIndex: 2, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", paddingHorizontal: 20, paddingTop: 52, gap: 12 },
+  heroContent:  { zIndex: 2, flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between", paddingHorizontal: 20, gap: 12 },
   heroTextCol:  { flex: 1 },
   title:        { color:"#111", fontSize:22, fontWeight:"800" },
   subtitle:     { color:"#777", fontSize:12, marginTop:4 },

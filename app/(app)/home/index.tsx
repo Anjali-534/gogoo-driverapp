@@ -1,9 +1,10 @@
 ﻿import React, { useCallback, useState, useEffect, useRef } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, Switch, TouchableOpacity,
+  View, Text, StyleSheet, Switch, TouchableOpacity,
   ScrollView, Alert, Animated, Image, Modal, Vibration, Dimensions,
   ActivityIndicator,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,6 +41,10 @@ const HERO_IMG_H    = Math.round(HERO_SCREEN_W * (940 / 1672)); // ≈ width / 1
 const HERO_TOP_BAND = 32;  // small margin above the scene — greeting/bell now overlay the image itself
 const HERO_BOT_GAP  = 12;
 const HERO_H        = HERO_TOP_BAND + HERO_IMG_H + HERO_BOT_GAP;
+// The hero is drawn edge-to-edge behind the status bar (SafeAreaView has no
+// top edge). These layouts were tuned assuming a ~24dp status bar inside the
+// hero, so the real top inset replaces that allowance in height + padding.
+const ASSUMED_STATUS_BAR = 24;
 
 const ACTIVE_STATUSES = ["accepted", "arriving", "in_progress"];
 
@@ -92,6 +97,7 @@ export default function DriverHomeScreen() {
   const prevBookingIdRef = useRef<string | null>(null);
   const countdownRef     = useRef<ReturnType<typeof setInterval> | null>(null);
   const router           = useRouter();
+  const insets           = useSafeAreaInsets();
   const ringtoneRef       = useRef<AudioPlayer | null>(null);
   const ringtoneStopRef   = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -506,10 +512,10 @@ export default function DriverHomeScreen() {
   const firstName = driver?.name?.split(" ")[0] || t("home.driverFallback");
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["left", "right"]}>
       {/* In-app notification toast */}
       {toast && (
-        <Animated.View style={[s.toast, { transform: [{ translateY: toastAnim }] }]}>
+        <Animated.View style={[s.toast, { paddingTop: insets.top + 52 - ASSUMED_STATUS_BAR, transform: [{ translateY: toastAnim }] }]}>
           <TouchableOpacity
             style={s.toastInner}
             onPress={() => { hideToast(); setUnreadCount(0); router.push("/(app)/notifications"); }}
@@ -540,7 +546,7 @@ export default function DriverHomeScreen() {
         <LinearGradient
           colors={["#FFE8D9", "#FFF6F0", COLORS.bg]}
           locations={[0, 0.6, 1]}
-          style={s.hero}
+          style={[s.hero, { height: HERO_H - ASSUMED_STATUS_BAR + insets.top }]}
           onLayout={e => console.log("[HERO/tmp] container", JSON.stringify(e.nativeEvent.layout))}
         >
           <Image
@@ -551,7 +557,7 @@ export default function DriverHomeScreen() {
           />
 
           <View
-            style={s.heroContent}
+            style={[s.heroContent, { paddingTop: insets.top + 52 - ASSUMED_STATUS_BAR }]}
             pointerEvents="box-none"
             onLayout={e => console.log("[HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
           >
@@ -926,7 +932,7 @@ const s = StyleSheet.create({
   // image's sky/cloud area, with an explicit zIndex so they always paint above
   // the image (Android does not guarantee this for an in-flow sibling drawn
   // after an absolute one).
-  heroContent:      { zIndex: 2, flexDirection: "row", alignItems: "flex-start", paddingHorizontal: 20, paddingTop: 52, gap: 12 },
+  heroContent:      { zIndex: 2, flexDirection: "row", alignItems: "flex-start", paddingHorizontal: 20, gap: 12 },
   heroActions:      { flexDirection: "row", alignItems: "center", gap: 10 },
   heroTextCol:      { flex: 1 },
   greeting:         { color: COLORS.textPrimary, fontSize: 20, fontWeight: "800" },
@@ -935,7 +941,7 @@ const s = StyleSheet.create({
   avatar:           { width: 42, height: 42, borderRadius: 21, backgroundColor: COLORS.primary, alignItems: "center", justifyContent: "center" },
   avatarText:       { color: "#fff", fontWeight: "900", fontSize: 18 },
 
-  toast:            { position: "absolute", top: 0, left: 0, right: 0, zIndex: 999, paddingHorizontal: 12, paddingTop: 52 },
+  toast:            { position: "absolute", top: 0, left: 0, right: 0, zIndex: 999, paddingHorizontal: 12 },
   toastInner:       { flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: "#fff", borderRadius: RADIUS.card, padding: 14, shadowColor: "#000", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.12, shadowRadius: 12, elevation: 8, borderWidth: 1, borderColor: "#FFE5D9" },
   toastIcon:        { width: 36, height: 36, borderRadius: RADIUS.input, backgroundColor: COLORS.primaryTint, alignItems: "center", justifyContent: "center", flexShrink: 0 },
   toastTitle:       { color: COLORS.textPrimary, fontWeight: "800", fontSize: 13 },

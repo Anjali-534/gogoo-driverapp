@@ -1,8 +1,9 @@
 ﻿import React, { useState, useEffect, useCallback } from "react";
 import {
-  View, Text, StyleSheet, SafeAreaView, ScrollView,
+  View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Image, ActivityIndicator, RefreshControl, useWindowDimensions,
 } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { api } from "@/services/api";
@@ -18,6 +19,10 @@ import { useTranslation } from "react-i18next";
 // 1774x887 (2:1) ratio. No aspectRatio/percentage sizing.
 const HERO_TOP_BAND = 32;
 const HERO_BOT_GAP  = 12;
+// The hero is drawn edge-to-edge behind the status bar (SafeAreaView has no
+// top edge). These layouts were tuned assuming a ~24dp status bar inside the
+// hero, so the real top inset replaces that allowance in height + padding.
+const ASSUMED_STATUS_BAR = 24;
 
 const DAY_KEYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
@@ -51,7 +56,8 @@ export default function EarningsScreen() {
   // why this isn't a module-level Dimensions.get() constant.
   const { width: heroScreenW } = useWindowDimensions();
   const heroImgH = Math.round(heroScreenW * (887 / 1774));
-  const heroH    = HERO_TOP_BAND + heroImgH + HERO_BOT_GAP;
+  const insets   = useSafeAreaInsets();
+  const heroH    = HERO_TOP_BAND + heroImgH + HERO_BOT_GAP - ASSUMED_STATUS_BAR + insets.top;
   const DAY_NAMES = DAY_KEYS.map(k => t(`earnings.days.${k}`));
   const [bookings, setBookings] = useState<any[]>([]);
   const [summary,  setSummary]  = useState<any>(null);
@@ -127,7 +133,7 @@ export default function EarningsScreen() {
     : selectedDay.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" }).toUpperCase();
 
   return (
-    <SafeAreaView style={s.safe}>
+    <SafeAreaView style={s.safe} edges={["left", "right"]}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => fetchData(true)} tintColor={COLORS.primary} />}
@@ -151,7 +157,7 @@ export default function EarningsScreen() {
           />
 
           <View
-            style={s.heroContent}
+            style={[s.heroContent, { paddingTop: insets.top + HERO_TOP_BAND - ASSUMED_STATUS_BAR }]}
             pointerEvents="box-none"
             onLayout={e => console.log("[EARNINGS_HERO/tmp] content", JSON.stringify(e.nativeEvent.layout))}
           >
@@ -371,7 +377,7 @@ const s = StyleSheet.create({
   // ── Hero — full-width background image, same technique as Home/Orders ──
   hero:               { paddingHorizontal: 20 },
   heroBgImg:          { position: "absolute", left: 0, bottom: HERO_BOT_GAP, zIndex: 0 },
-  heroContent:        { zIndex: 2, paddingTop: HERO_TOP_BAND },
+  heroContent:        { zIndex: 2 },
   heroTextCol:        { maxWidth: "58%" },
   pageTitle:          { color: COLORS.textPrimary, fontSize: 22, fontWeight: "800" },
 
