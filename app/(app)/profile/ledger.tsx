@@ -4,7 +4,7 @@ import {
   TouchableOpacity, ActivityIndicator, StatusBar, RefreshControl, Alert,
   Modal, TextInput, KeyboardAvoidingView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { getToken } from "@/services/session";
@@ -62,6 +62,7 @@ function entryLabel(entry: any, t: (key: string, opts?: any) => string): string 
 
 export default function LedgerScreen() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const [wallet,    setWallet]    = useState<any>(null);
   const [entries,   setEntries]   = useState<any[]>([]);
   const [rangeSummary, setRangeSummary] = useState<any>(null);
@@ -460,7 +461,7 @@ export default function LedgerScreen() {
 
       <Modal visible={addMoneyOpen} transparent animationType="slide" onRequestClose={() => setAddMoneyOpen(false)}>
         <KeyboardAvoidingView style={s.modalBackdrop} behavior="padding">
-          <View style={s.modalCard}>
+          <View style={[s.modalCard, { paddingBottom: 34 + insets.bottom }]}>
             <Text style={s.modalTitle}>{t("profile.ledger.addMoneyModalTitle")}</Text>
             <Text style={s.modalLabel}>{t("profile.ledger.addMoneyAmountLabel")}</Text>
             <View style={s.amountInputRow}>
@@ -502,7 +503,7 @@ export default function LedgerScreen() {
 
       <Modal visible={withdrawOpen} transparent animationType="slide" onRequestClose={() => setWithdrawOpen(false)}>
         <KeyboardAvoidingView style={s.modalBackdrop} behavior="padding">
-          <View style={s.modalCard}>
+          <View style={[s.modalCard, { paddingBottom: 34 + insets.bottom }]}>
             <Text style={s.modalTitle}>{t("profile.ledger.withdrawModalTitle")}</Text>
             <Text style={s.modalLabel}>{t("profile.ledger.withdrawAmountLabel")}</Text>
             <View style={s.amountInputRow}>
@@ -601,7 +602,7 @@ const s = StyleSheet.create({
   emptySub:        { color: "#AAA", fontSize: 13 },
 
   modalBackdrop: { flex: 1, backgroundColor: "rgba(0,0,0,0.45)", justifyContent: "flex-end" },
-  modalCard:     { backgroundColor: COLORS.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24, paddingBottom: 34 },
+  modalCard:     { backgroundColor: COLORS.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 24 },
   modalTitle:    { fontSize: 18, fontWeight: "900", color: COLORS.textPrimary, marginBottom: 16 },
   modalLabel:    { fontSize: 13, fontWeight: "700", color: "#374151", marginBottom: 8 },
   amountInputRow:{ flexDirection: "row", alignItems: "center", backgroundColor: COLORS.bgAlt, borderRadius: RADIUS.card, borderWidth: 1, borderColor: COLORS.borderSubtle, paddingHorizontal: 16 },

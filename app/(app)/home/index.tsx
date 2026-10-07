@@ -839,7 +839,7 @@ export default function DriverHomeScreen() {
         onRequestClose={() => dismissPopup("reject")}
       >
         <View style={s.popupOverlay}>
-          <View style={s.popupCard}>
+          <View style={[s.popupCard, { paddingBottom: 40 + insets.bottom }]}>
 
             <View style={s.countdownRow}>
               <View style={s.countdownCircle}>
@@ -1029,7 +1029,7 @@ const s = StyleSheet.create({
 
   // Ride request popup
   popupOverlay:     { flex: 1, backgroundColor: "rgba(0,0,0,0.6)", justifyContent: "flex-end" },
-  popupCard:        { backgroundColor: COLORS.white, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24, paddingBottom: 40 },
+  popupCard:        { backgroundColor: COLORS.white, borderTopLeftRadius: 28, borderTopRightRadius: 28, padding: 24 },
   countdownRow:     { flexDirection: "row", alignItems: "center", marginBottom: 16, gap: 16 },
   countdownCircle:  { width: 64, height: 64, borderRadius: 32, backgroundColor: COLORS.primaryTint2, borderWidth: 3, borderColor: COLORS.primary, alignItems: "center", justifyContent: "center" },
   countdownText:    { fontSize: 20, fontWeight: "800", color: COLORS.primary, lineHeight: 22 },

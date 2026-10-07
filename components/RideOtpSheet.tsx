@@ -3,6 +3,7 @@ import {
   Modal, View, Text, TextInput, TouchableOpacity, Pressable, ActivityIndicator,
   KeyboardAvoidingView, Keyboard, StyleSheet,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 import { COLORS, RADIUS } from "@/constants/theme";
 
@@ -35,6 +36,7 @@ export default function RideOtpSheet({ visible, value, onChange, error, loading,
   const { t } = useTranslation();
   const inputRef = useRef<TextInput>(null);
   const [keyboardUp, setKeyboardUp] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!visible) return;
@@ -75,7 +77,7 @@ export default function RideOtpSheet({ visible, value, onChange, error, loading,
       onShow={() => setTimeout(openKeyboard, 150)}
     >
       <KeyboardAvoidingView behavior="padding" style={s.overlay}>
-        <View style={[s.sheet, keyboardUp && s.sheetKeyboardUp]}>
+        <View style={[s.sheet, { paddingBottom: 40 + insets.bottom }, keyboardUp && s.sheetKeyboardUp]}>
           <View style={s.handle} />
           <Text style={s.icon}>🔐</Text>
           <Text style={s.title}>{t("orders.otp.title")}</Text>
@@ -118,9 +120,9 @@ export default function RideOtpSheet({ visible, value, onChange, error, loading,
 
 const s = StyleSheet.create({
   overlay:           { flex:1, backgroundColor:"rgba(0,0,0,0.5)", justifyContent:"flex-end" },
-  sheet:             { backgroundColor:"#FFF", borderTopLeftRadius:28, borderTopRightRadius:28, padding:28, paddingBottom:40, alignItems:"center" },
-  // The bottom padding only clears the gesture bar; with the keyboard up it
-  // just wastes room the boxes and Verify button need.
+  sheet:             { backgroundColor:"#FFF", borderTopLeftRadius:28, borderTopRightRadius:28, padding:28, alignItems:"center" },
+  // The bottom padding (40 + insets.bottom) only clears the gesture bar; with
+  // the keyboard up it just wastes room the boxes and Verify button need.
   sheetKeyboardUp:   { paddingBottom:16 },
   handle:            { width:40, height:4, backgroundColor:"#E5E7EB", borderRadius:2, marginBottom:24 },
   icon:              { fontSize:48, marginBottom:12 },
