@@ -229,6 +229,16 @@ export default function OrdersScreen() {
   const [feedError,      setFeedError]      = useState(false);
   const [accepting,     setAccepting]      = useState<string | null>(null);
   const acceptingRef = useRef(false);
+  // Same double-tap guard as acceptingRef, for updateStatus.
+  const statusUpdatingRef = useRef(false);
+  // Set while an optimistic status change (see updateStatus) is in flight,
+  // so a booking fetched in that window — still carrying the old status —
+  // doesn't flip the screen back before the PATCH lands.
+  const pendingStatusRef = useRef<{ from: string; to: string } | null>(null);
+  const withPendingStatus = (b: any) => {
+    const p = pendingStatusRef.current;
+    return p && b?.status === p.from ? { ...b, status: p.to } : b;
+  };
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [cancelling,     setCancelling]     = useState(false);
   const [refreshing,     setRefreshing]     = useState(false);
@@ -573,7 +583,7 @@ export default function OrdersScreen() {
         await api.post(`/gogoo/drivers/${driverId}/location`, { lat, lng, heading, speed: speedKmh });
         const res = await api.get(`/gogoo/bookings/${bookingId}`);
         if (bookingGenerationRef.current !== myGeneration) return;
-        setActiveBooking(res.data);
+        setActiveBooking(withPendingStatus(res.data));
 
         // Proximity voice alerts
         const bk = res.data;
@@ -656,7 +666,7 @@ export default function OrdersScreen() {
   const refreshActiveBooking = async (bookingId: string) => {
     try {
       const res = await api.get(`/gogoo/bookings/${bookingId}`, { timeout: 8000 });
-      if (activeBookingRef.current?.id === bookingId) setActiveBooking(res.data);
+      if (activeBookingRef.current?.id === bookingId) setActiveBooking(withPendingStatus(res.data));
     } catch {}
   };
 
@@ -774,19 +784,34 @@ export default function OrdersScreen() {
 
   // ── Update trip status ───────────────────────────────────────────────────
   const updateStatus = async (status: string) => {
-    if (!activeBooking) return;
+    if (!activeBooking || statusUpdatingRef.current) return;
+    statusUpdatingRef.current = true;
     setUpdatingStatus(true);
+    // "I'm arriving" moves the screen forward on tap and reverts if the
+    // PATCH fails. "completed" still waits for the server, since it hands
+    // off to the completion flow.
+    const optimistic = status === "arriving";
+    const bookingId = activeBooking.id;
+    const prevStatus = activeBooking.status;
+    if (optimistic) {
+      pendingStatusRef.current = { from: prevStatus, to: status };
+      setActiveBooking((prev: any) => prev?.id === bookingId ? { ...prev, status } : prev);
+    }
     try {
-      await api.patch(`/gogoo/bookings/${activeBooking?.id}/status`, { status }, { timeout: 8000 });
+      await api.patch(`/gogoo/bookings/${bookingId}/status`, { status }, { timeout: 8000 });
       if (status === "completed") {
         try {
-          const finalRes = await api.get(`/gogoo/bookings/${activeBooking?.id}`);
+          const finalRes = await api.get(`/gogoo/bookings/${bookingId}`);
           triggerCompletion(finalRes.data);
         } catch { triggerCompletion(activeBooking); }
-      } else {
+      } else if (!optimistic) {
         setActiveBooking((prev: any) => prev ? { ...prev, status } : prev);
       }
     } catch (e: any) {
+      if (optimistic && isMounted.current) {
+        setActiveBooking((prev: any) =>
+          prev?.id === bookingId && prev.status === status ? { ...prev, status: prevStatus } : prev);
+      }
       const errorCode = e.response?.data?.error;
       if (errorCode === "already_completed") {
         // The GPS-proximity auto-complete (or an earlier retry of this same
@@ -804,7 +829,11 @@ export default function OrdersScreen() {
         Alert.alert(t("common.error"), e.response?.data?.message || errorCode || t("orders.alerts.updateStatusError"));
       }
     }
-    finally { if (isMounted.current) setUpdatingStatus(false); }
+    finally {
+      pendingStatusRef.current = null;
+      statusUpdatingRef.current = false;
+      if (isMounted.current) setUpdatingStatus(false);
+    }
   };
 
   const cancelRide = () => {
